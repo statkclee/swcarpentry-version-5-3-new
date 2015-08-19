@@ -13,6 +13,7 @@ title: 소프트웨어 카펜트리 버젼 5.3.
 		
 1. [유닉스 쉘(Unix Shell)](lessons/shell/index.html)
     1. 유닉스 소개 
+    1. 파이프와 필터
 1. [Git을 사용한 버젼 관리](lessons/novice-git/index.html)
 1. [R 프로그래밍](lessons/r/index.html)
 1. [파이썬 프로그래밍](lessons/python/index.html)
