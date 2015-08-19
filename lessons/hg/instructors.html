@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="generator" content="pandoc">
+    <title>xwMOOC: Version Control with Mercurial</title>
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" type="text/css" href="http://statkclee.github.io/swcarpentry-version-5-3-new/css/bootstrap/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="http://statkclee.github.io/swcarpentry-version-5-3-new/css/bootstrap/bootstrap-theme.css" />
+    <link rel="stylesheet" type="text/css" href="http://statkclee.github.io/swcarpentry-version-5-3-new/css/swc.css" />
+    <link rel="alternate" type="application/rss+xml" title="Software Carpentry Blog" href="http://software-carpentry.org/feed.xml"/>
+    <meta charset="UTF-8" />
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body class="lesson">
+    <div class="container card">
+      <div class="banner">
+        <a href="http://software-carpentry.org" title="Software Carpentry">
+          <img alt="Software Carpentry banner" src="http://statkclee.github.io/swcarpentry-version-5-3-new/img/software-carpentry-banner.png" />
+      <!--     <img alt="xwMOOC banner" src="img/xwMOOC.png" />
+       -->  </a>
+      </div>
+      <article>
+      <div class="row">
+        <div class="col-md-10 col-md-offset-1">
+          <h1 class="title">Version Control with Mercurial</h1>
+          <h2 class="subtitle">Instructor’s Guide</h2>
+<h2 id="legend">Legend</h2>
+<p>Wolfman and Dracula have been hired by Universal Missions (a space services spin-off of Euphoric State University) to figure out where the company should send its next planetary lander. They want to be able to work on the plans at the same time, but they have run into problems doing this in the past. If they take turns, each one will spend a lot of time waiting for the other to finish, but if they work on their own copies and email changes back and forth things will be lost, overwritten, or duplicated.</p>
+<p>The solution is to use <a href="reference.html#version-control">version control</a> to manage their work. Version control is better than mailing files back and forth because:</p>
+<ul>
+<li>Nothing that is committed to version control is ever lost. This means it can be used like the “undo” feature in an editor, and since all old versions of files are saved it’s always possible to go back in time to see exactly who wrote what on a particular day, or what version of a program was used to generate a particular set of results.</li>
+<li>It keeps a record of who made what changes when, so that if people have questions later on they know who to ask.</li>
+<li>It’s hard (but not impossible) to accidentally overlook or overwrite someone’s changes: the version control system automatically notifies users whenever there’s a conflict between one person’s work and another’s.</li>
+</ul>
+<p>This lesson shows how to use a popular open source version control system called <a href="http://mercurial.selenic.com/">Mercurial</a> (also known as <code>hg</code>). It is widely used, both because it’s easy to set up and because of a hosting site called <a href="http://bitbucket.org/">Bitbucket</a>. No matter which version control system you use, the most important thing to learn is not the details of their more obscure commands, but the workflow that they encourage.</p>
+<h2 id="overall">Overall</h2>
+<ul>
+<li>Time estimate <span class="citation">@douglatornell</span>: 2 hours 45 minutes</li>
+</ul>
+<p>Version control may be the most important topic that we teach. We’re teaching Mercurial because it offers a consistent user interface, and the basic workflow requires only a few easy to remember commands.</p>
+<p>There are lots of advanced features in Mercurial and other distributed version control systems such as branching, hashes, rebasing, etc. that we don’t teach. The goal is to introduce the basics so that the learners leave the workshop able to create and use repositories for themselves with confidence, and that they are aware that version control can also be used to collaborate with other people.</p>
+<p>In other words, try to convince the learners that version control is useful for researchers working alone or in teams because it is</p>
+<ul>
+<li>a better way to “undo” changes,</li>
+<li>a better way to collaborate than mailing files back and forth, and</li>
+<li>a better way to share your code and other scientific work with the world.</li>
+</ul>
+<h2 id="teaching-notes">Teaching Notes</h2>
+<ul>
+<li><p>Make sure the network is working <em>before</em> starting the <a href="02-collab.html">Collaborating</a> section of this lesson. <a href="01-backup.html">A Better Kind of Backup</a> focuses on individual use of Mercurial on and can be done without network access. <a href="03-conflict.html">Conflicts</a> can also be taught without network access and Bitbucket by creating 2 clones of the repository and pulling changes between them.</p></li>
+<li><p>Drawings are particularly useful in this lesson: if you have a whiteboard, use it!</p></li>
+<li><p>Version control is usually not the first subject in a workshop, so get learners to create a Bitbucket account after the session before.</p></li>
+<li><p><a href="http://tortoisehg.bitbucket.org/">TortoiseHg</a> is the recommended means of installing Mercurial for Windows learners. The workshop installation instructions should include that.</p></li>
+<li><p>We don’t use a Mercurial GUI in these notes because we want learners to understand what commands are being run. That said, instructors may want to demo the <a href="http://tortoisehg.bitbucket.org/">TortoiseHg</a> GUI (which is available for Windows, OS/X, and Linux) on their desktop at some point during this lesson.</p></li>
+<li><p>The <a href="03-conflict.html">Conflicts</a> section of the lesson uses the <a href="http://kdiff3.sourceforge.net/">KDiff3</a> graphical diff/merge tool. The workshop installation instructions should include directions for OS/X and Linux users to install KDiff3. For Windows users it is bundled with TortoiseHg.</p></li>
+<li><p>When appropriate, explain that we teach Mercurial rather than CVS, Subversion, or Git primarily because of its consistent command-line interface, easy to learn basic workflow, and Bitbucket’s policy of providing unlimited collaboration in private repositories for academic users. CVS and Subversion are now seen as legacy systems. Git is also very popular, largely because of the GitHub service. The differences between Mercurial and Git are largely syntactic, so learning one provides the conceptual framework to use either.</p></li>
+</ul>
+<h2 id="a-better-kind-of-backup"><a href="01-backup.html">A Better Kind of Backup</a></h2>
+<ul>
+<li><p>Ask, “Who uses ‘undo’ in their editor?” All say “Me”. ‘Undo’ is the simplest form of version control.</p></li>
+<li><p>Give learners a five-minute overview of what version control does for them before diving into the watch-and-do practicals. Most of them will have tried to co-author papers by emailing files back and forth, or will have biked into the office only to realize that the USB key with last night’s work is still on the kitchen table. Instructors can also make jokes about directories with names like “final version”, “final version revised”, “final version with reviewer three’s corrections”, “really final version”, and, “come on this really has to be the last version” to motivate version control as a better way to collaborate and as a better way to back work up.</p></li>
+</ul>
+<p><strong>Setting Up Mercurial</strong></p>
+<ul>
+<li><p>We suggest instructors and students use <code>nano</code> as the text editor for this lessons because</p>
+<ul>
+<li>it runs in all three major operating systems,</li>
+<li>it runs inside the shell (switching windows can be confusing to students), and</li>
+<li>it has shortcut help at the bottom of the window.</li>
+</ul>
+<p>Please point out to students during setup that they can and should use another text editor if they’re already familiar with it.</p></li>
+<li><p>When setting up Mercurial, be very clear what learners have to enter: it is common for them to edit the instructor’s details (e.g. email).</p></li>
+</ul>
+<p><strong>Creating a Repository</strong> and <strong>Changing a File</strong></p>
+<ul>
+<li>When you do <code>hg status</code>, Mac users may see a <code>.DS_Store</code> file showing as untracked. This a file that Mac OS creates in each directory.</li>
+</ul>
+<p><strong>Tracking Changes to Files</strong></p>
+<ul>
+<li><p>It’s important that learners do a full commit cycle by themselves (make changes, <code>hg diff</code>, and <code>hg commit</code>). The “<code>bio</code> repository” challenge does that.</p></li>
+<li><p>This is a good moment to show a diff with the KDiff3 graphical diff tool. If you skip it because you’re short on time, show the graphical diff view of a commit on Bitbucket in the <a href="02-collab.html">Collaborating</a> section.</p></li>
+</ul>
+<p><strong>Exploring History</strong> and <strong>Recovering Old Versions</strong></p>
+<ul>
+<li>Mention that you can revert more than one file at a time by listing the file names one after the other in the <code>hg revert</code> command, and that shell wildcard characters can also be used.</li>
+</ul>
+<h2 id="collaborating"><a href="02-collab.html">Collaborating</a></h2>
+<ul>
+<li><p>Make it clear that Mercurial and Bitbucket are not the same thing: Mercurial is an open source version control tool, Bitbucket is a company that hosts Mercurial repositories on the web and provides a web interface to interact with repos that they host.</p></li>
+<li><p>If your learners are advanced enough to be comfortable with SSH, tell them they can use keys to authenticate on GitHub instead of passwords, but don’t try to set this up during class: it takes too long, and is a distraction from the core ideas of the lesson.</p></li>
+<li><p>It is very useful to draw a diagram showing the different repositories involved.</p></li>
+<li><p>Role playing between two instructors can be effective when teaching the collaboration and conflict sections of the lesson. One instructor can play the role of the repository owner, while the second instructor can play the role of the collaborator. If it is possible, try to use two projectors so that the computer screens of both instructors can be seen. This makes for a very clear illustration to the students as to who does what.</p></li>
+<li><p>It is also effective to pair up students during this lesson and assign one member of the pair to take the role of the owner and the other the role of the collaborator. In this setup, challenges can include asking the collaborator to make a change, commit it, and push the change to the remote repository so that the owner can then retrieve it, and vice-versa. The role playing between the instructors can get a bit “dramatic” in the conflicts part of the lesson if the instructors want to inject some humor into the room.</p></li>
+<li><p>If you don’t have two projectors, have two instructors at the front of the room. Each instructor does their piece of the collaboration demonstration on their own computer and then passes the projector cord back and forth with the other instructor when it’s time for them to do the other part of the collaborative workflow. It takes less than 10 seconds for each switchover, so it doesn’t interrupt the flow of the lesson. And of course it helps to give each of the instructors a different-colored hat, or put different-colored sticky notes on their foreheads.</p></li>
+<li><p>If you’re the only instructor, the best way to create is clone the two repos in your Desktop, but under different names, e.g., pretend one is your computer at work:</p>
+<pre class="input"><code>$ hg clone https://bitbucket.org/vlad/planets planets-at-work</code></pre></li>
+<li><p>It’s very common that learners mistype the remote alias or the remote URL when adding a remote, so they cannot <code>push</code>. You can diagnose this with <code>hg paths</code> and checking carefully for typos. To fix typos you can open the repo <code>.hg/hgrc</code> file for editing with <code>hg config --local</code>.</p></li>
+<li><p>Before cloning the repo, be sure that nobody is inside another repo. The best way to achieve this is moving to the <code>Desktop</code> before cloning: <code>cd &amp;&amp; cd Desktop</code>.</p></li>
+<li><p>If both repos are in the <code>Desktop</code>, have them to clone their collaborator repo under a given directory using a second argument:</p>
+<pre class="input"><code>$ hg clone https://bitbucket.org/vlad/planets vlad-planet`</code></pre></li>
+<li><p>Conflicts, sometimes weird, will start to arise. Stay tight: conflicts are next.</p></li>
+</ul>
+<h2 id="conflicts"><a href="03-conflict.html">Conflicts</a></h2>
+<ul>
+<li><p>Explain that conflict are not a very common occurrence. Mercurial is good at merging changes made by different people, or changes that you make in different clones of a repo; e.g. on your office workstation, on your laptop at home, on a lab computer, or on a remote HPC or cloud platform. A conflict arises when changes have been made to the same lines in a file or to binary files; Mercurial can’t figure out which of the conflicting version to choose so it makes you decide.</p></li>
+<li><p>Expect the learners to make mistakes. Expect <em>yourself</em> to make mistakes. This happens because it is late in the lesson and everyone is tired.</p></li>
+<li><p>If you’re the only instructor, the best way to create a conflict is:</p>
+<ul>
+<li>Clone your repo in a different directory, pretending is your computer at work: <code>hg clone https://bitbucket.org/vlad/planets planets-at-work</code>.</li>
+<li>At the office, you make a change, commit and push.</li>
+<li>At your laptop repo, you (forget to pull and) make a change, commit and try to push.</li>
+<li><code>hg pull</code> now and show the conflict.</li>
+</ul></li>
+<li><p>The commands <code>hg heads</code>, <code>hg log --graph</code> or <code>hg log -G</code>, and <code>hg summary</code> all provide views of the repository state that can be helpful in explaining conflicts and how they are resolved.</p></li>
+<li><p>Use <code>hg merge --tool=kdiff3</code> to ensure that the KDiff3 GUI diff/merge tool is launched to handle resolution of the conflict.</p></li>
+</ul>
+<h2 id="open-science"><a href="04-open.html">Open Science</a></h2>
+<p><strong>Licensing</strong></p>
+<p>We teach about licensing because questions about who owns what, or can use what, arise naturally once we start talking about using public services like Bitbucket to store files. Also, the discussion gives learners a chance to catch their breath after what is often a frustrating couple of hours.</p>
+<p><strong>Hosting</strong></p>
+<p>A common concern for learners is having their work publicly available on Bitbucket. While we encourage open science, sometimes private repos are the only choice. It’s always interesting to mention the options to have web-hosted private repositories.</p>
+        </div>
+      </div>
+      </article>
+      <div class="footer">
+        <a class="label swc-blue-bg" href="http://software-carpentry.org">Software Carpentry</a>
+        <a class="label swc-blue-bg" href="http://xwmooc.net">xwMOOC</a>
+        <a class="label swc-blue-bg" href="https://github.com/statkclee/swcarpentry-version-5-3-new">한글소스</a>
+        <a class="label swc-blue-bg" href="https://github.com/swcarpentry">영문소스</a>
+        <a class="label swc-blue-bg" href="mailto:i@xwmooc.net">Contact</a>
+        <a class="label swc-blue-bg" href="http://statkclee.github.io/swcarpentry-version-5-3-new/LICENSE.html">License</a>
+      </div>
+    </div>
+    <!-- Javascript placed at the end of the document so the pages load faster -->
+    <script src="http://software-carpentry.org/v5/js/jquery-1.9.1.min.js"></script>
+    <script src="css/bootstrap/bootstrap-js/bootstrap.js"></script>
+  </body>
+</html>

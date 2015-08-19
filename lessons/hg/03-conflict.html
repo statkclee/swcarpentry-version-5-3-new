@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="generator" content="pandoc">
+    <title>xwMOOC: Version Control with Mercurial</title>
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" type="text/css" href="http://statkclee.github.io/swcarpentry-version-5-3-new/css/bootstrap/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="http://statkclee.github.io/swcarpentry-version-5-3-new/css/bootstrap/bootstrap-theme.css" />
+    <link rel="stylesheet" type="text/css" href="http://statkclee.github.io/swcarpentry-version-5-3-new/css/swc.css" />
+    <link rel="alternate" type="application/rss+xml" title="Software Carpentry Blog" href="http://software-carpentry.org/feed.xml"/>
+    <meta charset="UTF-8" />
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body class="lesson">
+    <div class="container card">
+      <div class="banner">
+        <a href="http://software-carpentry.org" title="Software Carpentry">
+          <img alt="Software Carpentry banner" src="http://statkclee.github.io/swcarpentry-version-5-3-new/img/software-carpentry-banner.png" />
+      <!--     <img alt="xwMOOC banner" src="img/xwMOOC.png" />
+       -->  </a>
+      </div>
+      <article>
+      <div class="row">
+        <div class="col-md-10 col-md-offset-1">
+          <h1 class="title">Version Control with Mercurial</h1>
+          <h2 class="subtitle">Conflicts</h2>
+<div id="learning-objectives" class="objectives panel panel-warning">
+<div class="panel-heading">
+<h2><span class="glyphicon glyphicon-certificate"></span>Learning Objectives</h2>
+</div>
+<div class="panel-body">
+<ul>
+<li>Explain what conflicts are and when they can occur.</li>
+<li>Resolve conflicts resulting from a merge.</li>
+</ul>
+</div>
+</div>
+<p>As soon as people can work in parallel, someone’s going to step on someone else’s toes. This will even happen with a single person: if we are working on a piece of software on both our laptop and a server in the lab, we could make different changes to each copy. Version control helps us manage these <strong>conflicts</strong> by giving us tools to <strong>resolve</strong> overlapping changes.</p>
+<p>To see how we can resolve conflicts, we must first create one. The file <code>mars.txt</code> currently looks like this in both local copies of our <code>planets</code> repository (the one in our home directory and the one in <code>/tmp</code>):</p>
+<pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">cat</span> mars.txt</code></pre>
+<pre class="output"><code>Cold and dry, but everything is my favorite color
+The two moons may be a problem for Wolfman
+But the Mummy will appreciate the lack of humidity</code></pre>
+<p>Let’s add a line to the copy under our home directory:</p>
+<pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">nano</span> mars.txt
+$ <span class="kw">cat</span> mars.txt</code></pre>
+<pre class="output"><code>Cold and dry, but everything is my favorite color
+The two moons may be a problem for Wolfman
+But the Mummy will appreciate the lack of humidity
+This line added to our home copy</code></pre>
+<p>and then push the change to Bitbucket:</p>
+<pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">hg</span> commit -m <span class="st">&quot;Adding a line in our home copy&quot;</span>
+$ <span class="kw">hg</span> push</code></pre>
+<pre class="output"><code>pushing to https://bitbucket.org/vlad/planets
+searching for changes
+adding changesets
+adding manifests
+adding file changes
+added 1 changesets with 1 changes to 1 files</code></pre>
+<p>Our repositories are now in this state:</p>
+<div class="figure">
+<img src="fig/hg-after-first-conflicting-change.svg" alt="After Making First Change" /><p class="caption">After Making First Change</p>
+</div>
+<p>Now let’s switch to the copy under <code>/tmp</code> and make a different change there <em>without</em> updating from Bitbucket:</p>
+<pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">cd</span> /tmp/planets
+$ <span class="kw">nano</span> mars.txt
+$ <span class="kw">cat</span> mars.txt</code></pre>
+<pre class="output"><code>Cold and dry, but everything is my favorite color
+The two moons may be a problem for Wolfman
+But the Mummy will appreciate the lack of humidity
+We added a different line in the temporary copy</code></pre>
+<p>We can commit the change locally:</p>
+<pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">hg</span> commit -m <span class="st">&quot;Adding a line in the temporary copy&quot;</span></code></pre>
+<p>but hg won’t let us push it to Bitbucket:</p>
+<pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">hg</span> push</code></pre>
+<pre class="output"><code>pushing to https://bitbucket.org/vlad/planets
+searching for changes
+abort: push creates new remote head 9f82bc5a1e80!
+(merge or see &quot;hg help push&quot; for details about pushing new heads)</code></pre>
+<p>Mercurial detects that our changes conflict with the changes in the remote server and stops us from creating a confusing situation in that server. What we have to do is pull the changes from Bitbucket, <strong>merge</strong> them into the copy we’re currently working in, and then push that. Let’s start by pulling:</p>
+<pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">hg</span> pull</code></pre>
+<pre class="output"><code>pulling from https://bitbucket.org/vlad/planets
+searching for changes
+adding changesets
+adding manifests
+adding file changes
+added 1 changesets with 1 changes to 1 files (+1 heads)
+(run &#39;hg heads&#39; to see heads, &#39;hg merge&#39; to merge)</code></pre>
+<p><code>hg pull</code> tells us there’s an extra head and suggests that we use <code>hg heads</code> to inspect the situation and <code>hg merge</code> to resolve it. Let’s first attempt to understand the situation:</p>
+<pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">hg</span> heads</code></pre>
+<pre class="output"><code>changeset:   6:721158ca243d
+user:        Vlad Dracula &lt;vlad@tran.sylvan.ia&gt;
+date:        Sun May 18 12:40:33 2014 -0400
+summary:     Adding a line in our home copy
+
+changeset:   5:9f82bc5a1e80
+tag:         tip
+parent:      4:2e9c23a9090d
+user:        Vlad Dracula &lt;vlad@tran.sylvan.ia&gt;
+date:        Sun May 18 12:41:10 2014 -0400
+summary:     Adding a line in the temporary copy</code></pre>
+<p>This shows us that our repository currently has two heads. Looking at the graph of our log with <code>hg log --graph</code> or <code>hg log -G</code> may be more informative:</p>
+<pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">hg</span> log -G</code></pre>
+<pre class="output"><code>o  changeset:   6:721158ca243d
+|  tag:         tip
+|  parent:      4:2e9c23a9090d
+|  user:        Vlad Dracula &lt;vlad@tran.sylvan.ia&gt;
+|  date:        Sun May 18 12:40:33 2014 -0400
+|  summary:     Adding a line in our home copy
+|
+| @  changeset:   5:9f82bc5a1e80
+|/   user:        Vlad Dracula &lt;vlad@tran.sylvan.ia&gt;
+|    date:        Sun May 18 12:41:10 2014 -0400
+|    summary:     Adding a line in the temporary copy
+|
+o  changeset:   4:2e9c23a9090d
+|  user:        Vlad Dracula &lt;vlad@tran.sylvan.ia&gt;
+|  date:        Sun May 18 12:29:08 2014 -0400
+|  summary:     Some notes about Pluto
+|
+o  changeset:   3:4f37bac61e73
+|  user:        Vlad Dracula &lt;vlad@tran.sylvan.ia&gt;
+|  date:        Sun May 18 12:25:57 2014 -0400
+|  summary:     Add the ignore file
+|</code></pre>
+<p>With the graph, we can see more details at a glance. The <code>@</code> marker shows the commit we’re currently standing on, <code>5:9f82bc5a1e80</code>. We have just pulled changeset <code>6:721158ca243d</code>, which added a head to our clone, because it was also based off <code>4:2e9c23a9090d</code>. Herein lies the potential conflict, since two different changesets branched off from the same starting commit.</p>
+<p>It is important to note something about revision numbers here (the <code>5</code> and the <code>6</code> before the <code>:</code>). The same commits may have different revision numbers in different clones. These revision numbers are assigned in the order that a clone acquires new commits. On the other hand, the identifiers (<code>9f82bc5a1e80</code> and <code>721158ca243d</code> in this case) uniquely identify the changeset no matter in which clone it is. When we communicate with other people, it is important to use identifiers. When we work alone, however, we may use revision numbers as a convenience that is local to a clone.</p>
+<p>Let us now proceed to resolve this situation by merging the two heads. To do that we’ll use the <a href="http://kdiff3.sourceforge.net/"><code>kdiff3</code></a> merge tool which gives us an interface that makes it easier to understand what it happening.</p>
+<pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">hg</span> merge --tool=kdiff3</code></pre>
+<pre class="output"><code>merging mars.txt</code></pre>
+<p>It may take a few seconds for Mercurial to pass the necessary information to <code>kdiff3</code>, but soon you should see a window that looks like this:</p>
+<div class="figure">
+<img src="fig/hg-kdiff3-conflict-windows.png" alt="Kdiff3 on Windows" /><p class="caption">Kdiff3 on Windows</p>
+</div>
+<p>The pane labelled <code>base</code> refers to how this file looked like at revision <code>4</code>, where our conflicting revisions <code>5</code> and <code>6</code> are based on. Since we were standing on <code>5</code> when we started the merge, that is the pane labelled <code>local</code>. We’re attempting to merge this with revision <code>6</code>, which is labelled <code>other</code>. kdiff3 has buttons for moving from one conflict to another. In this case, there is only one conflict. At each conflict we can select either the <code>local</code> or the <code>other</code> change or to write something completely different in the result at the bottom.</p>
+<p>It is now up to us to edit this file to reconcile the changes. We can do anything we want: keep the change in this branch, keep the change made in the other, write something new to replace both, or get rid of the change entirely. Let’s resolve the conflict so it looks like this:</p>
+<div class="figure">
+<img src="fig/hg-kdiff3-conflict-windows-resolved.png" alt="Resolving on Windows" /><p class="caption">Resolving on Windows</p>
+</div>
+<p>Once we’ve finished merging, let us inspect the working directory before we finalize the merge:</p>
+<pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">hg</span> summary</code></pre>
+<pre class="output"><code>parent: 5:9f82bc5a1e80
+ Adding a line in the temporary copy
+parent: 6:721158ca243d tip
+ Adding a line in our home copy
+branch: default
+commit: 1 modified (merge)
+update: (current)</code></pre>
+<p>This tells us that right now our working directory is in a merge state. We see that the working directory has two parents, and one file is about to get merged.</p>
+<p>Let us look at the graph again:</p>
+<pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">hg</span> log -G</code></pre>
+<pre class="output"><code>@  changeset:   6:721158ca243d
+|  tag:         tip
+|  parent:      4:2e9c23a9090d
+|  user:        Vlad Dracula &lt;vlad@tran.sylvan.ia&gt;
+|  date:        Sun May 18 12:40:33 2014 -0400
+|  summary:     Adding a line in our home copy
+|
+| @  changeset:   5:9f82bc5a1e80
+|/   user:        Vlad Dracula &lt;vlad@tran.sylvan.ia&gt;
+|    date:        Sun May 18 12:41:10 2014 -0400
+|    summary:     Adding a line in the temporary copy
+|
+o  changeset:   4:2e9c23a9090d
+|  user:        Vlad Dracula &lt;vlad@tran.sylvan.ia&gt;
+|  date:        Sun May 18 12:29:08 2014 -0400
+|  summary:     Some notes about Pluto
+|
+o  changeset:   3:4f37bac61e73
+|  user:        Vlad Dracula &lt;vlad@tran.sylvan.ia&gt;
+|  date:        Sun May 18 12:25:57 2014 -0400
+|  summary:     Add the ignore file
+|</code></pre>
+<p>The <code>@</code> marker is now at <em>two</em> locations at once. This indicates that our working directory is in a merge state. Let us finalise this merge:</p>
+<pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">hg</span> commit -m <span class="st">&quot;Merging changes from Bitbucket&quot;</span></code></pre>
+<p>Our repositories now look like this:</p>
+<div class="figure">
+<img src="fig/hg-after-second-conflicting-change.svg" alt="After Making Second (Conflicting) Change" /><p class="caption">After Making Second (Conflicting) Change</p>
+</div>
+<p>or in terms of the graph,</p>
+<pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">hg</span> log -G</code></pre>
+<pre class="output"><code>@    changeset:   7:84eea3b489a6
+|\   tag:         tip
+| |  parent:      5:9f82bc5a1e80
+| |  parent:      6:721158ca243d
+| |  user:        Vlad Dracula &lt;vlad@tran.sylvan.ia&gt;
+| |  date:        Sun May 18 21:33:11 2014 -0400
+| |  summary:     Merging changes from Bitbucket
+| |
+| o  changeset:   6:721158ca243d
+| |  parent:      4:2e9c23a9090d
+| |  user:        Vlad Dracula &lt;vlad@tran.sylvan.ia&gt;
+| |  date:        Sun May 18 12:40:33 2014 -0400
+| |  summary:     Adding a line in our home copy
+| |
+o |  changeset:   5:9f82bc5a1e80
+|/   user:        Vlad Dracula &lt;vlad@tran.sylvan.ia&gt;
+|    date:        Sun May 18 12:41:10 2014 -0400
+|    summary:     Adding a line in the temporary copy
+|
+o  changeset:   4:2e9c23a9090d
+|  user:        Vlad Dracula &lt;vlad@tran.sylvan.ia&gt;
+|  date:        Sun May 18 12:29:08 2014 -0400
+|  summary:     Some notes about Pluto
+|</code></pre>
+<p>so we push our changes to Bitbucket:</p>
+<pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">hg</span> push</code></pre>
+<pre class="output"><code>pushing to https://bitbucket.org/vlad/planets
+searching for changes
+adding changesets
+adding manifests
+adding file changes
+added 2 changesets with 2 changes to 1 files</code></pre>
+<p>to get this:</p>
+<div class="figure">
+<img src="fig/hg-after-merging.svg" alt="After Merging Changes Locally" /><p class="caption">After Merging Changes Locally</p>
+</div>
+<p>Mercurial keeps track of what we’ve merged with what, so we don’t have to fix things by hand again if we switch back to the repository in our home directory and pull from Bitbucket:</p>
+<pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">cd</span> ~/planets
+$ <span class="kw">hg</span> pull</code></pre>
+<pre class="output"><code>pulling from https://bitbucket.org/vlad/planets
+searching for changes
+adding changesets
+adding manifests
+adding file changes
+added 2 changesets with 2 changes to 1 files
+(run &#39;hg update&#39; to get a working copy)</code></pre>
+<p>This only pulled new changes into our history, but did not touch our files. After we run <code>hg update</code> to update the files to the new changes,</p>
+<pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">hg</span> update</code></pre>
+<pre class="output"><code>1 files updated, 0 files merged, 0 files removed, 0 files unresolved</code></pre>
+<p>we get the merged file:</p>
+<pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">cat</span> mars.txt</code></pre>
+<pre class="output"><code>Cold and dry, but everything is my favorite color
+The two moons may be a problem for Wolfman
+But the Mummy will appreciate the lack of humidity
+We removed the conflict on this line</code></pre>
+<p>We don’t need to merge again because Bitbucket knows someone has already done that.</p>
+<p>Version control’s ability to merge conflicting changes is another reason users tend to divide their programs and papers into multiple files instead of storing everything in one large file. There’s another benefit too: whenever there are repeated conflicts in a particular file, the version control system is essentially trying to tell its users that they ought to clarify who’s responsible for what, or find a way to divide the work up differently.</p>
+<div id="solving-conflicts-that-you-create" class="challenge panel panel-success">
+<div class="panel-heading">
+<h2><span class="glyphicon glyphicon-pencil"></span>Solving Conflicts that You Create</h2>
+</div>
+<div class="panel-body">
+<p>Clone the repository created by your instructor. Add a new file to it, and modify an existing file (your instructor will tell you which one). When asked by your instructor, pull her changes from the repository to create a conflict, then resolve it.</p>
+</div>
+</div>
+<div id="conflicts-on-non-text-files" class="challenge panel panel-success">
+<div class="panel-heading">
+<h2><span class="glyphicon glyphicon-pencil"></span>Conflicts on Non-Text Files</h2>
+</div>
+<div class="panel-body">
+<p>What does hg do when there is a conflict in an image or some other non-textual file that is stored in version control?</p>
+</div>
+</div>
+        </div>
+      </div>
+      </article>
+      <div class="footer">
+        <a class="label swc-blue-bg" href="http://software-carpentry.org">Software Carpentry</a>
+        <a class="label swc-blue-bg" href="http://xwmooc.net">xwMOOC</a>
+        <a class="label swc-blue-bg" href="https://github.com/statkclee/swcarpentry-version-5-3-new">한글소스</a>
+        <a class="label swc-blue-bg" href="https://github.com/swcarpentry">영문소스</a>
+        <a class="label swc-blue-bg" href="mailto:i@xwmooc.net">Contact</a>
+        <a class="label swc-blue-bg" href="http://statkclee.github.io/swcarpentry-version-5-3-new/LICENSE.html">License</a>
+      </div>
+    </div>
+    <!-- Javascript placed at the end of the document so the pages load faster -->
+    <script src="http://software-carpentry.org/v5/js/jquery-1.9.1.min.js"></script>
+    <script src="css/bootstrap/bootstrap-js/bootstrap.js"></script>
+  </body>
+</html>

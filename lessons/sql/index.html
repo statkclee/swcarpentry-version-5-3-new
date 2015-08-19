@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="generator" content="pandoc">
+    <title>xwMOOC: Databases and SQL</title>
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" type="text/css" href="http://statkclee.github.io/swcarpentry-version-5-3-new/css/bootstrap/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="http://statkclee.github.io/swcarpentry-version-5-3-new/css/bootstrap/bootstrap-theme.css" />
+    <link rel="stylesheet" type="text/css" href="http://statkclee.github.io/swcarpentry-version-5-3-new/css/swc.css" />
+    <link rel="alternate" type="application/rss+xml" title="Software Carpentry Blog" href="http://software-carpentry.org/feed.xml"/>
+    <meta charset="UTF-8" />
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body class="lesson">
+    <div class="container card">
+      <div class="banner">
+        <a href="http://software-carpentry.org" title="Software Carpentry">
+          <img alt="Software Carpentry banner" src="http://statkclee.github.io/swcarpentry-version-5-3-new/img/software-carpentry-banner.png" />
+      <!--     <img alt="xwMOOC banner" src="img/xwMOOC.png" />
+       -->  </a>
+      </div>
+      <article>
+      <div class="row">
+        <div class="col-md-10 col-md-offset-1">
+          <h1 class="title">Databases and SQL</h1>
+          
+<p>In the late 1920s and early 1930s, William Dyer, Frank Pabodie, and Valentina Roerich led expeditions to the <a href="http://en.wikipedia.org/wiki/Pole_of_inaccessibility">Pole of Inaccessibility</a> in the South Pacific, and then onward to Antarctica. Two years ago, their expeditions were found in a storage locker at Miskatonic University. We have scanned and <a href="https://en.wikipedia.org/wiki/Optical_character_recognition">OCR</a>’d the data they contain, and we now want to store that information in a way that will make search and analysis easy.</p>
+<p>Three common options for storage are text files, spreadsheets, and databases. Text files are easiest to create, and work well with version control, but then we would have to build search and analysis tools ourselves. Spreadsheets are good for doing simple analyses, but they don’t handle large or complex data sets well. Databases, however, include powerful tools for search and analysis, and can handle large, complex data sets. These lessons will show how to use a database to explore the expeditions’ data.</p>
+<div id="prerequisites" class="prereq panel panel-warning">
+<div class="panel-heading">
+<h2><span class="glyphicon glyphicon-education"></span>Prerequisites</h2>
+</div>
+<div class="panel-body">
+<p>If SQLite is being used from the shell, learners will need to be able to navigate directories and run simple commands from the command line. If a GUI such as the Firefox SQLite plugin is being used, learners will need to know how to install browser plugins (and have permission to do so).</p>
+<p>Check <a href="discussion.html">Discussion</a> for database setup instructions</p>
+</div>
+</div>
+<h2 id="topics">Topics</h2>
+<ol style="list-style-type: decimal">
+<li><a href="01-select.html">Selecting Data</a></li>
+<li><a href="02-sort-dup.html">Sorting and Removing Duplicates</a></li>
+<li><a href="03-filter.html">Filtering</a></li>
+<li><a href="04-calc.html">Calculating New Values</a></li>
+<li><a href="05-null.html">Missing Data</a></li>
+<li><a href="06-agg.html">Aggregation</a></li>
+<li><a href="07-join.html">Combining Data</a></li>
+<li><a href="08-hygiene.html">Data Hygiene</a></li>
+<li><a href="09-create.html">Creating and Modifying Data</a></li>
+<li><a href="10-prog.html">Programming with Databases</a></li>
+</ol>
+<h2 id="other-resources">Other Resources</h2>
+<ul>
+<li><a href="reference.html">Reference</a></li>
+<li><a href="discussion.html">Discussion</a></li>
+<li><a href="instructors.html">Instructor’s Guide</a></li>
+</ul>
+        </div>
+      </div>
+      </article>
+      <div class="footer">
+        <a class="label swc-blue-bg" href="http://software-carpentry.org">Software Carpentry</a>
+        <a class="label swc-blue-bg" href="http://xwmooc.net">xwMOOC</a>
+        <a class="label swc-blue-bg" href="https://github.com/statkclee/swcarpentry-version-5-3-new">한글소스</a>
+        <a class="label swc-blue-bg" href="https://github.com/swcarpentry">영문소스</a>
+        <a class="label swc-blue-bg" href="mailto:i@xwmooc.net">Contact</a>
+        <a class="label swc-blue-bg" href="http://statkclee.github.io/swcarpentry-version-5-3-new/LICENSE.html">License</a>
+      </div>
+    </div>
+    <!-- Javascript placed at the end of the document so the pages load faster -->
+    <script src="http://software-carpentry.org/v5/js/jquery-1.9.1.min.js"></script>
+    <script src="css/bootstrap/bootstrap-js/bootstrap.js"></script>
+  </body>
+</html>

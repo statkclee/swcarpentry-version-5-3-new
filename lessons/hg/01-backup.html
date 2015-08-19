@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="generator" content="pandoc">
+    <title>xwMOOC: Version Control with Mercurial</title>
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" type="text/css" href="http://statkclee.github.io/swcarpentry-version-5-3-new/css/bootstrap/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="http://statkclee.github.io/swcarpentry-version-5-3-new/css/bootstrap/bootstrap-theme.css" />
+    <link rel="stylesheet" type="text/css" href="http://statkclee.github.io/swcarpentry-version-5-3-new/css/swc.css" />
+    <link rel="alternate" type="application/rss+xml" title="Software Carpentry Blog" href="http://software-carpentry.org/feed.xml"/>
+    <meta charset="UTF-8" />
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body class="lesson">
+    <div class="container card">
+      <div class="banner">
+        <a href="http://software-carpentry.org" title="Software Carpentry">
+          <img alt="Software Carpentry banner" src="http://statkclee.github.io/swcarpentry-version-5-3-new/img/software-carpentry-banner.png" />
+      <!--     <img alt="xwMOOC banner" src="img/xwMOOC.png" />
+       -->  </a>
+      </div>
+      <article>
+      <div class="row">
+        <div class="col-md-10 col-md-offset-1">
+          <h1 class="title">Version Control with Mercurial</h1>
+          <h2 class="subtitle">A Better Kind of Backup</h2>
+<div id="learning-objectives" class="objectives panel panel-warning">
+<div class="panel-heading">
+<h2><span class="glyphicon glyphicon-certificate"></span>Learning Objectives</h2>
+</div>
+<div class="panel-body">
+<ul>
+<li>Explain which initialization and configuration steps are required once per machine, and which are required once per repository.</li>
+<li>Add files to Mercurial’s collection of tracked files.</li>
+<li>Go through the modify-commit cycle for single and multiple files and explain where information is stored before and after the commit.</li>
+<li>Identify and use Mercurial revision numbers and changeset identifiers.</li>
+<li>Compare files with old versions of themselves.</li>
+<li>Restore old versions of files.</li>
+<li>Configure Mercurial to ignore specific files, and explain why it is sometimes useful to do so.</li>
+</ul>
+</div>
+</div>
+<p>We’ll start by exploring how version control can be used to keep track of what one person did and when. Even if you aren’t collaborating with other people, version control is much better for that than this:</p>
+<div class="figure">
+<img src="fig/phd101212s.gif" alt="Piled Higher and Deeper by Jorge Cham (http://www.phdcomics.com - used with permission)" /><p class="caption">Piled Higher and Deeper by Jorge Cham (http://www.phdcomics.com - used with permission)</p>
+</div>
+<h2 id="setting-up">Setting Up</h2>
+<p>The first time we use Mercurial on a new machine, we need to configure a few things.</p>
+<p>Dracula sets up his new Windows laptop by using his editor to create a new file called <code>%USERPROFILE%\Mercurial.ini</code> (that’s spelled <code>$USERPROFILE/Mercurial.ini</code> if you are in <code>gitbash</code>) containing the following lines:</p>
+<pre><code>[ui]
+username = Vlad Dracula &lt;vlad@tran.sylvan.ia&gt;
+editor = nano
+
+[extensions]
+color =
+
+[color]
+mode = win32</code></pre>
+<p>Wolfman has both a Mac laptop and a Linux one and he uses his editor to create a new file called <code>~/.hgrc</code> on both of those machines with the same contents:</p>
+<pre><code>[ui]
+username = Jack Wolfman &lt;jack@cali.forn.ia&gt;
+editor = nano
+
+[extensions]
+color =</code></pre>
+<p>(Please use your own name and email address instead of Dracula’s or Wolfman’s, and make sure you choose an editor that’s actually on your system, such as <code>notepad</code> on Windows.)</p>
+<p>Those configuration file settings tell Mercurial:</p>
+<ul>
+<li>our name and email address,</li>
+<li>what our favorite text editor is, and</li>
+<li>to colorize output.</li>
+</ul>
+<p>The fact that these settings are in the Mercurial configuration file in our home directory means that they will be used for every project on this machine. This bit of setup only needs to be done once.</p>
+<h2 id="creating-a-repository">Creating a Repository</h2>
+<p>Once Mercurial is configured, we can start using it. Let’s create a directory for our work:</p>
+<pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">mkdir</span> planets
+$ <span class="kw">cd</span> planets</code></pre>
+<p>and tell Mercurial to make it a <strong>repository</strong> — a place where Mercurial can store old versions of our files:</p>
+<pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">hg</span> init</code></pre>
+<p>Mercurial commands are written <code>hg verb</code>, where <code>verb</code> is what we actually want it to do.</p>
+<p>If we use <code>ls</code> to show the directory’s contents, it appears that nothing has changed:</p>
+<pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">ls</span></code></pre>
+<p>But if we add the <code>-a</code> flag to show everything, we can see that Mercurial has created a hidden directory called <code>.hg</code>:</p>
+<pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">ls</span> -a</code></pre>
+<pre class="output"><code>.   ..  .hg</code></pre>
+<p>Mercurial stores information about the project in this special sub-directory. If we ever delete it, we will lose the project’s history.</p>
+<p>We can check that everything is set up correctly by asking Mercurial to verify the structure of our repository:</p>
+<pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">hg</span> verify</code></pre>
+<pre class="output"><code>checking changesets
+checking manifests
+crosschecking files in changesets and manifests
+checking files
+0 files, 0 changesets, 0 total revisions</code></pre>
+<h2 id="tracking-changes-to-files">Tracking Changes to Files</h2>
+<p>Let’s create a file called <code>mars.txt</code> that contains some notes about the Red Planet’s suitability as a base. (We’ll use <code>nano</code> to edit the file; you can use whatever editor you like. In particular, this does not have to be the editor that you set in your Mercurial global configuration earlier.)</p>
+<pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">nano</span> mars.txt</code></pre>
+<p><code>mars.txt</code> has now been created and it contains a single line:</p>
+<pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">ls</span></code></pre>
+<pre class="output"><code>mars.txt</code></pre>
+<pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">cat</span> mars.txt</code></pre>
+<pre class="output"><code>Cold and dry, but everything is my favorite color</code></pre>
+<p>We can ask Mercurial to tell us what it knows about the files in our project with the <code>hg status</code> command. Mercurial tells us that it’s noticed the new file:</p>
+<pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">hg</span> status</code></pre>
+<pre class="output"><code>? mars.txt</code></pre>
+<p>The <code>?</code> at the beginning of the line means that Mercurial isn’t keeping track of the file. We can tell Mercurial that it should do so using <code>hg add</code>:</p>
+<pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">hg</span> add mars.txt</code></pre>
+<p>and then check that the right thing happened:</p>
+<pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">hg</span> status</code></pre>
+<pre class="output"><code>A mars.txt</code></pre>
+<p>Mercurial now knows that it’s supposed to keep track of <code>mars.txt</code>, but it hasn’t yet recorded any changes for posterity as a commit. To get it to do that, we need to run one more command:</p>
+<pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">hg</span> commit -m <span class="st">&quot;Starting to think about Mars&quot;</span></code></pre>
+<p>When we run <code>hg commit</code>, Mercurial takes the file we have told it about by using <code>hg add</code> and stores a copy permanently inside the special <code>.hg</code> directory.</p>
+<p>We use the <code>-m</code> flag (for “message”) to record a comment that will help us remember later on what we did and why. If we just run <code>hg commit</code> without the <code>-m</code> option, Mercurial will launch <code>nano</code> (or whatever other editor we configured at the start) so that we can write a longer message.</p>
+<p>If we run <code>hg status</code> now:</p>
+<pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">hg</span> status</code></pre>
+<p>we get no output because everything is up to date.</p>
+<p>If we want to know what we’ve done recently, we can ask Mercurial to show us the project’s history using <code>hg log</code>:</p>
+<pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">hg</span> log</code></pre>
+<pre class="output"><code>changeset:   0:72ab25fa99a1
+tag:         tip
+user:        Vlad Dracula &lt;vlad@tran.sylvan.ia&gt;
+date:        Mon Apr 14 14:41:58 2014 -0400
+summary:     Starting to think about Mars
+</code></pre>
+<p><code>hg log</code> lists all changes committed to a repository, starting with the most recent. The listing for each <strong>changeset</strong> includes:</p>
+<ul>
+<li>the changeset’s revision number and identifier (<code>0</code> and <code>72ab25fa99a1</code> in this case, but your identifier will likely be different),</li>
+<li>its tags (more about tags later),</li>
+<li>the changeset’s author,</li>
+<li>when it was created,</li>
+<li>and the log message Mercurial was given when the changeset was created.</li>
+</ul>
+<p>The revision number is a convenient integer shorthand for the hexidecimal identifier.</p>
+<div id="where-are-my-changes" class="callout panel panel-info">
+<div class="panel-heading">
+<h2><span class="glyphicon glyphicon-pushpin"></span>Where Are My Changes?</h2>
+</div>
+<div class="panel-body">
+<p>If we run <code>ls</code> at this point, we will still see just one file called <code>mars.txt</code>. That’s because Mercurial saves information about files’ history in the special <code>.hg</code> directory mentioned earlier so that our filesystem doesn’t become cluttered (and so that we can’t accidentally edit or delete an old version).</p>
+</div>
+</div>
+<h2 id="changing-a-file">Changing a File</h2>
+<p>Now suppose Dracula adds more information to the file. (Again, we’ll edit with <code>nano</code> and then <code>cat</code> the file to show its contents; you may use a different editor, and don’t need to <code>cat</code>.)</p>
+<pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">nano</span> mars.txt
+$ <span class="kw">cat</span> mars.txt</code></pre>
+<pre class="output"><code>Cold and dry, but everything is my favorite color
+The two moons may be a problem for Wolfman</code></pre>
+<p>When we run <code>hg status</code> now, it tells us that a file it already knows about has been modified:</p>
+<pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">hg</span> status</code></pre>
+<pre class="output"><code>M mars.txt</code></pre>
+<p>The <code>M</code> at the beginning of the line means that Mercurial has noticed that we have modified the <code>mars.txt</code> file.</p>
+<p>We can double-check our work using <code>hg diff</code>, which shows us the differences between the current state of the file and the most recently committed version:</p>
+<pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">hg</span> diff</code></pre>
+<pre class="output"><code>diff -r 72ab25fa99a1 mars.txt
+--- a/mars.txt  Mon Apr 14 14:41:58 2014 -0400
++++ b/mars.txt  Mon Apr 14 15:48:53 2014 -0400
+@@ -1,1 +1,2 @@
+ Cold and dry, but everything is my favorite color
++The two moons may be a problem for Wolfman</code></pre>
+<p>The output is cryptic because it is actually a series of commands for tools like editors and <code>patch</code> telling them how to reconstruct one file given the other. If we can break it down into pieces:</p>
+<ol style="list-style-type: decimal">
+<li>The first line tells us that Mercurial is using the Unix <code>diff</code> command to compare the last committed and new versions of the file.</li>
+<li>The next two lines show us the time stamps of the 2 versions of the file that are being compared.</li>
+<li>The remaining lines show us the actual differences and the lines on which they occur. In particular, the <code>+</code> markers in the first column show where we are adding lines.</li>
+</ol>
+<p>Let’s commit our change:</p>
+<pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">hg</span> commit -m <span class="st">&quot;Concerns about Mars&#39;s moons on my furry friend&quot;</span></code></pre>
+<p>Checking our project’s status:</p>
+<pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">hg</span> status</code></pre>
+<p>we get no output because all of the changes have been committed. We can see our commits with <code>hg log</code>:</p>
+<pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">hg</span> log</code></pre>
+<pre class="output"><code>changeset:   1:9b3b65e50b8c
+tag:         tip
+user:        Vlad Dracula &lt;vlad@tran.sylvan.ia&gt;
+date:        Mon Apr 14 15:52:43 2014 -0400
+summary:     Concerns about Mars&#39;s moons on my furry friend
+
+changeset:   0:72ab25fa99a1
+user:        Vlad Dracula &lt;vlad@tran.sylvan.ia&gt;
+date:        Mon Apr 14 14:41:58 2014 -0400
+summary:     Starting to think about Mars
+</code></pre>
+<p>Of course sometimes we may not want to commit everything at once. For example, suppose we’re adding a few citations to our supervisor’s work to our thesis. We might want to commit those additions, and the corresponding addition to the bibliography, but <em>not</em> commit the work we’re doing on the conclusions (which we haven’t finished yet). To handle that, simply do two (or more) separate commits, listing the names of the files to be included in each commit in the <code>hg commit</code> command:</p>
+<pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">hg</span> commit -m <span class="st">&quot;Cite Frankenstein(2010) and Frankenstein, etal(2011).&quot;</span> methods.txt biblio.txt
+<span class="kw">...</span>
+<span class="kw">&lt;later&gt;</span>
+<span class="kw">...</span>
+$ <span class="kw">hg</span> commit conclusions.txt -m <span class="st">&quot;Update conclusions re: sunlight.&quot;</span></code></pre>
+<p>Notice that the list of file names can come before or after the commit comment in the <code>hg commit</code> command.</p>
+<p>Let’s add another line to the file for practice and to make our revision history more interesting:</p>
+<pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">nano</span> mars.txt
+$ <span class="kw">cat</span> mars.txt</code></pre>
+<pre class="output"><code>Cold and dry, but everything is my favorite color
+The two moons may be a problem for Wolfman
+But the Mummy will appreciate the lack of humidity</code></pre>
+<pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">hg</span> diff</code></pre>
+<pre class="output"><code>diff -r 9b3b65e50b8c mars.txt
+--- a/mars.txt  Mon Apr 14 15:52:43 2014 -0400
++++ b/mars.txt  Mon Apr 14 16:33:57 2014 -0400
+@@ -1,2 +1,3 @@
+ Cold and dry, but everything is my favorite color
+ The two moons may be a problem for Wolfman
++But the Mummy will appreciate the lack of humidity</code></pre>
+<p>So far, so good: we’ve added one line to the end of the file (shown with a <code>+</code> in the first column). Now, let’s commit our changes:</p>
+<pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">hg</span> commit mars.txt -m <span class="st">&quot;Thoughts about the climate&quot;</span></code></pre>
+<p>and look at the history of what we’ve done so far:</p>
+<pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">hg</span> log</code></pre>
+<pre class="output"><code>changeset:   2:43da31fb96ec
+tag:         tip
+user:        Vlad Dracula &lt;vlad@tran.sylvan.ia&gt;
+date:        Mon Apr 14 16:37:12 2014 -0400
+summary:     Thoughts about the climate
+
+changeset:   1:9b3b65e50b8c
+user:        Vlad Dracula &lt;vlad@tran.sylvan.ia&gt;
+date:        Mon Apr 14 15:52:43 2014 -0400
+summary:     Concerns about Mars&#39;s moons on my furry friend
+
+changeset:   0:72ab25fa99a1
+user:        Vlad Dracula &lt;vlad@tran.sylvan.ia&gt;
+date:        Mon Apr 14 14:41:58 2014 -0400
+summary:     Starting to think about Mars
+</code></pre>
+<div id="bio-repository" class="challenge panel panel-success">
+<div class="panel-heading">
+<h2><span class="glyphicon glyphicon-pencil"></span><code>bio</code> Repository</h2>
+</div>
+<div class="panel-body">
+<p>Create a new Mercurial repository on your computer called <code>bio</code>. Write a three-line biography for yourself in a file called <code>me.txt</code>, commit your changes, then modify one line, add a fourth line, and display the differences between the file’s updated state and its original state.</p>
+</div>
+</div>
+<h2 id="exploring-history">Exploring History</h2>
+<p>If we want to see what we changed when, we use <code>hg diff</code> again, but refer to old versions using the <code>--rev</code> or <code>-r</code> flag and the revision numbers:</p>
+<pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">hg</span> diff --rev 1:2 mars.txt</code></pre>
+<pre class="output"><code>diff -r 9b3b65e50b8c mars.txt
+--- a/mars.txt  Mon Apr 14 15:52:43 2014 -0400
++++ b/mars.txt  Mon Apr 14 16:44:06 2014 -0400
+@@ -1,2 +1,3 @@
+ Cold and dry, but everything is my favorite color
+ The two moons may be a problem for Wolfman
++But the Mummy will appreciate the lack of humidity</code></pre>
+<pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">hg</span> diff -r 0:2 mars.txt</code></pre>
+<pre class="output"><code>diff -r 72ab25fa99a1 -r 43da31fb96ec mars.txt
+--- a/mars.txt  Mon Apr 14 14:41:58 2014 -0400
++++ b/mars.txt  Mon Apr 14 16:37:12 2014 -0400
+@@ -1,1 +1,3 @@
+ Cold and dry, but everything is my favorite color
++The two moons may be a problem for Wolfman
++But the Mummy will appreciate the lack of humidity</code></pre>
+<p>In this way, we build up a chain of revisions. The most recent end of the chain is the changeset with the highest revision number.</p>
+<p>To see what changes were made between a particular changeset and its parent use the <code>--change</code> or <code>-c</code> flag:</p>
+<pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">hg</span> diff --change 1</code></pre>
+<pre class="output"><code>diff -r 72ab25fa99a1 -r 9b3b65e50b8c mars.txt
+--- a/mars.txt  Mon Apr 14 14:41:58 2014 -0400
++++ b/mars.txt  Mon Apr 14 15:52:43 2014 -0400
+@@ -1,1 +1,2 @@
+ Cold and dry, but everything is my favorite color
++The two moons may be a problem for Wolfman</code></pre>
+<h2 id="recovering-old-versions">Recovering Old Versions</h2>
+<p>All right: we can save changes to files and see what we’ve changed—how can we restore older versions of things? Let’s suppose we accidentally overwrite our file:</p>
+<pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">nano</span> mars.txt
+$ <span class="kw">cat</span> mars.txt</code></pre>
+<pre class="output"><code>We will need to manufacture our own oxygen</code></pre>
+<p><code>hg status</code> now tells us that the file has been changed, but those changes haven’t been committed:</p>
+<pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">hg</span> status</code></pre>
+<pre class="output"><code>M mars.txt</code></pre>
+<p>We can put things back the way they were by using <code>hg revert</code>:</p>
+<pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">hg</span> revert mars.txt
+$ <span class="kw">cat</span> mars.txt</code></pre>
+<pre class="output"><code>Cold and dry, but everything is my favorite color
+The two moons may be a problem for Wolfman
+But the Mummy will appreciate the lack of humidity</code></pre>
+<p>As you might guess from its name, <code>hg revert</code> reverts to (i.e., restores) an old version of a file. In this case, we’re telling Mercurial that we want to recover the last committed version of the file. If we want to go back even further, we can use the <code>--rev</code> or <code>-r</code> flag and a revision number instead:</p>
+<pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">hg</span> revert --rev 0 mars.txt</code></pre>
+<p>Mercurial really doesn’t want to cause us to lose our work, so it defaults to making a backup when we use <code>hg revert</code>:</p>
+<pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">hg</span> status</code></pre>
+<pre class="output"><code>? mars.txt.orig</code></pre>
+<p>The <code>mars.txt.orig</code> file is a copy of <code>mars.txt</code> as it stood before the <code>hg revert</code> command. It’s not tracked by Mercurial. It’s just there in case we made a mistake and really didn’t want to revert, or in case there’s some content from before the revert that we decide that we really do want to copy into <code>mars.txt</code>. When we’re sure that we don’t need <code>*.orig</code> files we can just go ahead and delete them. If we really don’t want Mercurial to create <code>*.orig</code> files when we use <code>hg revert</code>, we can use the <code>--no-backup</code> option, its short version <code>-C</code> or add</p>
+<pre><code>[alias]
+revert = revert --no-backup</code></pre>
+<p>to your <code>~/.hgrc</code> (or<code>%USERPROFILE%\Mercurial.ini</code> if you are using Windows).</p>
+<p>The fact that files can be reverted one by one tends to change the way people organize their work. If everything is in one large document, it’s hard (but not impossible) to undo changes to the introduction without also undoing changes made later to the conclusion. If the introduction and conclusion are stored in separate files, on the other hand, moving backward and forward in time becomes much easier.</p>
+<h2 id="ignoring-things">Ignoring Things</h2>
+<p>What if we have files that we do not want Mercurial to track for us, like backup files created by our editor or intermediate files created during data analysis? Let’s create a few dummy files:</p>
+<pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">mkdir</span> results
+$ <span class="kw">touch</span> a.dat b.dat c.dat results/a.out results/b.out</code></pre>
+<p>and see what Mercurial says:</p>
+<pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">hg</span> status</code></pre>
+<pre class="output"><code>? a.dat
+? b.dat
+? c.dat
+? results/a.out
+? results/b.out</code></pre>
+<p>Putting these files under version control would be a waste of disk space. What’s worse, having them all listed could distract us from changes that actually matter, so let’s tell Mercurial to ignore them.</p>
+<p>We do this by creating a file in the root directory of our project called <code>.hgignore</code>.</p>
+<pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">nano</span> .hgignore
+$ <span class="kw">cat</span> .hgignore</code></pre>
+<pre class="output"><code>syntax: glob
+*.dat
+results/</code></pre>
+<p>The <code>syntax: glob</code> line at the top of the file tells Mercurial that we want to use the same kind of pattern matching that we use in the shell (which is known as “globbing” and the patterns as “globs”). The second line tells Mercurial to ignore any file whose name ends in <code>.dat</code> and the third one to ignore everything in the <code>results</code> directory. (If any of these files were already being tracked, Mercurial would continue to track them.)</p>
+<p>Once we have created this file, the output of <code>hg status</code> is much cleaner:</p>
+<pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">hg</span> status</code></pre>
+<pre class="output"><code>? .hgignore</code></pre>
+<p>The only thing Mercurial notices now is the newly-created <code>.hgignore</code> file. You might think we wouldn’t want to track it, but everyone we’re sharing our repository with will probably want to ignore the same things that we’re ignoring. Let’s add and commit <code>.hgignore</code>:</p>
+<pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">hg</span> add .hgignore
+$ <span class="kw">hg</span> commit -m <span class="st">&quot;Add the ignore file&quot;</span>
+$ <span class="kw">hg</span> status</code></pre>
+<p>We can also always see the status of ignored files if we want:</p>
+<pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">hg</span> status --ignored</code></pre>
+<pre class="output"><code>I a.dat
+I b.dat
+I c.dat
+I results/a.out
+I results/b.out</code></pre>
+        </div>
+      </div>
+      </article>
+      <div class="footer">
+        <a class="label swc-blue-bg" href="http://software-carpentry.org">Software Carpentry</a>
+        <a class="label swc-blue-bg" href="http://xwmooc.net">xwMOOC</a>
+        <a class="label swc-blue-bg" href="https://github.com/statkclee/swcarpentry-version-5-3-new">한글소스</a>
+        <a class="label swc-blue-bg" href="https://github.com/swcarpentry">영문소스</a>
+        <a class="label swc-blue-bg" href="mailto:i@xwmooc.net">Contact</a>
+        <a class="label swc-blue-bg" href="http://statkclee.github.io/swcarpentry-version-5-3-new/LICENSE.html">License</a>
+      </div>
+    </div>
+    <!-- Javascript placed at the end of the document so the pages load faster -->
+    <script src="http://software-carpentry.org/v5/js/jquery-1.9.1.min.js"></script>
+    <script src="css/bootstrap/bootstrap-js/bootstrap.js"></script>
+  </body>
+</html>

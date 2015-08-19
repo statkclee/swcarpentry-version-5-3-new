@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="generator" content="pandoc">
+    <title>xwMOOC: Version Control with Mercurial</title>
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" type="text/css" href="http://statkclee.github.io/swcarpentry-version-5-3-new/css/bootstrap/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="http://statkclee.github.io/swcarpentry-version-5-3-new/css/bootstrap/bootstrap-theme.css" />
+    <link rel="stylesheet" type="text/css" href="http://statkclee.github.io/swcarpentry-version-5-3-new/css/swc.css" />
+    <link rel="alternate" type="application/rss+xml" title="Software Carpentry Blog" href="http://software-carpentry.org/feed.xml"/>
+    <meta charset="UTF-8" />
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body class="lesson">
+    <div class="container card">
+      <div class="banner">
+        <a href="http://software-carpentry.org" title="Software Carpentry">
+          <img alt="Software Carpentry banner" src="http://statkclee.github.io/swcarpentry-version-5-3-new/img/software-carpentry-banner.png" />
+      <!--     <img alt="xwMOOC banner" src="img/xwMOOC.png" />
+       -->  </a>
+      </div>
+      <article>
+      <div class="row">
+        <div class="col-md-10 col-md-offset-1">
+          <h1 class="title">Version Control with Mercurial</h1>
+          <h2 class="subtitle">Discussion</h2>
+<h2 id="frequently-asked-questions">Frequently Asked Questions</h2>
+<p>People often have questions about Mercurial beyond the scope of the core material. Students who have completed the rest of the lessons might find value in looking through the following topics.</p>
+<p>Note that since this material isn’t essential for basic Mercurial usage, it won’t be covered by the instructor.</p>
+<h2 id="more-advanced-mercurial-configuration">More Advanced Mercurial Configuration</h2>
+<p>In the <a href="01-backup.html#setting-up">Setting Up</a> section we edited a Mercurial configuration file in our home directory called <code>$USERPROFILE/Mercurial.ini</code> or <code>~/.hgrc</code>. You can quickly open that file for editing with the command <code>hg config --edit</code>.</p>
+<p>If you want to know more about the many configuration options available you can use <code>hg help config</code> or visit <a href="http://www.selenic.com/mercurial/hgrc.5.html">the Mercurial config documenttation</a>.</p>
+<p>One configuration option that can be useful is adding aliases. These are like shorcuts for longer <code>hg</code> commands. For example, if you want to create an <code>hg latest</code> command to show only the five most recent changesets, you can edit your config file with <code>hg config --edit</code> and add a section that looks like:</p>
+<pre class="sourceCode bash"><code class="sourceCode bash">[<span class="kw">aliases</span>]
+<span class="kw">latest</span> = log --limit 5</code></pre>
+<p>Each repository can also have its own configuration file stored at <code>.hg/hgrc</code>. That file is where the path to a remote location that the repo may have been cloned from is stored. You can open that file for editing with the command <code>hg config --local</code>.</p>
+<h2 id="non-text-files">Non-text Files</h2>
+<p>Recall when we discussed <a href="03-conflict.html">Conflicts</a> there was a challenge that asked:</p>
+<blockquote>
+<p>What does hg do when there is a conflict in an image or some other non-textual file that is stored in version control?</p>
+</blockquote>
+<p>We will now revisit this in more detail.</p>
+<p>Many people want to version control non-text files, such as images, PDFs and Microsoft Office or LibreOffice documents. It is true that Mercurial can handle these filetypes (which fall under the banner of “binary” file types). However, just because it <em>can</em> be done doesn’t mean it <em>should</em> be done.</p>
+<p>Much of Mercurial’s magic comes from being able to do line-by-line comparisons (“diffs”) between files. This is generally easy for programming source code and marked up text. For non-text files, a diff can usually only detect that the files have changed but can’t say how or where.</p>
+<p>This has various impacts on Mercurial’s performance and will make it difficult to compare different versions of your project.</p>
+<p>For a basic example to show the difference it makes, we’re going to go see what would have happened if Dracula had tried using outputs from a word processor instead of plain text.</p>
+<p>Create a new directory and go into it:</p>
+<pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">mkdir</span> planets-nontext
+$ <span class="kw">cd</span> planets-nontext</code></pre>
+<p>Use a program such as Microsoft Word or LibreOffice Writer to create a new document. Enter the same text that we began with before:</p>
+<pre class="output"><code>Cold and dry, but everything is my favorite color</code></pre>
+<p>Save the document into the <code>planets-nontext</code> directory with the name of <code>mars.doc</code>. Back in the terminal, run the usual commands for setting up a new Mercurial repository:</p>
+<pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">hg</span> init
+$ <span class="kw">hg</span> add mars.doc
+$ <span class="kw">hg</span> commit -m <span class="st">&quot;Starting to think about Mars&quot;</span></code></pre>
+<p>Then make the same changes to <code>mars.doc</code> that we (or Vlad) previously made to <code>mars.txt</code>.</p>
+<pre class="output"><code>Cold and dry, but everything is my favorite color
+The two moons may be a problem for Wolfman</code></pre>
+<p>Save and close the word processor. Now see what Git thinks of your changes:</p>
+<pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">hg</span> diff</code></pre>
+<pre class="output"><code>diff -r 0f3937fd3863 mars.doc
+Binary file mars.doc has changed</code></pre>
+<p>Compare this to the earlier <code>git diff</code> obtained when using text files:</p>
+<pre class="output"><code>diff -r 72ab25fa99a1 mars.txt
+--- a/mars.txt  Mon Apr 14 14:41:58 2014 -0400
++++ b/mars.txt  Mon Apr 14 15:48:53 2014 -0400
+@@ -1,1 +1,2 @@
+ Cold and dry, but everything is my favorite color
++The two moons may be a problem for Wolfman</code></pre>
+<p>Notice how plain text files give a much more informative diff. You can see exactly which lines changed and what the changes were.</p>
+<p>An uninformative <code>hg diff</code> is not the only consequence of using Mercurial on binary files. However, most of the other problems boil down to whether or not a good diff is possible.</p>
+<p>This isn’t to say you should <em>never</em> use Mercurial on binary files. A rule of thumb is that it’s okay if the binary file won’t change very often, and if it does change, you don’t care about merging in small differences between versions.</p>
+<p>Another thing to note about tracking binary files in Mercurial is that a new copy of the whole file is stored whenever a change to a binary file is committed. This can lead to the repository growing very large if the binary files are large, and/or numerous, and/or changed frequently.</p>
+<p>We’ve already seen how a word processed report will fail this test. An example that passes the test is a logo for your organization or project. Even though a logo will be stored in a binary format such as <code>jpg</code> or <code>png</code>, you can expect it will remain fairly static through the lifetime of your repository. On the rare occasion that branding does change, you will probably just want to replace the logo completely rather than merge little differences in.</p>
+        </div>
+      </div>
+      </article>
+      <div class="footer">
+        <a class="label swc-blue-bg" href="http://software-carpentry.org">Software Carpentry</a>
+        <a class="label swc-blue-bg" href="http://xwmooc.net">xwMOOC</a>
+        <a class="label swc-blue-bg" href="https://github.com/statkclee/swcarpentry-version-5-3-new">한글소스</a>
+        <a class="label swc-blue-bg" href="https://github.com/swcarpentry">영문소스</a>
+        <a class="label swc-blue-bg" href="mailto:i@xwmooc.net">Contact</a>
+        <a class="label swc-blue-bg" href="http://statkclee.github.io/swcarpentry-version-5-3-new/LICENSE.html">License</a>
+      </div>
+    </div>
+    <!-- Javascript placed at the end of the document so the pages load faster -->
+    <script src="http://software-carpentry.org/v5/js/jquery-1.9.1.min.js"></script>
+    <script src="css/bootstrap/bootstrap-js/bootstrap.js"></script>
+  </body>
+</html>

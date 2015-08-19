@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="generator" content="pandoc">
+    <title>xwMOOC: Version Control with Mercurial</title>
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" type="text/css" href="http://statkclee.github.io/swcarpentry-version-5-3-new/css/bootstrap/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="http://statkclee.github.io/swcarpentry-version-5-3-new/css/bootstrap/bootstrap-theme.css" />
+    <link rel="stylesheet" type="text/css" href="http://statkclee.github.io/swcarpentry-version-5-3-new/css/swc.css" />
+    <link rel="alternate" type="application/rss+xml" title="Software Carpentry Blog" href="http://software-carpentry.org/feed.xml"/>
+    <meta charset="UTF-8" />
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body class="lesson">
+    <div class="container card">
+      <div class="banner">
+        <a href="http://software-carpentry.org" title="Software Carpentry">
+          <img alt="Software Carpentry banner" src="http://statkclee.github.io/swcarpentry-version-5-3-new/img/software-carpentry-banner.png" />
+      <!--     <img alt="xwMOOC banner" src="img/xwMOOC.png" />
+       -->  </a>
+      </div>
+      <article>
+      <div class="row">
+        <div class="col-md-10 col-md-offset-1">
+          <h1 class="title">Version Control with Mercurial</h1>
+          <h2 class="subtitle">Reference</h2>
+<h2 id="a-better-kind-of-backup">A Better Kind of Backup</h2>
+<ul>
+<li>Create a <code>~/.hgrc</code> (or <code>%USERPROFILE%\Mercurial.ini</code> on Windows) to configure a user name, email address, editor, and other preferences once per machine.</li>
+<li><code>hg init</code> initializes a repository.</li>
+<li><code>hg status</code> shows the status of a repository.</li>
+<li>Files are stored in a project’s working directory (which users see), and the local repository (where committed snapshots are permanently recorded).</li>
+<li><code>hg add</code> tells Mercurial to track files.</li>
+<li><code>hg commit</code> creates a snapshot of the changes to 1 or more files in the local repository.</li>
+<li>Always write a log message when committing changes.</li>
+<li><code>hg diff</code> displays differences between revisions.</li>
+<li><code>hg revert</code> recovers old versions of files.</li>
+<li>The <code>.hgignore</code> file tells Mercurial what files to ignore.</li>
+</ul>
+<h2 id="collaborating">Collaborating</h2>
+<ul>
+<li>A local Mercurial repository can be connected to one or more remote repositories.</li>
+<li>Use the HTTPS protocol to connect to remote repositories until you have learned how to set up SSH.</li>
+<li><code>hg push</code> copies changes from a local repository to a remote repository.</li>
+<li><code>hg pull</code> copies changes from a remote repository to a local repository.</li>
+<li><code>hg clone</code> copies a remote repository to create a local repository with a remote called <code>default</code> automatically set up.</li>
+</ul>
+<h2 id="conflicts">Conflicts</h2>
+<ul>
+<li>Conflicts occur when two or more people change the same file(s) at the same time.</li>
+<li>The version control system does not allow people to blindly overwrite each other’s changes. Instead, it highlights conflicts so that they can be resolved.</li>
+</ul>
+<h2 id="open-science">Open Science</h2>
+<ul>
+<li>Open scientific work is more useful and more highly cited than closed.</li>
+<li>People who incorporate GPL’d software into theirs must make theirs open; most other open licenses do not require this.</li>
+<li>The Creative Commons family of licenses allow people to mix and match requirements and restrictions on attribution, creation of derivative works, further sharing, and commercialization.</li>
+<li>People who are not lawyers should not try to write licenses from scratch.</li>
+<li>Projects can be hosted on university servers, on personal domains, or on public forges.</li>
+<li>Rules regarding intellectual property and storage of sensitive information apply no matter where code and data are hosted.</li>
+</ul>
+<h2 id="glossary">Glossary</h2>
+<dl>
+<dt><span id="changeset">changeset</span></dt>
+<dd>A group of changes to one or more files that are <a href="#commit">committed</a> to a <a href="#version-control">version control</a> <a href="#repository">repository</a> in a single operation.
+</dd>
+<dt><span id="clone">clone</span></dt>
+<dd>To make a local copy of a <a href="#repository">version control repository</a>. See also: <a href="#fork">fork</a>.
+</dd>
+<dt><span id="commit">commit</span></dt>
+<dd>To record the current state of a set of files (a <a href="#changeset">changeset</a>) in a <a href="#version-control">version control</a> <a href="#repository">repository</a>.
+</dd>
+<dt><span id="conflict">conflict</span></dt>
+<dd>A change made by one user of a <a href="#version-control">version control system</a> that is incompatible with changes made by other users. Helping users <a href="#resolve">resolve</a> conflicts is one of version control’s major tasks.
+</dd>
+<dt><span id="fork">fork</span></dt>
+<dd>To <a href="#clone">clone</a> a <a href="#version-control">version control</a> <a href="#repository">repository</a> on a server.
+</dd>
+<dt><span id="http">HTTP</span></dt>
+<dd>The Hypertext Transfer <a href="#protocol">Protocol</a> used for sharing web pages and other data on the World Wide Web.
+</dd>
+<dt><span id="infective-license">infective license</span></dt>
+<dd>A license such as the <a href="http://opensource.org/licenses/GPL-3.0">GPL</a> that compels people who incorporate material into their own work to place similar sharing requirements on it.
+</dd>
+<dt><span id="internet-service-provider-(isp)">Internet Service Provider (ISP)</span></dt>
+<dd>A company or other organization that provides access to the Internet. Many ISPs provide hosting services for websites.
+</dd>
+<dt><span id="merge">merge</span></dt>
+<dd>To reconcile two sets of changes to a <a href="#repository">repository</a>.
+</dd>
+<dt><span id="protocol">protocol</span></dt>
+<dd>A set of rules that define how one computer communicates with another. Common protocols on the Internet include <a href="#http">HTTP</a> and <a href="#ssh">SSH</a>.
+</dd>
+<dt><span id="remote">remote</span></dt>
+<dd>A version control <a href="#repository">repository</a> other than the current one that the current one is somehow connected to or mirroring.
+</dd>
+<dt><span id="repository">repository</span></dt>
+<dd>A storage area where a <a href="#version-control">version control</a> system stores old <a href="#revision">revisions</a> of files and information about who changed what, when.
+</dd>
+<dt><span id="resolve">resolve</span></dt>
+<dd>To eliminate the <a href="#conflict">conflicts</a> between two or more incompatible changes to a file or set of files being managed by a <a href="#version-control">version control</a> system.
+</dd>
+<dt><span id="revision">revision</span></dt>
+<dd>A recorded state of a <a href="#version-control">version control</a> <a href="#repository">repository</a>.
+</dd>
+<dt><span id="ssh">SSH</span></dt>
+<dd>The Secure Shell <a href="#protocol">protocol</a> used for secure communication between computers.
+</dd>
+<dt><span id="timestamp">timestamp</span></dt>
+<dd>A record of when a particular event occurred.
+</dd>
+<dt><span id="version-control">version control</span></dt>
+<dd>A tool for managing changes to a set of files. Each set of changes creates a new <a href="#revision">revision</a> of the files; the version control system allows users to recover old revisions reliably, and helps manage conflicting changes made by different users.
+</dd>
+</dl>
+        </div>
+      </div>
+      </article>
+      <div class="footer">
+        <a class="label swc-blue-bg" href="http://software-carpentry.org">Software Carpentry</a>
+        <a class="label swc-blue-bg" href="http://xwmooc.net">xwMOOC</a>
+        <a class="label swc-blue-bg" href="https://github.com/statkclee/swcarpentry-version-5-3-new">한글소스</a>
+        <a class="label swc-blue-bg" href="https://github.com/swcarpentry">영문소스</a>
+        <a class="label swc-blue-bg" href="mailto:i@xwmooc.net">Contact</a>
+        <a class="label swc-blue-bg" href="http://statkclee.github.io/swcarpentry-version-5-3-new/LICENSE.html">License</a>
+      </div>
+    </div>
+    <!-- Javascript placed at the end of the document so the pages load faster -->
+    <script src="http://software-carpentry.org/v5/js/jquery-1.9.1.min.js"></script>
+    <script src="css/bootstrap/bootstrap-js/bootstrap.js"></script>
+  </body>
+</html>
