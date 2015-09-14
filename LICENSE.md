@@ -5,7 +5,10 @@ title: 라이선스
 
 ## 한국어 라이선스
 
-영어 원문과 동일한 라이선스가 [xwMOOC](http://xwmooc.net/)에서 작업한 한국어 번역 저작물에도 적용됩니다.
+[xwMOOC](http://xwmooc.net/)에서 작업한 한국어 번역 저작물에는 크리에이티브 커먼즈 라이선스가 적용됩니다. 달리 명시하지 않는한 소프트웨어 카펜트리 작업과 관련된 모든 것은 다음 라이선스를 준수합니다.
+
+![CC-BY-SA](img/cc-by-sa.png)
+
 
 ## 소프트웨어 카펜트리(Software Carpentry)
 
@@ -37,15 +40,6 @@ title: 라이선스
 이 라이선스는 아무런 보증을 하지 않습니다. 또한 저작물의 이용에 필요한 모든 허락이 포함되어 있지 않을 수도 있습니다. 
 예를 들어 퍼블리시티권, 프라이버시, 인격권 등 다른 권리에 따른 제한이 있을 수 있습니다.
 
-## 영어 라이선스
-
-Unless otherwise specified, everything in this repository is covered by the following licence:
-
-![CC-BY-SA](img/cc-by-sa.png)
-
-Minecraft Pi by the [Raspberry Pi Foundation](https://www.raspberrypi.org/) is licenced under a [Creative Commons Attribution 4.0 International Licence](http://creativecommons.org/licenses/by-sa/4.0/).
-
-Based on a work at [https://github.com/raspberrypilearning/getting-started-with-minecraft-pi](https://github.com/raspberrypilearning/getting-started-with-minecraft-pi)
 
 ## 상표권(Trademark)
 
