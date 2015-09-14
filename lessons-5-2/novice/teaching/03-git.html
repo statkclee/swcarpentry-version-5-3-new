@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="generator" content="pandoc">
+    <title>xwMOOC: Git을 사용한 버젼 관리</title>
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" type="text/css" href="http://statkclee.github.io/swcarpentry-version-5-3-new/css/bootstrap/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="http://statkclee.github.io/swcarpentry-version-5-3-new/css/bootstrap/bootstrap-theme.css" />
+    <link rel="stylesheet" type="text/css" href="http://statkclee.github.io/swcarpentry-version-5-3-new/css/swc.css" />
+    <link rel="alternate" type="application/rss+xml" title="Software Carpentry Blog" href="http://software-carpentry.org/feed.xml"/>
+    <meta charset="UTF-8" />
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body class="lesson">
+    <div class="container card">
+      <div class="banner">
+        <a href="http://software-carpentry.org" title="Software Carpentry">
+          <img alt="Software Carpentry banner" src="http://statkclee.github.io/swcarpentry-version-5-3-new/img/software-carpentry-banner.png" />
+      <!--     <img alt="xwMOOC banner" src="img/xwMOOC.png" />
+       -->  </a>
+      </div>
+      <article>
+      <div class="row">
+        <div class="col-md-10 col-md-offset-1">
+          <h1 class="title">Git을 사용한 버젼 관리</h1>
+          
+<p>버젼 제어(version control) 및 관리는 소프트웨어 카펜트리에서 가르치는 가장 중요한 주제다. 하지만 명백하게도 Git는 가장 복잡한 도구인 것은 사실이다. 하지만, 현재시점에서 GitHub가 쭉 펼쳐진 공개 소프트웨어 공장들을 지배하고 있다. 그래서, 초보자가 버젼 제어 및 관리를 할 수 있고 스스로 학습을 할 수 있도록 느끼도록 도와주는 것이 목표다.</p>
+<p>이러한 이유로 소프트웨어 카펜트리 초급 과정에서 브랜칭(branching)을 가르치지 않는다. 전문 지식을 소유한 사용자 손끝에는 강력한 도구지만, 버젼 제어 아이디어를 처음 접하는 사람에게는 엄청난 인지적 부담인 것도 사실이다. 또한 초보자에게 해쉬(hash)도 다루지 않고, 객체를 커밋하는 것도 다루지 않는다. 하지만, 대신에 버젼 제어를 통해서 다음을 할 수 있다는 확신을 전달한다.</p>
+<ol style="list-style-type: decimal">
+<li>더 좋은 백업 시스템(backup system);</li>
+<li>더 좋은 드랍박스 (Dropbox);</li>
+<li>전자우편을 주고 받는 것보다 협업하는 더 좋은 방법.</li>
+</ol>
+<p>라이선스에 대한 교재를 마지막으로 수업을 종료한다. 왜냐하면,</p>
+<ol style="list-style-type: decimal">
+<li>파일을 저장하기 위해서 GitHub같은 공개 서비스를 사용하면서 자연스럽게 누가 무엇을 소유하는지에 대한 질문, 사용권에 대한 질문이 자연스럽게 나오기 때문이다.</li>
+<li>종종 한 두시간의 초초한 수업다음에 이러한 토론이 숨돌릴 기회를 학습 참여자에게 준다.</li>
+</ol>
+<h4 id="강의-노트">강의 노트</h4>
+<ul>
+<li><p>수업 시작 <em>전에</em> 네트워크가 정상적으로 동작하는지 확인하라.</p></li>
+<li><p>보고 따라하기 실습에 들어가기 전에 버젼 제어가 무엇인지에 대한 개요를 5분정도 공유한다. 대부분의 학습참여자는 전자우편으로 파일을 주고 받기를 반복하면서 논문을 작성하거나, 지난 밤에 작업한 파일이 USB에 담아 놓고 깜빡하고 식당 테이블 위에 놓고 와서 자전거를 타고 다시 연구실로 돌아온 경험이 있다. 강사는 디렉토리 이름으로 농담을 만들어 공유할 수 있다. 예를 들어, “최종 버젼”, “수정 최종 버젼”, “최종 버젼 검토자 3개 의견 반영”, “정말 최종 버젼”, “이제 정말 최종 버젼”. 이러한 농담을 말들어서 공유하는 동기는 더 나은 방법으로 작업 산출물을 백업하여 보관하고, 더 나은 협업 방식이 버젼 제어를 통해 가능하기다는 보여주기 위해서다.</p></li>
+<li><p>쉘 다음에 버젼 제어 수업을 통상 진행한다. 그렇게 함으로써 학습 참여자의 이름을 모을 수 있고, 학습 참여자 ID와 비밀번호로 공유할 수 있는 저장소를 생성한다.</p></li>
+<li><p>만약 학습 참여자가 SSH를 능숙하게 사용할만큼 고급 사용자라면, 비밀번호 대신에 SSH를 사용하여 GitHub 인증을 진행해도 된다고 말한다. 하지만, 수업중에 SSH 인증을 기본으로 설정하지는 말라. 시간이 오래 걸리고, 수업의 핵심 아이디어에서 벗어나 논점을 흐릴 수 있다.</p></li>
+<li><p>실습지침을 전달할 때, 학습 참여자가 편집하는 파일이 무엇인지, 사용자 ID가 무엇인지 명확히 하라. 학습 참여자가 본인 것이 아닌 강사의 파일을 편집하거나, 커밋할 때 강사의 ID와 비밀번호를 사용하는 경우가 비일비재하다.</p></li>
+<li><p><em>언제</em> 학습 참여자가 파일을 편집할지 명확히 한다. 강사가 편집중인 파일을 학습 참여자가 편집하거나, 강사가 버젼 제어를 설명하는 동안에 변경사항을 커밋하는 경우도 흔다다. 그래서 강사가 파일을 커밋할 때 충돌(conflict)이 발생한다.</p></li>
+<li><p>만약 학습 참여자가 윈도우를 사용하고 있다면, 다른 라인 엔딩(line ending)을 가진 파일과 병합(merge)할 때 이슈가 있다. (모든 사람이 유닉스에서 작업을 하더라도, 편집기 마다 파일 마지막 라인에 새줄(newline)을 넣을 수도 넣지 않을 수도 있다.) 이 이슈를 설명하는 시간을 갖는다. 왜냐하면, 거의 확실하게 학습 참여자가 다시 이러한 이슈에 봉착할 것이기 때문이다.</p></li>
+<li><p>여기서 Git GUI를 사용하지 하지 않는다. 왜냐하면 주요 3개 운영체제에 쉽게 설치되고 안정적으로 운영되는 Git GUI 클라이언트를 아직 찾지 못했다. 그리고 학습 참여자가 무슨 명령어가 실행되는지 이해했으면 한다. 즉 말하고자 하는 바는… 강사가 적절한 시점에 수업중에 데스크탑 GUI를 시연하고 학습 참여자에게 <a href="http://git-scm.com/downloads/guis">Git GUI 웹페이지</a>를 안내한다.</p></li>
+<li><p><a href="https://sourcegear.com/diffmerge/">DiffMerge</a> 같은 도구를 통해서 시각적으로 diff/merge를 보여줘야 한다.</p></li>
+<li><p>적당한 시점에, 버젼관리 도구로 CVS, Subversion, Mercurial 보다 Git를 가르치는 이유를 설명한다. 주된 이유는 GiHub의 대중적인 인지도가 높기 때문이다. CVS 와 Subversion은 이제 레거시 시스템으로 간주되고 있으며, Mercurial은 현재 시점에서 과학에서 널리 사용되고 있지 않다.</p></li>
+</ul>
+<h4 id="텍스트-편집기-text-editor">텍스트 편집기 (Text Editor)</h4>
+<p>이번 수업에서 텍스트 편집기로 강사나 학습 참여자 모두 <code>nano</code> 사용을 권장한다. 왜냐하면,</p>
+<ul>
+<li>주요 3개 운영체제에서 모두 동작한다.</li>
+<li>쉘 내부에서 동작한다. (윈도우 전환하는 것은 학습 참여자에게 혼동을 줄 수 있다.)</li>
+<li>윈도우 하단에 단축키 도움말이 있다.</li>
+</ul>
+<p>만약 학습 참여자가 익숙한 다른 텍스트 편집기가 있다면 그것을 사용하도록 환경 설정 단계에서 지침을 준다. 다음은 다른 편집기를 사용할 때 문제를 해결하는데 도움이 될 수 있는 몇가지 팁(tip)이다.</p>
+<h5 id="gedit">Gedit</h5>
+<p>만약 Gedit 윈도우를 학습 참여자가 열었다면, 다음 오류 발생을 피하기 위해서</p>
+<pre><code>$ git commit</code></pre>
+<p>{:class=“in”} <sub>~</sub> Aborting commit due to empty commit message. <sub>~</sub> {:class=“err”}</p>
+<p>다음을 사용하여야 한다.</p>
+<pre><code>$ git config --global core.editor &#39;gedit --standalone&#39;</code></pre>
+<p>{:class=“in”}</p>
+        </div>
+      </div>
+      </article>
+      <div class="footer">
+        <a class="label swc-blue-bg" href="http://software-carpentry.org">Software Carpentry</a>
+        <a class="label swc-blue-bg" href="http://xwmooc.net">xwMOOC</a>
+        <a class="label swc-blue-bg" href="https://github.com/statkclee/swcarpentry-version-5-3-new">한글소스</a>
+        <a class="label swc-blue-bg" href="https://github.com/swcarpentry">영문소스</a>
+        <a class="label swc-blue-bg" href="mailto:i@xwmooc.net">Contact</a>
+        <a class="label swc-blue-bg" href="http://statkclee.github.io/swcarpentry-version-5-3-new/LICENSE.html">License</a>
+      </div>
+    </div>
+    <!-- Javascript placed at the end of the document so the pages load faster -->
+    <script src="http://software-carpentry.org/v5/js/jquery-1.9.1.min.js"></script>
+    <script src="css/bootstrap/bootstrap-js/bootstrap.js"></script>
+  </body>
+</html>

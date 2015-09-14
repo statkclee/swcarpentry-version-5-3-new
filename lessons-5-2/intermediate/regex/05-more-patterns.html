@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="generator" content="pandoc">
+    <title>xwMOOC: More Patterns</title>
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" type="text/css" href="http://statkclee.github.io/swcarpentry-version-5-3-new/css/bootstrap/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="http://statkclee.github.io/swcarpentry-version-5-3-new/css/bootstrap/bootstrap-theme.css" />
+    <link rel="stylesheet" type="text/css" href="http://statkclee.github.io/swcarpentry-version-5-3-new/css/swc.css" />
+    <link rel="alternate" type="application/rss+xml" title="Software Carpentry Blog" href="http://software-carpentry.org/feed.xml"/>
+    <meta charset="UTF-8" />
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body class="lesson">
+    <div class="container card">
+      <div class="banner">
+        <a href="http://software-carpentry.org" title="Software Carpentry">
+          <img alt="Software Carpentry banner" src="http://statkclee.github.io/swcarpentry-version-5-3-new/img/software-carpentry-banner.png" />
+      <!--     <img alt="xwMOOC banner" src="img/xwMOOC.png" />
+       -->  </a>
+      </div>
+      <article>
+      <div class="row">
+        <div class="col-md-10 col-md-offset-1">
+          <h1 class="title">More Patterns</h1>
+          
+<p>Now that we know how regular expressions work, let’s have a look at Notebook #3:</p>
+<pre><code>Date Site Evil(mvad)
+May 29 2010 (Hartnell) 1029.3
+May 30 2010 (Hartnell) 1119.2
+June 1 2010 (Hartnell) 1319.4
+May 29 2010 (Troughton) 1419.3
+May 30 2010 (Troughton) 1420.0
+June 1 2010 (Troughton) 1419.8
+⋮            ⋮           ⋮</code></pre>
+<p>It has the date as three fields, the site name in parentheses, and then the reading. We know how to parse dates in this format, and the fields are separated by spaces, but how do we match those parentheses? The parentheses we have seen in regular expressions so far haven’t matched characters: they have created groups.</p>
+<p>The way we solve this problem—i.e., the way we match a literal left parenthesis ‘(’ or right parenthesis ‘)’—is to put a backslash in front of it. This is another example of an <a href="../../gloss.html#escape-sequence">escape sequence</a>: just as we use the two-character sequence <code>'\t'</code> in a string to represent a literal tab character, we use the two-character sequence <code>'\('</code> or <code>'\)'</code> in a regular expression to match the literal character ‘(’ or ‘)’.</p>
+<p>To get that backslash ‘\’ into the string, though, we have to escape <em>it</em> by doubling it up. This has nothing to do with regular expressions: it is Python’s rule for putting backslashes in strings. The string representation of the regular expression that matches an opening parenthesis is therefore <code>'\\('</code>. This can be confusing, so let’s take a look at the various layers involved.</p>
+<p>Our program text—i.e., what’s stored in our <code>.py</code> file—looks like this:</p>
+<pre><code># find &#39;()&#39; in text
+m = re.search(&#39;\\(\\)&#39;, text)
+    ⋮    ⋮    ⋮</code></pre>
+<p>The file has two backslashes, an open parenthesis, two backslashes, and a close parenthesis inside quotes. When Python reads that file in, it turns the two-character sequence ‘\\’ into a single ‘\’ character in the string in memory. This is the first round of escaping. When we hand that string ‘\(\)’ to the regular expression library, it takes the two-character sequence ‘\(’ and turns it into an arc in the finite state machine that matches a literal parenthesis:</p>
+<div class="figure">
+<img src="../img/regexp/fsm-match-parentheses.png" alt="More complex FSM" /><p class="caption">More complex FSM</p>
+</div>
+<p>Turning this over, if we want a literal parenthesis to be matched, we have to give the regular expression library ‘\(’. If we want to put ‘\(’ in a string, we have to write it in our <code>.py</code> file as ‘\\(’.</p>
+<p>With that out of the way, let’s go back to Notebook #3. The regular expression that will extract the five fields from each record is <code>'([A-Z][a-z]+) ([0-9]{1,2}) ([0-9]{4}) \\((.+)\\) (.+)'</code>, which is:</p>
+<ul>
+<li>a word beginning with an upper-case character followed by one or more lower-case characters,</li>
+<li>a space,</li>
+<li>one or two digits,</li>
+<li>another space,</li>
+<li>four digits,</li>
+<li>another space,</li>
+<li>some stuff involving backslashes and parentheses,</li>
+<li>another space,</li>
+<li>and then one or more characters making up the reading.</li>
+</ul>
+<p>If we take a closer look at that “stuff”, <code>'\\('</code> and <code>'\\)'</code> are how we write the regular expressions that match a literal open parenthesis ‘(’ or close parenthesis ‘)’ character in our data. The two inner parentheses that don’t have backslashes in front of them create a group, but don’t match any literal characters. We create that group so that we can save the results of the match (in this case, the name of the site).</p>
+<p>Now that we know how to work with backslahes in regular expressions, we can take a look at character sets that come up frequently enough to deserve their own abbreviations. If we use <code>'\d'</code> in a regular expression it matches the digits 0 through 9. If we use <code>'\s'</code>, it matches the whitespace characters, space, tab, carriage return, and newline. <code>'\w'</code> matches word characters; it’s equivalent to the set <code>'[A-Za-z0-9_]'</code> of upper-case letters, lower-case letters, digits, and the underscore. (It’s actually the set of characters that can appear in a variable name in a programming language like C or Python.) Again, in order to write one of these regular expressions as a string in Python, we have to double the backslashes.</p>
+<p>Now that we’ve seen these character sets, we can take a look at an example of really bad design. The regular expression <code>'\S'</code> means “non-space characters”, i.e., everything that <em>isn’t</em> a space, tab, carriage return, or newline. That might seem to contradict what we said in the previous paragraph, but if we look closely, that’s an upper-case ‘S’, not a lower-case ‘s’.</p>
+<p>Similarly, and equally unfortunately, <code>'\W'</code> means “non-word characters” provided it’s an upper-case ‘W’. Upper- and lower-case ‘S’ and ‘W’ look very similar, particularly when there aren’t other characters right next to them to give context. This means that these sequences are very easy to mis-type and mis-read. Everyone eventually uses an upper-case ‘S’ when they meant to use a lower-case ‘s’ or vice versa, and then wastes a few hours trying to track it down. So please, if you’re ever designing a library that’s likely to be widely used, try to choose a notation that doesn’t make mistakes this easy.</p>
+<p>Along with the abbreviations for character sets, the regular expression library recognizes a few shortcuts for things that aren’t actual characters. For example, if we put a circumflex <code>'^'</code> at the start of a pattern, it matches the beginning of the input text. (Note that there’s no backslash in front of it.) This means that the pattern <code>'^mask'</code> will match the text <code>'mask size'</code>, because the letters ‘mask’ come at the start of the string, but will <em>not</em> match the word <code>'unmask'</code>. Going to the other end, if dollar sign <code>'$'</code> is the last character in the pattern, it matches the end of the line rather than a literal ‘$’, so ‘temp$’ will match the string ‘high-temp’, but not the string ‘temperature’.</p>
+<h3 id="regular-expressions-and-newlines">Regular Expressions and Newlines</h3>
+<p>The full rule is slightly more complicated. By default, regular expressions act as if newline characters were the ends of records. For example, the <code>'.'</code> pattern matches everything <em>except</em> a newline. This normally doesn’t matter, since most I/O routines return one line of text at a time, but if we read a whole file into a single string, then try to match across line boundaries, we may not get the behavior we expect. We can use the <code>MULTILINE</code> option in our matches to prevent this; please see the regular expression documentation for details.</p>
+<p>A third shortcut that’s often useful is <code>'\b'</code>, often called “break”. It doesn’t match any characters; instead, it matches the boundary between word and non-word characters (where “word” means upper and lower case characters, digits, and the underscore). For example, the regular expression <code>'\bage\b'</code> will match the string <code>'the age of'</code> because there’s a non-word character right before the ‘a’ and another non-word character right after the ‘e’. That same pattern will not match the word <code>'phage'</code> because there isn’t a transition from non-word to word characters, or vice versa, right before the ‘a’. And remember: to get that regular expression int our program, we have to escape the backslashes using <code>'\\bage\\b'</code>.</p>
+        </div>
+      </div>
+      </article>
+      <div class="footer">
+        <a class="label swc-blue-bg" href="http://software-carpentry.org">Software Carpentry</a>
+        <a class="label swc-blue-bg" href="http://xwmooc.net">xwMOOC</a>
+        <a class="label swc-blue-bg" href="https://github.com/statkclee/swcarpentry-version-5-3-new">한글소스</a>
+        <a class="label swc-blue-bg" href="https://github.com/swcarpentry">영문소스</a>
+        <a class="label swc-blue-bg" href="mailto:i@xwmooc.net">Contact</a>
+        <a class="label swc-blue-bg" href="http://statkclee.github.io/swcarpentry-version-5-3-new/LICENSE.html">License</a>
+      </div>
+    </div>
+    <!-- Javascript placed at the end of the document so the pages load faster -->
+    <script src="http://software-carpentry.org/v5/js/jquery-1.9.1.min.js"></script>
+    <script src="css/bootstrap/bootstrap-js/bootstrap.js"></script>
+  </body>
+</html>

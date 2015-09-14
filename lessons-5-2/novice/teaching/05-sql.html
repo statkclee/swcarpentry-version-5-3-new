@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="generator" content="pandoc">
+    <title>xwMOOC: 데이터베이스와 SQL 사용하기</title>
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" type="text/css" href="http://statkclee.github.io/swcarpentry-version-5-3-new/css/bootstrap/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="http://statkclee.github.io/swcarpentry-version-5-3-new/css/bootstrap/bootstrap-theme.css" />
+    <link rel="stylesheet" type="text/css" href="http://statkclee.github.io/swcarpentry-version-5-3-new/css/swc.css" />
+    <link rel="alternate" type="application/rss+xml" title="Software Carpentry Blog" href="http://software-carpentry.org/feed.xml"/>
+    <meta charset="UTF-8" />
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body class="lesson">
+    <div class="container card">
+      <div class="banner">
+        <a href="http://software-carpentry.org" title="Software Carpentry">
+          <img alt="Software Carpentry banner" src="http://statkclee.github.io/swcarpentry-version-5-3-new/img/software-carpentry-banner.png" />
+      <!--     <img alt="xwMOOC banner" src="img/xwMOOC.png" />
+       -->  </a>
+      </div>
+      <article>
+      <div class="row">
+        <div class="col-md-10 col-md-offset-1">
+          <h1 class="title">데이터베이스와 SQL 사용하기</h1>
+          
+<p>관계형 데이터베이스(Relational Databases)가 상업적으로 활발하게 사용되는 것만큼 과학에서는 폭넓게 사용되고 있지 않다. 하지만, 여전히 복잡한 구조를 가진 대용량 데이터를 저장하는 일반적인 방법이다. 데이터 자체는 데이터베이스에 없을 수 있지만, 메타데이터(metadata)는 관계형 데이터베이스에 있을 수 있다. 예를 들어, 기상 데이터 자체는 디스크 파일에 저장될 수 있다. 하지만, 관측 시점과 장소에 관한 데이터, 데이터 범위 등등의 정보는 데이터베이스에 저장되어 언제라도 과학자가 원하는 것을 쉽게 찾게 해야 한다.</p>
+<h4 id="강의-노트">강의 노트</h4>
+<ul>
+<li><p>“결측 데이터”까지 첫 몇 섹션은 매우 빨리 진행된다. Null 값이 다뤄질 때 진행속도가 대체로 늦춰진다. 왜냐하면 학습 참여자가 이 시점까지 쭉 달려와서 상당히 많은 학습을 했기 때문이다. 조인(join)을 다루는 동안에는 <em>정말</em> 진도가 늦어진다. 하지만 전체 학습에서 조인이 핵심 아이디어다. 학습 참여자가 조인으로 어떻게 사용되는지 눈으로 확인할 때만 기본키와 참조 무결성 같은 중요한 아이디가 의미있게 다가온다. 필요하다면 다양한 사례를 통해서 서너번 반복할 가치가 있다.</p></li>
+<li><p>데이터를 생성하고 변경, 데이터베이스로 프로그래밍하는 부분은 시간이 부족하다면 넘어갈 수 있다. 둘 중에서 학습 참여자가 어떻게 데이터를 추가하는지에 대해서 가장 관심을 갖는 것처럼 보인다. (2~3분이면 간단히 시연을 보여주기에 충분하다.)</p></li>
+<li><p>전반적으로 간단한 실습을 각 주제별로 진행된다고 가정하면 데이터베이스 수업은 약 3시간 정도 소요된다.</p></li>
+<li><p>단순 계산은 스프레드쉬트에서 사실 좀더 쉽게 할 수 있다. 데이터베이스를 사용하는 장점은 필터링과 조인이 필요할 때 명백해진다. 강사가 4개 데이터베이스 테이블을 하나의 단일 쉬트로 구성된 정보를 학습 참여자에게 제시한다. 그리고 “1931년 평균 방사선 측정값은 얼마인가?” 라는 질문에 답을 데이터베이스와 스프레드쉬트로 시범을 통해 보여준다.</p></li>
+<li>몇몇 학습 참여자(즉, 관계형 모델를 사용하지 않는 학습 참여자)는 NoSQL 데이터베이스가 다음으로 중요한 기술이라고 들었을지도 모른다. 그리고 왜 소프트웨어 카펜트리는 NoSQL을 가르치지 않는지 물어볼 수 있다. 소프트웨어 카펜트리 대답은 다음과 같다.
+<ol style="list-style-type: decimal">
+<li>관계형 데이터베이스가 NoSQL 데이터베이스보다 훨씬 더 광범위하게 사용되고 있다.</li>
+<li>다른 어떤 것보다도 관계형 데이터베이스에 더 많은 경험을 있다. 그래서 무엇을 가르칠 것인가 어떻게 가르칠 것인가에 더 나은 아이디가 많다.</li>
+<li>관계형 데이터베이스가 서로 다른 것처럼, NoSQL도 서로 다르다. NoSQL이 현재 경쟁중에 있어서 선도하는 것이 나올 때 까지는 <em>어떤</em> NoSQL 데이터베이스를 가르쳐야 하는지 명확하지 않다.</li>
+</ol></li>
+<li><p>노트북을 로딩하기 전에 <code>sqlite3 survey.db &lt; gen-survey-database.sql</code> 실행해서 설문 데이터베이스를 다시 생성하라.</p></li>
+</ul>
+        </div>
+      </div>
+      </article>
+      <div class="footer">
+        <a class="label swc-blue-bg" href="http://software-carpentry.org">Software Carpentry</a>
+        <a class="label swc-blue-bg" href="http://xwmooc.net">xwMOOC</a>
+        <a class="label swc-blue-bg" href="https://github.com/statkclee/swcarpentry-version-5-3-new">한글소스</a>
+        <a class="label swc-blue-bg" href="https://github.com/swcarpentry">영문소스</a>
+        <a class="label swc-blue-bg" href="mailto:i@xwmooc.net">Contact</a>
+        <a class="label swc-blue-bg" href="http://statkclee.github.io/swcarpentry-version-5-3-new/LICENSE.html">License</a>
+      </div>
+    </div>
+    <!-- Javascript placed at the end of the document so the pages load faster -->
+    <script src="http://software-carpentry.org/v5/js/jquery-1.9.1.min.js"></script>
+    <script src="css/bootstrap/bootstrap-js/bootstrap.js"></script>
+  </body>
+</html>

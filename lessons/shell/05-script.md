@@ -4,7 +4,7 @@ title: The Unix Shell
 subtitle: Shell Scripts
 minutes: 15
 ---
-> ## Learning Objectives
+> ## Learning Objectives {.objectives}
 >
 > *   Write a shell script that runs a command or series of commands for a fixed set of files.
 > *   Run a shell script from the command line.
@@ -21,9 +21,9 @@ these are actually small programs.
 
 Let's start by going back to `molecules/` and putting the following line in the file `middle.sh`:
 
-~~~ {.input}
+~~~ {.bash}
 $ cd molecules
-$ cat middle.sh
+$ nano middle.sh
 ~~~
 ~~~
 head -15 octane.pdb | tail -5
@@ -38,7 +38,7 @@ Once we have saved the file,
 we can ask the shell to execute the commands it contains.
 Our shell is called `bash`, so we run the following command:
 
-~~~ {.input}
+~~~ {.bash}
 $ bash middle.sh
 ~~~
 ~~~ {.output}
@@ -70,18 +70,18 @@ but that would probably take longer than just retyping the command.
 Instead,
 let's edit `middle.sh` and replace `octane.pdb` with a special variable called `$1`:
 
-~~~ {.input}
+~~~ {.bash}
 $ cat middle.sh
 ~~~
 ~~~ {.output}
-head -20 "$1" | tail -5
+head -15 "$1" | tail -5
 ~~~
 
 Inside a shell script,
 `$1` means "the first filename (or other parameter) on the command line".
 We can now run our script like this:
 
-~~~ {.input}
+~~~ {.bash}
 $ bash middle.sh octane.pdb
 ~~~
 ~~~ {.output}
@@ -94,7 +94,7 @@ ATOM     13  H           1      -3.172  -1.337   0.206  1.00  0.00
 
 or on a different file like this:
 
-~~~ {.input}
+~~~ {.bash}
 $ bash middle.sh pentane.pdb
 ~~~
 ~~~ {.output}
@@ -115,7 +115,7 @@ ATOM     13  H           1      -1.183   0.500  -1.412  1.00  0.00
 > `methyl butane.pdb`,
 > the command in the script would effectively be:
 >
->     head -20 methyl butane.pdb | tail -5
+>     head -15 methyl butane.pdb | tail -5
 >
 > This would call `head` on two separate files, `methyl` and `butane.pdb`,
 > which is probably not what we intended.
@@ -125,13 +125,13 @@ We still need to edit `middle.sh` each time we want to adjust the range of lines
 though.
 Let's fix that by using the special variables `$2` and `$3`:
 
-~~~ {.input}
+~~~ {.bash}
 $ cat middle.sh
 ~~~
 ~~~ {.output}
 head "$2" "$1" | tail "$3"
 ~~~
-~~~ {.input}
+~~~ {.bash}
 $ bash middle.sh pentane.pdb -20 -5
 ~~~
 ~~~ {.output}
@@ -146,7 +146,7 @@ This works,
 but it may take the next person who reads `middle.sh` a moment to figure out what it does.
 We can improve our script by adding some **comments** at the top:
 
-~~~ {.input}
+~~~ {.bash}
 $ cat middle.sh
 ~~~
 ~~~ {.output}
@@ -162,11 +162,12 @@ but they're invaluable for helping people understand and use scripts.
 What if we want to process many files in a single pipeline?
 For example, if we want to sort our `.pdb` files by length, we would type:
 
-~~~ {.input}
+~~~ {.bash}
 $ wc -l *.pdb | sort -n
 ~~~
 
 because `wc -l` lists the number of lines in the files
+(recall that wc stands for 'word count', adding the -l flag means 'count lines' instead)
 and `sort -n` sorts things numerically.
 We could put this in a file,
 but then it would only ever sort a list of `.pdb` files in the current directory.
@@ -182,13 +183,13 @@ to handle the case of parameters containing spaces
 (`"$@"` is equivalent to `"$1"` `"$2"` ...)
 Here's an example:
 
-~~~ {.input}
+~~~ {.bash}
 $ cat sorted.sh
 ~~~
 ~~~ {.output}
 wc -l "$@" | sort -n
 ~~~
-~~~ {.input}
+~~~ {.bash}
 $ bash sorted.sh *.pdb ../creatures/*.dat
 ~~~
 ~~~ {.output}
@@ -252,15 +253,15 @@ Instead of typing them in again
 (and potentially getting them wrong)
 we can do this:
 
-~~~ {.input}
+~~~ {.bash}
 $ history | tail -4 > redo-figure-3.sh
 ~~~
 
 The file `redo-figure-3.sh` now contains:
 
 ~~~
-297 goostats -r NENE01729B.txt stats-NENE01729B.txt
-298 goodiff stats-NENE01729B.txt /data/validated/01729.txt > 01729-differences.txt
+297 bash goostats -r NENE01729B.txt stats-NENE01729B.txt
+298 bash goodiff stats-NENE01729B.txt /data/validated/01729.txt > 01729-differences.txt
 299 cut -d ',' -f 2-3 01729-differences.txt > 01729-time-series.txt
 300 ygraph --format scatter --color bw --borders none 01729-time-series.txt figure-3.png
 ~~~
@@ -298,7 +299,7 @@ what they discover about their data and their workflow with one call to `history
 and a bit of editing to clean up the output
 and save it as a shell script.
 
-### Nelle's Pipeline: Creating a Script
+## Nelle's Pipeline: Creating a Script
 
 An off-hand comment from her supervisor has made Nelle realize that
 she should have provided a couple of extra parameters to `goostats` when she processed her files.
@@ -315,7 +316,7 @@ She runs the editor and writes the following:
 for datafile in "$@"
 do
     echo $datafile
-    goostats -J 100 -r $datafile stats-$datafile
+    bash goostats -J 100 -r $datafile stats-$datafile
 done
 ~~~
 
@@ -323,13 +324,13 @@ done
 She saves this in a file called `do-stats.sh`
 so that she can now re-do the first stage of her analysis by typing:
 
-~~~ {.input}
+~~~ {.bash}
 $ bash do-stats.sh *[AB].txt
 ~~~
 
 She can also do this:
 
-~~~ {.input}
+~~~ {.bash}
 $ bash do-stats.sh *[AB].txt | wc -l
 ~~~
 
@@ -345,7 +346,7 @@ She could have written it as:
 for datafile in *[AB].txt
 do
     echo $datafile
-    goostats -J 100 -r $datafile stats-$datafile
+    bash goostats -J 100 -r $datafile stats-$datafile
 done
 ~~~
 
@@ -360,7 +361,31 @@ she could modify her script to check for command-line parameters,
 and use `*[AB].txt` if none were provided.
 Of course, this introduces another tradeoff between flexibility and complexity.
 
-> ## FIXME {.challenge}
+> ## Variables in shell scripts {.challenge}
+>
+> In the molecules directory, you have a shell script called `script.sh` containing the 
+> following commands:
+>
+> ~~~
+> head $2 $1
+> tail $3 $1
+> ~~~
+> 
+> While you are in the molecules directory, you type the following command:
+>
+> ~~~
+> bash script.sh '*.pdb' -1 -1
+> ~~~
+> 
+> Which of the following outputs would you expect to see?
+>
+> 1. All of the lines between the first and the last lines of each file ending in `*.pdb`
+>    in the molecules directory 
+> 2. The first and the last line of each file ending in `*.pdb` in the molecules directory
+> 3. The first and the last line of each file in the molecules directory
+> 4. An error because of the quotes around `*.pdb`
+
+> ## List unique species {.challenge}
 > 
 > Leah has several hundred data files, each of which is formatted like this:
 > 
@@ -380,7 +405,7 @@ Of course, this introduces another tradeoff between flexibility and complexity.
 > `uniq` to print a list of the unique species appearing in each of
 > those files separately.
 
-> ## FIXME {.challenge}
+> ## Find the longest file with a given extension {.challenge}
 > 
 > Write a shell script called `longest.sh` that takes the name of a
 > directory and a filename extension as its parameters, and prints
@@ -394,7 +419,7 @@ Of course, this introduces another tradeoff between flexibility and complexity.
 > would print the name of the `.pdb` file in `/tmp/data` that has
 > the most lines.
 
-> ## FIXME {.challenge}
+> ## Why record commands in the history before running them? {.challenge}
 > 
 > If you run the command:
 > 
@@ -407,7 +432,7 @@ Of course, this introduces another tradeoff between flexibility and complexity.
 > running it. In fact, the shell *always* adds commands to the log
 > before running them. Why do you think it does this?
 
-> ## FIXME {.challenge}
+> ## Script reading comprehension {.challenge}
 > 
 > Joel's `data` directory contains three files: `fructose.dat`,
 > `glucose.dat`, and `sucrose.dat`. Explain what a script called

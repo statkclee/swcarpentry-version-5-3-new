@@ -4,7 +4,7 @@ title: The Unix Shell
 subtitle: Pipes and Filters
 minutes: 15
 ---
-> ## Learning Objectives
+> ## Learning Objectives {.objectives}
 >
 > *   Redirect a command's output to a file.
 > *   Process a file instead of keyboard input using redirection.
@@ -20,7 +20,7 @@ that contains six files describing some simple organic molecules.
 The `.pdb` extension indicates that these files are in Protein Data Bank format,
 a simple text format that specifies the type and position of each atom in the molecule.
 
-~~~ {.input}
+~~~ {.bash}
 $ ls molecules
 ~~~
 ~~~ {.output}
@@ -34,7 +34,7 @@ it counts the number of lines, words, and characters in files.
 The `*` in `*.pdb` matches zero or more characters,
 so the shell turns `*.pdb` into a complete list of `.pdb` files:
 
-~~~ {.input}
+~~~ {.bash}
 $ cd molecules
 $ wc *.pdb
 ~~~
@@ -51,9 +51,10 @@ $ wc *.pdb
 > ## Wildcards {.callout}
 > 
 > `*` is a **wildcard**. It matches zero or more
-> characters, so `*.pdb` matches `ethane.pdb`, `propane.pdb`, and so on.
-> On the other hand, `p*.pdb` only matches `pentane.pdb` and
-> `propane.pdb`, because the 'p' at the front only matches itself.
+> characters, so `*.pdb` matches `ethane.pdb`, `propane.pdb`, and every
+> file that ends with '.pdb'. On the other hand, `p*.pdb` only matches 
+> `pentane.pdb` and `propane.pdb`, because the 'p' at the front only 
+> matches filenames that begin with the letter 'p'.
 > 
 > `?` is also a wildcard, but it only matches a single character. This
 > means that `p?.pdb` matches `pi.pdb` or `p5.pdb`, but not `propane.pdb`.
@@ -76,12 +77,12 @@ $ wc *.pdb
 > However, generally commands like `wc` and `ls` see the lists of
 > file names matching these expressions, but not the wildcards
 > themselves. It is the shell, not the other programs, that deals with
-> expanding wildcards, and this another example of orthogonal design.
+> expanding wildcards, and this is another example of orthogonal design.
 
 If we run `wc -l` instead of just `wc`,
 the output shows only the number of lines per file:
 
-~~~ {.input}
+~~~ {.bash}
 $ wc -l *.pdb
 ~~~
 ~~~ {.output}
@@ -102,33 +103,33 @@ It's an easy question to answer when there are only six files,
 but what if there were 6000?
 Our first step toward a solution is to run the command:
 
-~~~ {.input}
-$ wc -l *.pdb > lengths
+~~~ {.bash}
+$ wc -l *.pdb > lengths.txt
 ~~~
 
-The `>` tells the shell to **redirect** the command's output
+The greater than symbol, `>`, tells the shell to **redirect** the command's output
 to a file instead of printing it to the screen.
 The shell will create the file if it doesn't exist,
 or overwrite the contents of that file if it does.
 (This is why there is no screen output:
-everything that `wc` would have printed has gone into the file `lengths` instead.)
-`ls lengths` confirms that the file exists:
+everything that `wc` would have printed has gone into the file `lengths.txt` instead.)
+`ls lengths.txt` confirms that the file exists:
 
-~~~ {.input}
-$ ls lengths
+~~~ {.bash}
+$ ls lengths.txt
 ~~~
 ~~~ {.output}
-lengths
+lengths.txt
 ~~~
 
-We can now send the content of `lengths` to the screen using `cat lengths`.
+We can now send the content of `lengths.txt` to the screen using `cat lengths.txt`.
 `cat` stands for "concatenate":
 it prints the contents of files one after another.
 There's only one file in this case,
 so `cat` just shows us what it contains:
 
-~~~ {.input}
-$ cat lengths
+~~~ {.bash}
+$ cat lengths.txt
 ~~~
 ~~~ {.output}
   20  cubane.pdb
@@ -146,8 +147,8 @@ numerical instead of alphabetical.
 This does *not* change the file;
 instead, it sends the sorted result to the screen:
 
-~~~ {.input}
-$ sort -n lengths
+~~~ {.bash}
+$ sort -n lengths.txt
 ~~~
 ~~~ {.output}
   9  methane.pdb
@@ -159,15 +160,15 @@ $ sort -n lengths
 107  total
 ~~~
 
-We can put the sorted list of lines in another temporary file called `sorted-lengths`
-by putting `> sorted-lengths` after the command,
-just as we used `> lengths` to put the output of `wc` into `lengths`.
+We can put the sorted list of lines in another temporary file called `sorted-lengths.txt`
+by putting `> sorted-lengths.txt` after the command,
+just as we used `> lengths.txt` to put the output of `wc` into `lengths.txt`.
 Once we've done that,
-we can run another command called `head` to get the first few lines in `sorted-lengths`:
+we can run another command called `head` to get the first few lines in `sorted-lengths.txt`:
 
-~~~ {.input}
-$ sort -n lengths > sorted-lengths
-$ head -1 sorted-lengths
+~~~ {.bash}
+$ sort -n lengths.txt > sorted-lengths.txt
+$ head -1 sorted-lengths.txt
 ~~~
 ~~~ {.output}
   9  methane.pdb
@@ -177,7 +178,7 @@ Using the parameter `-1` with `head` tells it that
 we only want the first line of the file;
 `-20` would get the first 20,
 and so on.
-Since `sorted-lengths` contains the lengths of our files ordered from least to greatest,
+Since `sorted-lengths.txt` contains the lengths of our files ordered from least to greatest,
 the output of `head` must be the file with the fewest lines.
 
 If you think this is confusing,
@@ -186,8 +187,8 @@ even once you understand what `wc`, `sort`, and `head` do,
 all those intermediate files make it hard to follow what's going on.
 We can make it easier to understand by running `sort` and `head` together:
 
-~~~ {.input}
-$ sort -n lengths | head -1
+~~~ {.bash}
+$ sort -n lengths.txt | head -1
 ~~~
 ~~~ {.output}
   9  methane.pdb
@@ -205,7 +206,7 @@ we don't have to know or care.
 We can use another pipe to send the output of `wc` directly to `sort`,
 which then sends its output to `head`:
 
-~~~ {.input}
+~~~ {.bash}
 $ wc -l *.pdb | sort -n | head -1
 ~~~
 ~~~ {.output}
@@ -235,7 +236,7 @@ it creates a new process
 and temporarily sends whatever we type on our keyboard to that process's standard input,
 and whatever the process sends to standard output to the screen.
 
-Here's what happens when we run `wc -l *.pdb > lengths`.
+Here's what happens when we run `wc -l *.pdb > lengths.txt`.
 The shell starts by telling the computer to create a new process to run the `wc` program.
 Since we've provided some filenames as parameters,
 `wc` reads from them instead of from standard input.
@@ -253,6 +254,8 @@ And if we run `wc -l *.pdb | sort -n | head -1`,
 we get three processes with data flowing from the files,
 through `wc` to `sort`,
 and from `sort` through `head` to the screen.
+
+![Redirects and Pipes](fig/redirects-and-pipes.png)
 
 This simple idea is why Unix has been so successful.
 Instead of creating enormous programs that try to do many different things,
@@ -285,13 +288,13 @@ so that you and other people can put those programs into pipes to multiply their
 > have told the shell to send the contents of `ammonia.pdb` to `wc`'s
 > standard input.
 
-### Nelle's Pipeline: Checking Files
+## Nelle's Pipeline: Checking Files
 
 Nelle has run her samples through the assay machines
 and created 1520 files in the `north-pacific-gyre/2012-07-03` directory described earlier.
-As a quick sanity check, she types:
+As a quick sanity check, starting from her home directory, Nelle types:
 
-~~~ {.input}
+~~~ {.bash}
 $ cd north-pacific-gyre/2012-07-03
 $ wc -l *.txt
 ~~~
@@ -310,7 +313,7 @@ The output is 1520 lines that look like this:
 
 Now she types this:
 
-~~~ {.input}
+~~~ {.bash}
 $ wc -l *.txt | sort -n | head -5
 ~~~
 ~~~ {.output}
@@ -329,7 +332,7 @@ and she forgot to reset it.
 Before re-running that sample,
 she checks to see if any files have too much data:
 
-~~~ {.input}
+~~~ {.bash}
 $ wc -l *.txt | sort -n | tail -5
 ~~~
 ~~~ {.output}
@@ -346,7 +349,7 @@ by convention,
 her lab uses 'Z' to indicate samples with missing information.
 To find others like it, she does this:
 
-~~~ {.input}
+~~~ {.bash}
 $ ls *Z.txt
 ~~~
 ~~~ {.output}
@@ -413,6 +416,32 @@ so this matches all the valid data files she has.
 > ~~~
 > wc -l mydata.dat
 > ~~~
+
+> ## What does `>>` mean? {.challenge}
+>
+> What is the difference between:
+>
+> ~~~
+> echo hello > testfile01.txt
+> ~~~
+>
+> and:
+>
+> ~~~
+> echo hello >> testfile02.txt
+> ~~~
+>
+> Hint: Try executing each command twice in a row and then examining the output files.
+
+> ## Piping commands together {.challenge}
+>
+> In our current directory, we want to find the 3 files which have the least number of 
+> lines. Which command listed below would work?
+>
+> 1. `wc -l * > sort -n > head -3`
+> 2. `wc -l * | sort -n | head 1-3`
+> 3. `wc -l * | head -3 | sort -n`
+> 4. `wc -l * | sort -n | head -3`
 
 > ## Why does `uniq` only remove adjacent duplicates? {.challenge}
 >

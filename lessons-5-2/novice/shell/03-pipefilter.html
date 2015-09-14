@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="generator" content="pandoc">
+    <title>xwMOOC: 파이프와 필터</title>
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" type="text/css" href="http://statkclee.github.io/swcarpentry-version-5-3-new/css/bootstrap/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="http://statkclee.github.io/swcarpentry-version-5-3-new/css/bootstrap/bootstrap-theme.css" />
+    <link rel="stylesheet" type="text/css" href="http://statkclee.github.io/swcarpentry-version-5-3-new/css/swc.css" />
+    <link rel="alternate" type="application/rss+xml" title="Software Carpentry Blog" href="http://software-carpentry.org/feed.xml"/>
+    <meta charset="UTF-8" />
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body class="lesson">
+    <div class="container card">
+      <div class="banner">
+        <a href="http://software-carpentry.org" title="Software Carpentry">
+          <img alt="Software Carpentry banner" src="http://statkclee.github.io/swcarpentry-version-5-3-new/img/software-carpentry-banner.png" />
+      <!--     <img alt="xwMOOC banner" src="img/xwMOOC.png" />
+       -->  </a>
+      </div>
+      <article>
+      <div class="row">
+        <div class="col-md-10 col-md-offset-1">
+          <h1 class="title">파이프와 필터</h1>
+          
+<div class="objectives" markdown="1">
+<h4>목표</h4>
+<ul>
+<li>명령어의 출력결과를 파일로 다시 돌리기</li>
+<li>키보드 입력 대신에 다시 보내기(redirection)를 사용하여 파일 처리하기</li>
+<li>2단계 혹은 3단계를 가진 명령문 구성하기</li>
+<li>프로그램 혹은 파이프라인에 처리할 입력을 주지 않았을 때 통상 발생하는 일을 설명하기</li>
+<li>“작은 조각, 느슨하게 결합하기(small pieces, loosely joined)”라는 유닉스 철학을 설명하기</li>
+</ul>
+</div>
+<p>몇가지 기초 명령어를 배웠기 때문에 마침내 쉘의 가장 강령한 기능을 살펴볼 수 있다. 새로운 방식으로 존재하는 프로그램을 쉽게 조합할 수 있게 합니다. 간단한 유기분자 설명을 하는 6개 파일을 담고 있는 <code>molecules</code>(분자)라는 디렉토리로 시작한다. <code>.pdb</code> 파일 확장자는 단백질 데이터 뱅크 (Protein Data Bank) 형식으로 분자의 각 원자의 형식과 위치를 표시하는 간단한 텍스트 형식을 나타낸다.</p>
+<pre><code>$ ls molecules</code></pre>
+<p>{:class=“in”} <sub>~</sub> cubane.pdb ethane.pdb methane.pdb octane.pdb pentane.pdb propane.pdb <sub>~</sub> {:class=“out”}</p>
+<p>명령어 <code>cd</code>로 디렉토리로 가서 <code>wc *.pdb</code> 명령어를 실행한다. <code>wc</code> 명령어는 “word count”의 축약어로 파일의 라인 수, 단어수, 문자수를 카운트한다. <code>*.pdb</code>에서 <code>*</code>은 0 혹은 더 많은 일치하는 문자를 찾는다. 그래서 쉘은 <code>*.pdb</code>을 통해 <code>.pdb</code> 전체 리스트를 반환한다.</p>
+<pre><code>$ cd molecules
+$ wc *.pdb</code></pre>
+<p>{:class=“in”} <sub>~</sub> 20 156 1158 cubane.pdb 12 84 622 ethane.pdb 9 57 422 methane.pdb 30 246 1828 octane.pdb 21 165 1226 pentane.pdb 15 111 825 propane.pdb 107 819 6081 total <sub>~</sub> {:class=“out”}</p>
+<blockquote>
+<h4>와일드 카드(Wildcards)</h4>
+<p><code>*</code>는 <a href="../../gloss.html#wildcard">wildcard</a>다. 와일드카드는 0 혹은 그 이상의 문자와 일치해서, <code>*.pdb</code>은 <code>ethane.pdb</code>, <code>propane.pdb</code> 등등을 매치하는데 맨 앞에 ’p’만 일치하기만 하면 되기 때문이다.</p>
+<p><code>?</code>도 또한 와일드카드지만 단지 단일 문자만 매칭한다. 이것이 의미하는 바는 <code>p?.pdb</code>은 <code>pi.pdb</code> 혹은 <code>p5.pdb</code>을 매칭하지만, <code>propane.pdb</code>은 매칭하지 않는다. 한번에 원하는 수만큼 와일드카드를 사용할 수 있다. 예를 들어, <code>p*.p?*</code>는 ‘p’로 시작하고’.‘과 ’p’, 그리고 최소 한자의 이상의 문자로 끝나는 임의의 문자열을 매칭한다고 표현할 수 있는데 ‘?’이 한 문자를 매칭해야하고 마지막’<em>‘은 끝에 임의의 문자숫자와 매칭할 수 있기 때문이다. 그래서 <code>p*.p?*</code>은 <code>preferred.practice</code>과 심지어 <code>p.pi</code>도 매칭한다(첫번째’</em>‘은 어떤 문자도 매칭할 수가 없음). 하지만 <code>quality.practice</code>은 매칭할 수 없는데 이유는 ’p’로 시작하지 않고, <code>preferred.p</code>도 매칭할 수 없는데 ’p’ 다음에 최소 하나의 문자가 필요한데 없기 때문이다.</p>
+<p>쉘이 와일드카드를 봤을 때, 요청된 명령문을 <em>시작하기 전에</em> 와일드카드를 확장하여 매칭할 파일 이름 목록을 생성한다. <code>wc</code>과 <code>ls</code> 명령어는 결코 와일드카드 문자를 보지 못하고 단지 와일드카드가 매칭하는 것만을 보게된다. 이것은 직교 설계(orthogonal design)의 또 다른 사례이다.</p>
+</blockquote>
+<p><code>wc</code> 대신에 <code>wc -l</code>을 실행하면, 출력결과는 파일마다 행수만을 보여준다.</p>
+<pre><code>$ wc -l *.pdb</code></pre>
+<p>{:class=“in”} <sub>~</sub> 20 cubane.pdb 12 ethane.pdb 9 methane.pdb 30 octane.pdb 21 pentane.pdb 15 propane.pdb 107 total <sub>~</sub> {:class=“out”}</p>
+<p>단어 숫자만을 얻기 위해서 <code>-w</code>, 문자 숫자만을 얻기 위해서 <code>-c</code>을 사용할 수 있다.</p>
+<p>파일 중에서 어느 파일이 가장 짧을까요? 단지 6개의 파일이 있기 때문에 질문에 답하기는 쉬울 것이다. 하지만 만약에 6000 파일이 있다면 어떨까요? 해결에 이르는 첫번째 단계는 다음 명령을 실행하는 것이다.</p>
+<pre><code>$ wc -l *.pdb &gt; lengths</code></pre>
+<p>{:class=“in”}</p>
+<p><code>&gt;</code> 은 쉘로 하여금 화면에 처리 결과를 뿌리는 대신에 파일로 <a href="../../gloss.html#redirect">되돌리기(redirect)</a>게 한다. 만약 파일이 존재하지 않으면 파일을 생성하고 파일이 존재하면 파일의 내용을 덮어쓰기 한다. (이것이 왜 화면에 출력결과가 없는 이유다. <code>wc</code>이 출력하는 모든 것은 <code>lengths</code> 파일에 대신 들어간다.) <code>ls lengths</code> 을 통해 파일이 존재하는 것을 확인한다.</p>
+<pre><code>$ ls lengths</code></pre>
+<p>{:class=“in”} <sub><sub><sub> lengths </sub></sub></sub> {:class=“out”}</p>
+<p><code>cat lengths</code>을 사용해서 화면에 <code>lengths</code>의 내용을 보낼 수 있다. <code>cat</code>은 “concatenate”를 줄인 것이고 하나씩 하나씩 파일의 내용을 출력한다. 이번 사례에는 단지 하나의 파일이 있어서 <code>cat</code>는 단지 한 파일이 담고 있는 내용만을 보여준다.</p>
+<pre><code>$ cat lengths</code></pre>
+<p>{:class=“in”} <sub>~</sub> 20 cubane.pdb 12 ethane.pdb 9 methane.pdb 30 octane.pdb 21 pentane.pdb 15 propane.pdb 107 total <sub>~</sub> {:class=“out”}</p>
+<p><code>sort</code> 명령어를 사용해서 파일 내용을 정렬합니다. ‘-n’ 옵션을 사용해서 알파벳 대신에 숫자 방식으로 정렬할 것임을 표시한다. 이 명령어는 파일 자체를 변경하지 <em>않고</em> 대신에 정렬된 결과를 화면으로 보낸다.</p>
+<pre><code>$ sort -n lengths</code></pre>
+<p>{:class=“in”} <sub>~</sub> 9 methane.pdb 12 ethane.pdb 15 propane.pdb 20 cubane.pdb 21 pentane.pdb 30 octane.pdb 107 total <sub>~</sub> {:class=“out”}</p>
+<p><code>&gt; lengths</code>을 사용해서 <code>wc</code> 실행결과를 <code>lengths</code>에 넣었듯이, 명령문 다음에 <code>&amp;gt; sorted-lengths</code>을 넣음으로서 임시 파일이름인 <code>sorted-lengths</code>에 정렬된 목록 라인을 담을 수 있다. 이것을 실행한 다음에, 또 다른 <code>head</code> 명령어를 실행해서 <code>sorted-lengths</code>에서 첫 몇 행을 뽑아낼 수 있다.</p>
+<pre><code>$ sort -n lengths &gt; sorted-lengths
+$ head -1 sorted-lengths</code></pre>
+<p>{:class=“in”} <sub>~</sub> 9 methane.pdb <sub>~</sub> {:class=“out”}</p>
+<p><code>head</code>에 <code>-1</code> 매개변수를 사용해서 파일의 첫번째 행만이 필요하다고 지정한다. <code>-20</code>은 처음 20개 행만을 지정한다. <code>sorted-lengths</code>이 가장 작은 것에서부터 큰 것으로 정렬된 파일 길이 정보를 담고 있어서, <code>head</code>의 출력 결과는 가장 짧은 행을 가진 파일이 되어야만 한다.</p>
+<p>이것이 혼란스럽다고 생각한다면, 여러분은 정말 좋은 회사에 다니고 있는 것이다. <code>wc</code>, <code>sort</code>, <code>head</code> 멸영어가 무엇을 수행하는지 이해해도, 중간에 산출되는 파일은 무엇이 진행되고 있는지 따라가기가 쉽지 않다. <code>sort</code>과 <code>head</code>을 함께 실행해서 이해하기 훨씬 쉽게 할 수 있다.</p>
+<pre><code>$ sort -n lengths | head -1</code></pre>
+<p>{:class=“in”} <sub>~</sub> 9 methane.pdb <sub>~</sub> {:class=“out”}</p>
+<p>두 명령문 사이의 수직 막대를 <a href="../../gloss.html#pipe">파이프(pipe)</a>라고 부른다. 수직막대는 쉘에게 왼편의 명령문의 출력결과를 오른쪽 명령문의 입력값을 사용한다고 한다고 말을 전한다. 컴퓨터는 필요하면 임시 파일을 생성하거나 한 프로그램에서 주 기억장치의 다른 프로그램으로 데이터를 복사하거나 혹은 완전히 다른 작업을 수행한다. 사용자는 알 필요도 없고 관심을 가질 이유도 없다.</p>
+<p>또 다른 파이프를 사용해서 <code>wc</code>의 출력결과를 <code>sort</code>에 바로 보내고 나서 다시 처리 결과를 <code>head</code>에 보낸다.</p>
+<pre><code>$ wc -l *.pdb | sort -n | head -1</code></pre>
+<p>{:class=“in”} <sub>~</sub> 9 methane.pdb <sub>~</sub> {:class=“out”}</p>
+<p>이것이 정확하게 수학자가 <em>sin(πx)<sup>2</sup></em>같은 중첩함수를 사용하는 것과 같다. <em>sin(πx)<sup>2</sup></em>은 <em>x</em> 곱하기 π의 사인 제곱과 같다. 우리의 경우는 <code>*.pdb</code>의 행수를 세어서 정렬의 첫 부분을 계산하는 것이다.</p>
+<p>파이프를 생성할 때 뒤에서 실질적으로 일어나는 일은 다음과 같다. 컴퓨터가 프로그램을 실행할 때 프로그램의 소프트웨어와 현재 상태 정보를 담기 위해서 주기억장치 메모리에 <a href="../../gloss.html#process">프로세스(process)</a>를 생성한다. 모든 프로세스는 <a href="../../gloss.html#standard-input">표준 입력(standard input)</a>이라는 입력 채널을 가지고 있다. (여기서 이름이 너무 기억하기 좋아서 놀랄지도 모른다. 하지만 걱정하지 마세요. 대부분의 유닉스 프로그래머는 “stdin”이라고 부른다.) 또한 모든 프로세스는 <a href="../../gloss.html#standard-output">표준 출력(standard output)</a>(혹은 “stdout”)라고 불리는 디폴트 출력 채널이 있다.</p>
+<p>쉘은 실질적으로 또다른 프로그램이다. 정상적인 상황에서 사용자가 키보드로 무엇을 타이핑하는 모든 것은 표준 입력으로 쉘에 보내지고, 표준 출력에서 만들어지는 무엇이든지 화면에 출력된다. 쉘에게 프로그램을 실행하게 할때, 새로운 프로게스를 생성하고 임시적으로 키보드에 타이핑하는 무엇이든지 그 프로세스의 표준 입력으로 보내지고, 프로세스는 표준 출력에 무엇이든지 화면에 전송한다.</p>
+<p><code>wc -l *.pdb &gt; lengths</code>을 실행할 때 여기 일어나는 것을 설명하면 다음과 같다. <code>wc</code> 프로그램을 실행할 새로운 프로세스를 생성하라고 컴퓨터에 말하면서 쉘은 시작한다. 파일이름을 매개변수로 제공했기 때문에 표준 입력 대신에 <code>wc</code>는 매개변수에서 입력값을 읽어온다. <code>&gt;</code>을 사용해서 출력값을 파일에 되돌리는데 사용했기 때문에, 쉘은 프로세스의 표준 출력결과를 파일에 연결한다.</p>
+<p><code>wc -l *.pdb | sort -n</code>을 실행한다면, 쉘은 두개의 프로세스를 생성한다. (파이프의 각 프로세스에 대해서 하나씩) 그래서 <code>wc</code>과 <code>sort</code>은 동시에 실행된다. <code>wc</code>의 표준 출력은 직접적으로 <code>sort</code>의 표준 입력으로 들어간다. <code>&gt;</code>같은 되돌리기가 없기 때문에 <code>sort</code>의 출력은 화면으로 나가게 된다. <code>wc -l *.pdb | sort -n | head -1</code>을 실행하면, 파일에서 <code>wc</code>에서 <code>sort</code>으로, <code>sort</code>에서 <code>head</code>을 통해 화면으로 나가게 되는 데이터 흐름을 가진 3개의 프로세스가 있다.</p>
+<p>이 간단한 아이디어가 왜 유닉스가 그토록 성공적이었는지를 보여준다. 많은 다른 작업을 수행하는 거대한 프로그램을 생성하는 대신에 유닉스 프로그래머는 각자가 한가지 작업만을 잘 수행하는 많은 간단한 툴을 생성하는데 집중하고 서로간에 유지적으로 잘 작동하게 한다. 이러한 프로그래밍 모델을 <a href="../../gloss.html#pipe-and-filter">파이프와 필터(pipes and filters)</a>라고 부른다. 파이프는 이미 살펴봤고, <a href="../../gloss.html#filter">필터(filter)</a>는 <code>wc</code>, <code>sort</code>같은 프로그램으로 입력 스트림을 출력 스트림으로 변환하는 것이다. 거의 모든 표준 유닉스 툴은 이런 방식으로 동작한다. 별도로 언급되지 않는다면, 표준 입력에서 읽고 읽은 것을 가지고 무언가를 수행하고 표준 출력에 쓴다.</p>
+<p>중요한 점은 표준입력에서 텍스트 행을 읽고 표준 출력에 텍스트 행을 쓰는 임의의 프로그램은 이런 방식으로 행동하는 모든 다른 프로그램과 조합될 수 있다는 것이다. 여러분도 여러분이 작성한 프로그램을 이러한 방식으로 작성할 수 있어야 하고 <em>작성해야 한다.</em> 그래서 여러분과 다른 사람들이 이러한 프로그램을 파이프에 넣어서 프로그램의 힘을 배가할 수 있다.</p>
+<blockquote>
+<h4>입력 되돌리기</h4>
+<p>프로그램의 출력 결과를 되돌리기 위해서 <code>&gt;</code>을 사용하는 것과 마찬가지로 <code>&lt;</code>을 사용해서 입력을 되돌릴 수도 있다. 즉, 표준 입력 대신에 파일로 부터 읽을 수 있다. 예를 들어, 첫째 사례로, <code>wc</code>는 무슨 파일을 여는지를 명령 라인의 매개변수에서 얻는다. 두번째 사례는, <code>wc</code>가 명령 라인 매개변수가 없다. 그래서 표준 입력에서 읽지만, 쉘에게 <code>ammonia.pdb</code>의 내용을 <code>wc</code>에 표준 입력으로 보내라고 했다.</p>
+</blockquote>
+<h3 id="nelle의-파이프라인-pipeline-파일-확인하기">Nelle의 파이프라인 Pipeline: 파일 확인하기</h3>
+<p>앞에서 설명한 것 처럼 Nelle은 분석기를 통해 시료를 시험해서 1520개 파일을 <code>north-pacific-gyre/2012-07-03</code> 디렉토리에 생성했다. 빠르게 건정성 확인하기 위해서 다음과 같이 타이핑한다.</p>
+<pre><code>$ cd north-pacific-gyre/2012-07-03
+$ wc -l *.txt</code></pre>
+<p>{:class=“in”}</p>
+<p>결과는 다음과 같은 1520 행이 출력된다.</p>
+<pre><code>300 NENE01729A.txt
+300 NENE01729B.txt
+300 NENE01736A.txt
+300 NENE01751A.txt
+300 NENE01751B.txt
+300 NENE01812A.txt
+... ...</code></pre>
+<p>{:class=“out”}</p>
+<p>이번에는 다음과 같이 타이핑한다.</p>
+<pre><code>$ wc -l *.txt | sort -n | head -5</code></pre>
+<p>{:class=“in”} <sub>~</sub> 240 NENE02018B.txt 300 NENE01729A.txt 300 NENE01729B.txt 300 NENE01736A.txt 300 NENE01751A.txt <sub>~</sub> {:class=“out”}</p>
+<p>이런, 파일중에 하나가 다른 것보다 60행이 짧다. 다시 돌아가서 확인하면, 월요일 아침 8:00 시각에 분석을 수행한 것을 알고 있다. 아마도 누군가 주말에 누군가 기계를 사용했고, 다시 돌려놓는 것을 깜빡 잊었다. 시료를 다시 시험하기 전에 파일중에 너무 큰 데이터가 있는지를 확인한다.</p>
+<pre><code>$ wc -l *.txt | sort -n | tail -5</code></pre>
+<p>{:class=“in”} <sub>~</sub> 300 NENE02040A.txt 300 NENE02040B.txt 300 NENE02040Z.txt 300 NENE02043A.txt 300 NENE02043B.txt <sub>~</sub> {:class=“out”}</p>
+<p>숫자는 좋아 보인다. 하지만 끝에서 세번째 줄에 ‘Z’는 무엇일까? 모든 시료는 ’A’ 혹은 ’B’로 표시되어야 한다. 시험실 관례로 ’Z’는 결측치가 있는 시료를 표식하기 위해 사용된다. 더 많은 결측 시료를 찾기 위해서 다음과 같이 타이핑한다.</p>
+<pre><code>$ ls *Z.txt</code></pre>
+<p>{:class=“in”} <sub>~</sub> NENE01971Z.txt NENE02040Z.txt <sub>~</sub> {:class=“out”}</p>
+<p>노트북의 로그 이력을 확인할 때, 상기 샘플 각각에 대해 깊이(depth) 정보에 대해서 기록된 것이 없다. 다른 방법으로 정보를 더 수집하기에는 너무 늦어서, 분석에서 두 파일을 제외하기로 했다. <code>rm</code> 명령어를 사용하여 삭제할 수 있지만, 향후에 깊이(depth)정보가 관련없는 다른 분석을 실시할 수도 있다. 그래서 와일드 카드 표현식 <code>*[AB].txt</code>을 사용하여 파일을 조심해서 선택하기로 한다. 언제나 그렇듯이, ’*’는 임의 숫자의 문자를 매칭한다. <code>[AB]</code> 표현식은 ’A’혹은 ’B’를 매칭해서 Nelle이 가지고 있는 유효한 데이터 파일 모두를 매칭한다.</p>
+<div class="keypoints" markdown="1">
+<h4>주요점</h4>
+<ul>
+<li><code>명령어 &gt; 파일</code> (<code>command &gt; file</code>)은 명령어의 출력을 파일로 되돌린다.</li>
+<li><code>첫째_명령어 | 둘째_명령어</code>(<code>first | second</code>)는 파이프라인이다. 첫째_명령어 출력은 둘째_명령어의 입력으로 사용된다.</li>
+<li>쉘을 사용하는 가장 좋은 방법은 파이프를 사용해서 간단한 단일 목적 프로그램(필터)을 조합하는 것이다.</li>
+</ul>
+</div>
+<div class="challenge" markdown="1">
+<p>파일에 <code>sort</code>를 실행하면,</p>
+<pre><code>10
+2
+19
+22
+6</code></pre>
+<p>출력은 다음과 같다.</p>
+<pre><code>10
+19
+2
+22
+6</code></pre>
+<p>동일한 입력에 <code>sort -n</code>을 실행하면, 대신에 다음을 얻게된다.</p>
+<pre><code>2
+6
+10
+19
+22</code></pre>
+인수 <code>-n</code>가 왜 이런 효과를 가지는지 설명하세요.
+</div>
+<div class="challenge" markdown="1">
+<p>다음 명령문과</p>
+<pre><code>wc -l &lt; mydata.dat</code></pre>
+<p>다음 명령문의 차이점은 무엇인지 설명하세요.</p>
+<pre><code>wc -l mydata.dat</code></pre>
+</div>
+<div class="challenge" markdown="1">
+<p>명령문 <code>uniq</code>은 입력으로부터 인접한 중복된 행을 제거한다. 예를 들어, <code>salmon.txt</code> 파일이 다음을 포함한다면,</p>
+<pre><code>coho
+coho
+steelhead
+coho
+steelhead
+steelhead</code></pre>
+<p><code>uniq salmon.txt</code> 명령문 실행은 다음을 출력한다.</p>
+<pre><code>coho
+steelhead
+coho
+steelhead</code></pre>
+<code>uniq</code>가 왜 인접한 중복 행만을 단지 제거한다고 생각합니까? (힌트: 매우 큰 파일을 생각해보세요.) 모든 중복된 행을 제거하기 위해서 파이프로 무슨 다른 명령어를 조합할 수 있을까요?
+</div>
+<div class="challenge" markdown="1">
+<p><code>animals.txt</code>로 불리는 파일은 다음 데이터를 포함한다</p>
+<pre><code>2012-11-05,deer
+2012-11-05,rabbit
+2012-11-05,raccoon
+2012-11-06,rabbit
+2012-11-06,deer
+2012-11-06,fox
+2012-11-07,rabbit
+2012-11-07,bear</code></pre>
+<p>다음 아래 파이프라인에 각 파이프를 통과하고 마지막 되돌리기를 마친 텍스트는 무엇일까요?</p>
+<pre><code>cat animals.txt | head -5 | tail -3 | sort -r &gt; final.txt</code></pre>
+</div>
+<div class="challenge" markdown="1">
+<p>다음 명령문을 실행하면,</p>
+<pre><code>$ cut -d , -f 2 animals.txt</code></pre>
+<p>다음 출력결과를 만들어 낸다.</p>
+<pre><code>deer
+rabbit
+raccoon
+rabbit
+deer
+fox
+rabbit
+bear</code></pre>
+파일이 담고 있는 동물이 무엇인지를 알아내기 위해서 무슨 다른 명령어가 파이프라인에 추가되어야 하나요? (동물 이름에 어떠한 중복도 없어야 합니다.)
+</div>
+        </div>
+      </div>
+      </article>
+      <div class="footer">
+        <a class="label swc-blue-bg" href="http://software-carpentry.org">Software Carpentry</a>
+        <a class="label swc-blue-bg" href="http://xwmooc.net">xwMOOC</a>
+        <a class="label swc-blue-bg" href="https://github.com/statkclee/swcarpentry-version-5-3-new">한글소스</a>
+        <a class="label swc-blue-bg" href="https://github.com/swcarpentry">영문소스</a>
+        <a class="label swc-blue-bg" href="mailto:i@xwmooc.net">Contact</a>
+        <a class="label swc-blue-bg" href="http://statkclee.github.io/swcarpentry-version-5-3-new/LICENSE.html">License</a>
+      </div>
+    </div>
+    <!-- Javascript placed at the end of the document so the pages load faster -->
+    <script src="http://software-carpentry.org/v5/js/jquery-1.9.1.min.js"></script>
+    <script src="css/bootstrap/bootstrap-js/bootstrap.js"></script>
+  </body>
+</html>

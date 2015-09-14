@@ -2,33 +2,43 @@
 layout: page
 title: The Unix Shell
 ---
-The Unix shell has been around longer than most of its users have been alive.
-It has survived so long because it's a power tool
-that allows people to do complex things with just a few keystrokes.
-More importantly,
-it helps them combine existing programs in new ways
-and automate repetitive tasks
-so that they don't have to type the same things over and over again.
 
-> ## Prerequisites
+유닉스 쉘(Unix Shell)은 대부분의 컴퓨터 사용자가 살아온 것보다 오래 동안 존재했다.
+오래동안 생존한 이유는 사용자로 하여금 단지 키보드 몇번 쳐서 복잡한 작업을 할 수 있게 하는 강력한 도구이기 때문이다. 좀더 중요하게는 기존의 프로그램을 새로운 방식으로 조합해서 반복적인 작업을 자동화해서 동일한 작업을 반복적으로 타이핑하지 않게 만든다.
+
+쉘 사용이 광범위한 다른 강력한 도구와 컴퓨팅 자원을 사용하는 근본이다.  여기에는 "고성능 컴퓨팅(high-performance computing)" 슈퍼컴퓨터가 포함된다. 이번 학습을 통해서 효과적으로 컴퓨팅 자원을 사용하는 경로를 안내한다.
+
+> ## 필수 전제조건 {.prereq}
 >
-> FIXME
-> A short paragraph describing what learners need to know
-> before tackling this lesson.
+> 파일 시스템과 쉘 기초를 학습한다. 만약 컴퓨터에 파일을 저장했고 "파일"과 (동일한 것에 대해 사용하는 일반적인 두 단어)"디렉토리" 혹은 "폴더"를 인식하고 있다면, 이번 학습에 준비됐다.
+>
+> 만약 파일과 디렉토리를 다루고 `grep` 과 `find` 명령어로 파일을 찾고, 간단한 루프와 스크립트를 작성하는데 친숙하다면, 이번 학습을 통해서 그다지 많은 것을 배우지 못할 수도 있다.
 
-## Topics
+> ## 준비물 {.getready}
+>
+> 이번 학습에 사용될 파일을 다운로드한다:
+> 
+> 1. `shell-novice`라는 이름으로 바탕화면에 디렉토리를 신규로 생성한다.
+> 1. [shell-novice-data.zip](./shell-novice-data.zip) 파일을 다운로드하고 나서 파일을 `shell-novice` 디렉토리로 이동한다.
+> 1. 아직 압축을 풀지 않았다면, 두번 클릭해서 압축을 푼다. `data`라는 이름의 신규 폴더가 종국에는 나타나야 된다.
+> 1. 다음 명령어로 유닉스 쉘에서 압축을 푼 디렉토리로 접근한다.
+> 
+> ~~~ {.input}
+> $ cd && cd Desktop/shell-novice/data
+> ~~~
 
-1.  [Introducing the Shell](00-intro.html)
-2.  [Files and Directories](01-filedir.html)
-3.  [Creating Things](02-create.html)
-4.  [Pipes and Filters](03-pipefilter.html)
-5.  [Loops](04-loop.html)
-6.  [Shell Scripts](05-script.html)
-7.  [Finding Things](06-find.html)
+## 학습 주제
 
-## Other Resources
+1.  [쉘(shell) 소개](00-intro.html)
+1.  [파일과 디렉토리](01-filedir.html)
+1.  [파일과 디렉토리 생성](02-create.html)
+1.  [파이프(pipe)와 필터(filter)](03-pipefilter.html)
+1.  [루프(Loops)](04-loop.html)
+1.  [쉘 스크립트(shell script)](05-script.html)
+1.  [파일, 문자, 디렉토리  등 찾기](06-find.html)
 
-*   [Motivation](motivation.html)
-*   [Reference](reference.html)
-*   [Discussion](discussion.html)
-*   [Instructor's Guide](instructors.html)
+## 기타 교재
+
+*   [참고문헌](reference.html)
+*   [토론](discussion.html)
+*   [강사 안내서](instructors.html)

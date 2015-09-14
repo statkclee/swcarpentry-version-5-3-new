@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="generator" content="pandoc">
+    <title>xwMOOC: Job Control</title>
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" type="text/css" href="http://statkclee.github.io/swcarpentry-version-5-3-new/css/bootstrap/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="http://statkclee.github.io/swcarpentry-version-5-3-new/css/bootstrap/bootstrap-theme.css" />
+    <link rel="stylesheet" type="text/css" href="http://statkclee.github.io/swcarpentry-version-5-3-new/css/swc.css" />
+    <link rel="alternate" type="application/rss+xml" title="Software Carpentry Blog" href="http://software-carpentry.org/feed.xml"/>
+    <meta charset="UTF-8" />
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body class="lesson">
+    <div class="container card">
+      <div class="banner">
+        <a href="http://software-carpentry.org" title="Software Carpentry">
+          <img alt="Software Carpentry banner" src="http://statkclee.github.io/swcarpentry-version-5-3-new/img/software-carpentry-banner.png" />
+      <!--     <img alt="xwMOOC banner" src="img/xwMOOC.png" />
+       -->  </a>
+      </div>
+      <article>
+      <div class="row">
+        <div class="col-md-10 col-md-offset-1">
+          <h1 class="title">Job Control</h1>
+          
+<div class="objectives" markdown="1">
+<h4>Objectives</h4>
+<ul>
+<li>FIXME</li>
+</ul>
+</div>
+<p>Our next topic is how to control programs <em>once they’re running</em>. This is called <a href="glossary.html#job-control">job control</a>, and while it’s less important today than it was back in the Dark Ages, it is coming back into its own as more people begin to leverage the power of computer networks.</p>
+<p>When we talk about controlling programs, what we really mean is controlling <em>processes</em>. As we said earlier, a process is just a program that’s in memory and executing. Some of the processes on your computer are yours: they’re running programs you explicitly asked for, like your web browser. Many others belong to the operating system that manages your computer for you, or, if you’re on a shared machine, to other users. You can use the <code>ps</code> command to list them, just as you use <code>ls</code> to list files and directories:</p>
+<pre><code>$ ps
+PID    PPID   PGID   TTY   UID     STIME   COMMAND
+2152      1   2152   con  1000  13:19:07   /usr/bin/bash
+2276   2152   2276   con  1000  14:53:48   /usr/bin/ps</code></pre>
+<p>Every process has a unique process id (PID). Remember, this is a property of the process, not of the program that process is executing: if you are running three instances of your browser at once, each will have its own process ID.</p>
+<p>The second column in this listing, PPID, shows the ID of each process’s parent. Every process on a computer is spawned by another, which is its parent (except, of course, for the bootstrap process that runs automatically when the computer starts up).</p>
+<p>The third column (labelled PGID) is the ID of the <em>process group</em> this process belongs to. We won’t discuss process groups in this lecture, but they’re often used to manage sets of related processes. Column 4 shows the ID of the terminal this process is running in. Once upon a time, this really would have been a terminal connected to a central timeshared computer. It isn’t as important these days, except that if a process is a system service, such as a network monitor, <code>ps</code> will display a question mark for its terminal, since it doesn’t actually have one.</p>
+<p>Column 5 is more interesting: it’s the user ID of the user this process is being run by. This is the user ID the computer uses when checking permissions: the process is allowed to access exactly the same things as the user, no more, no less.</p>
+<p>Finally, Column 6 shows when the process started running, and Column 7 shows what program the process is executing. Your version of <code>ps</code> may show more or fewer columns, or may show them in a different order, but the same information is generally available everywhere.</p>
+<p>The shell provides several commands for stopping, pausing, and resuming processes. To see them in action, let’s run our <code>analyze</code> program on our latest data files. After a few minutes go by, we realize that this is going to take a while to finish. Being impatient, we kill the process by typing Control-C. This stops the currently-executing program right away. Any results it had calculated, but not written to disk, are lost.</p>
+<pre><code>$ ./analyze results*.dat
+...a few minutes pass...
+^C</code></pre>
+<p>Let’s run that same command again, with an ampersand <code>&amp;</code> at the end of the line to tell the shell we want it to run in the <a href="glossary.html#background">background</a>:</p>
+<pre><code>$ ./analyze results*.dat &amp;</code></pre>
+<p>When we do this, the shell launches the program as before. Instead of leaving our keyboard and screen connected to the program’s standard input and output, though, the shell hangs onto them. This means the shell can give us a fresh command prompt, and start running other commands, right away. Here, for example, we’re putting some parameters for the next run of the program in a file:</p>
+<pre><code>$ cat &gt; params.txt
+density: 22.0
+viscosity: 0.75
+^D</code></pre>
+<p>(Remember, ^D is the shell’s way of showing Control-D, which means “end of input”.) Now let’s run the <code>jobs</code> command, which tells us what processes are currently running in the background:</p>
+<pre><code>$ jobs
+[1] ./analyze results01.dat results02.dat results03.dat</code></pre>
+<p>Since we’re about to go and get coffee, we might as well use the foreground command, <code>fg</code>, to bring our background job into the foreground:</p>
+<pre><code>$ fg
+...a few minutes pass...</code></pre>
+<p>When <code>analyze</code> finishes running, the shell gives us a fresh prompt as usual. If we had several jobs running in the background, we could control which one we brought to the foreground using <code>fg %1</code>, <code>fg %2</code>, and so on. The IDs are <em>not</em> the process IDs. Instead, they are the job IDs displayed by the <code>jobs</code> command.</p>
+<p>The shell gives us one more tool for job control: if a process is already running in the foreground, Control-Z will pause it and return control to the shell. We can then use <code>fg</code> to resume it in the foreground, or <code>bg</code> to resume it as a background job. For example, let’s run <code>analyze</code> again, and then type Control-Z. The shell immediately tells us that our program has been stopped, and gives us its job number:</p>
+<pre><code>$ ./analyze results01.dat
+^Z
+[1]  Stopped   ./analyze results01.dat</code></pre>
+<p>If we type <code>bg %1</code>, the shell starts the process running again, but in the background. We can check that it’s running using <code>jobs</code>, and kill it while it’s still in the background using <code>kill</code> and the job number. This has the same effect as bringing it to the foreground and then typing Control-C:</p>
+<pre><code>$ bg %1
+
+$ jobs
+[1] ./analyze results01.dat
+
+$ kill %1</code></pre>
+<p>Job control was important when users only had one terminal window at a time. It’s less important now: if we want to run another program, it’s easy enough to open another window and run it there. However, these ideas and tools are making a comeback, as they’re often the easiest way to run and control programs on remote computers elsewhere on the network. We’ll look at how to do this <a href="#s:ssh">later in this chapter</a>.</p>
+<div class="keypoints" markdown="1">
+<h4>Key Points</h4>
+<ul>
+<li>FIXME</li>
+</ul>
+</div>
+        </div>
+      </div>
+      </article>
+      <div class="footer">
+        <a class="label swc-blue-bg" href="http://software-carpentry.org">Software Carpentry</a>
+        <a class="label swc-blue-bg" href="http://xwmooc.net">xwMOOC</a>
+        <a class="label swc-blue-bg" href="https://github.com/statkclee/swcarpentry-version-5-3-new">한글소스</a>
+        <a class="label swc-blue-bg" href="https://github.com/swcarpentry">영문소스</a>
+        <a class="label swc-blue-bg" href="mailto:i@xwmooc.net">Contact</a>
+        <a class="label swc-blue-bg" href="http://statkclee.github.io/swcarpentry-version-5-3-new/LICENSE.html">License</a>
+      </div>
+    </div>
+    <!-- Javascript placed at the end of the document so the pages load faster -->
+    <script src="http://software-carpentry.org/v5/js/jquery-1.9.1.min.js"></script>
+    <script src="css/bootstrap/bootstrap-js/bootstrap.js"></script>
+  </body>
+</html>

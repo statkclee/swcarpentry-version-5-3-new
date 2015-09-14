@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="generator" content="pandoc">
+    <title>xwMOOC: A comparison of Make and doit</title>
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" type="text/css" href="http://statkclee.github.io/swcarpentry-version-5-3-new/css/bootstrap/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="http://statkclee.github.io/swcarpentry-version-5-3-new/css/bootstrap/bootstrap-theme.css" />
+    <link rel="stylesheet" type="text/css" href="http://statkclee.github.io/swcarpentry-version-5-3-new/css/swc.css" />
+    <link rel="alternate" type="application/rss+xml" title="Software Carpentry Blog" href="http://software-carpentry.org/feed.xml"/>
+    <meta charset="UTF-8" />
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body class="lesson">
+    <div class="container card">
+      <div class="banner">
+        <a href="http://software-carpentry.org" title="Software Carpentry">
+          <img alt="Software Carpentry banner" src="http://statkclee.github.io/swcarpentry-version-5-3-new/img/software-carpentry-banner.png" />
+      <!--     <img alt="xwMOOC banner" src="img/xwMOOC.png" />
+       -->  </a>
+      </div>
+      <article>
+      <div class="row">
+        <div class="col-md-10 col-md-offset-1">
+          <h1 class="title">A comparison of Make and doit</h1>
+          
+<h2 id="why-learn-doit-and-not-make">Why learn doit and not Make?</h2>
+<p>Software Carpentry has lessons covering two different build tools: Make and doit. Which should you choose when starting to automate your data analysis pipelines? This page is intended to give a brief overview of the benefits and drawbacks of each tool.</p>
+<h3 id="popularity">1. Popularity</h3>
+<p>Make is by far the most popular build tool currently in use. This is probably it’s greatest advantage. Learning how to write Makefiles will help you to reuse some pipelines written by other people. It will also be a big help if and when you need to install software from source code in a compiled language. If you have ever installed something by typing some combination of <code>./configure; make; make install</code> then you have already been using Makefiles without knowing. Doit, on the other hand, has a much smaller user base. If you learn doit, you may have more difficulty finding examples, and less people will be able to help you on forums or sites like Stack Overflow.</p>
+<h3 id="availability">2. Availability</h3>
+<p>Make is available by default on most unix machines (i.e. linux and mac). Doit, on the other hand, is highly unlikely to be pre-installed on any machine you might use. Doit is fairly easy to install if you have root privileges, but suffers from all the problems of python packaging if you do not. On the other hand, if you are a windows user, neither doit nor Make will be available by default and doit may well be considerably easier to install.</p>
+<h3 id="readability">3. Readability</h3>
+<p>Doit is much more verbose and readable than Make. Make has a lot of non-obvious automatic variables such as $^ and $@, whereas automatic variables in doit are probably clearer, the equivalents being %(dependencies)s and %(targets)s. Any if/then control flow or parameters that you may wish to add are also likely to be much more readable in doit/python than in make - especially if the person reading does not know either language.</p>
+<h3 id="self-documentation">4. Self-Documentation</h3>
+<p>Doit implements a <code>list</code> command, which will list all the available targets on the command line. If you write docstrings for your tasks, doit will also expose these as help pages for each target. By default, neither Make nor doit does a good job of listing possible parameters. However, with a little work doit can be combined with other python libraries such as argparse, which allows for a much more usable and self- documenting user interface</p>
+<h3 id="dry-runs">5. Dry Runs</h3>
+<p>Make can be run in “dry run” mode, where it won’t actually do anything, but will instead simply print out the commands that would be executed. Doit does not have an equivalent of this command.</p>
+<h3 id="python">6. Python</h3>
+<p>If you already know python, learning doit ought to be much quicker than learning Make. Additionally, if you work mainly in python, automating your pipelines with doit would reduce the cognitive overload associated with switching between programming languages.</p>
+<h3 id="debugging">7. Debugging</h3>
+<p>Doit can make use of any of the available python debuggers. You can also run doit with the –pdb option to automatically drop into a pdb shell when any errors occur. There are debuggers available for Make, but they are not especially easy to use.</p>
+<h3 id="extensibility">8. Extensibility</h3>
+<p>Doit is very lightweight, and very extensible. You can easily add your own commands, your own ways of determining whether tasks should be re-run, your own ways to report the results of a pipeline run, and much more.</p>
+<h3 id="the-doit-database">9. The doit Database</h3>
+<p>Make decides whether a file has changed if the timestamp on a dependency is newer than the timestamp on a target. Doit decides a file has changed if it detects a change in the files MD5 hash (i.e. only if the actual contents of the file changes). This eliminates un-needed re- calculation of some target files. On the other hand, in order to do this doit needs to store file MD5 hashes in a database file. If you accidentally delete this file, or if you run doit in such a way that it can no longer find the database file, it will be unable to tell which files have changed, and will default to re-running all of your tasks.</p>
+        </div>
+      </div>
+      </article>
+      <div class="footer">
+        <a class="label swc-blue-bg" href="http://software-carpentry.org">Software Carpentry</a>
+        <a class="label swc-blue-bg" href="http://xwmooc.net">xwMOOC</a>
+        <a class="label swc-blue-bg" href="https://github.com/statkclee/swcarpentry-version-5-3-new">한글소스</a>
+        <a class="label swc-blue-bg" href="https://github.com/swcarpentry">영문소스</a>
+        <a class="label swc-blue-bg" href="mailto:i@xwmooc.net">Contact</a>
+        <a class="label swc-blue-bg" href="http://statkclee.github.io/swcarpentry-version-5-3-new/LICENSE.html">License</a>
+      </div>
+    </div>
+    <!-- Javascript placed at the end of the document so the pages load faster -->
+    <script src="http://software-carpentry.org/v5/js/jquery-1.9.1.min.js"></script>
+    <script src="css/bootstrap/bootstrap-js/bootstrap.js"></script>
+  </body>
+</html>

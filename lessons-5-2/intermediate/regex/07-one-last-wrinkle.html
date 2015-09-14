@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="generator" content="pandoc">
+    <title>xwMOOC: One last Wrinkle</title>
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" type="text/css" href="http://statkclee.github.io/swcarpentry-version-5-3-new/css/bootstrap/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="http://statkclee.github.io/swcarpentry-version-5-3-new/css/bootstrap/bootstrap-theme.css" />
+    <link rel="stylesheet" type="text/css" href="http://statkclee.github.io/swcarpentry-version-5-3-new/css/swc.css" />
+    <link rel="alternate" type="application/rss+xml" title="Software Carpentry Blog" href="http://software-carpentry.org/feed.xml"/>
+    <meta charset="UTF-8" />
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body class="lesson">
+    <div class="container card">
+      <div class="banner">
+        <a href="http://software-carpentry.org" title="Software Carpentry">
+          <img alt="Software Carpentry banner" src="http://statkclee.github.io/swcarpentry-version-5-3-new/img/software-carpentry-banner.png" />
+      <!--     <img alt="xwMOOC banner" src="img/xwMOOC.png" />
+       -->  </a>
+      </div>
+      <article>
+      <div class="row">
+        <div class="col-md-10 col-md-offset-1">
+          <h1 class="title">One last Wrinkle</h1>
+          
+<p>Let’s have one last look at the function we wrote to extract data from lab notebooks:</p>
+<pre><code>def get_date(record):
+    &#39;&#39;&#39;Return (Y, M, D) as strings, or None.&#39;&#39;&#39;
+
+    # 2010-01-01
+    m = re.search(&#39;([0-9]{4})-([0-9]{2})-([0-9]{2})&#39;,
+                  record)
+    if m:
+        return m.group(1), m.group(2), m.group(3)
+
+    # Jan 1, 2010 (comma optional, day may be 1 or 2 digits)
+    m = re.search(&#39;/([A-Z][a-z]+) ([0-9]{1,2}),? ([0-9]{4})/&#39;,
+                  record)
+    if m:
+        return m.group(3), m.group(1), m.group(2)
+
+    return None</code></pre>
+<p>{:class=“in”}</p>
+<p>We can make it easier to add new patterns to this function by making it more declarative. The trick is to combine the regular expressions and the IDs of the groups we want to return:</p>
+<pre><code>def get_fields(record):
+    &#39;&#39;&#39;Return (Y, M, D, site, reading) or None.&#39;&#39;&#39;
+
+    patterns = [
+      [&#39;(.+)\t([0-9]{4})-([0-9]{2})-([0-9]{2})\t(.+)&#39;,      2, 3, 4, 1, 5],
+      [&#39;(.+)/([A-Z][a-z]+) ([0-9]{1,2}),? ([0-9]{4})/(.+)&#39;, 4, 2, 3, 1, 5]
+    ]
+    for pattern, year, month, day, site, reading in patterns:
+        m = re.search(pattern, record)
+        if m:
+           return m.group(year), m.group(month), m.group(day),
+                  m.group(site), m.group(reading)
+
+    return None</code></pre>
+<p>{:class=“in”}</p>
+<p>Each entry in the list <code>patterns</code> has two parts: a regular expression, and then the indices of the group that will contain the year, month, day, site, and reading if that pattern matches. The loop tries the regular expressions in <code>patterns</code> one by one. As soon as a pattern matches it returns the matched groups, permuting them according to the indices so that the data always comes back in the same order. To handle the format in Notebook #3, we just add one line to this table:</p>
+<pre><code>[&#39;([A-Z][a-z]+) ([0-9]{1,2}) ([0-9]{4}) \\((.+)\\) (.+)&#39;, 3, 1, 2, 4, 5]</code></pre>
+<p>Using a table might not seem like much of an improvement over the “match, extract, and return” style we have been using so far. However, the table-based approach has one major advantage: it signals to the reader that all the patterns are being handled the same way. It’s all too easy for programmers to tweak the branches of a “match, extract, and return” function so that each possibility is handled in a slightly different way. This makes it very hard for readers to understand what’s going on, and equally hard for the next programmer in line to debug or extend the code. The more declarative the code is, the more confidence readers can have that there really is only one thing for them to understand.</p>
+<h3 id="more-tools">More Tools</h3>
+<p>To end our exploration of regular expressions, let’s work through a moderately complex problem and introduce a few more tools in the regular expression library. Our starting point is an archive of several thousand papers and theses written in LaTeX, a text-based document formatting program. LaTeX documents use labels to refer to items in a shared bibliography. Our job is to find out how often citations appear together, i.e., how often paper X is cited in the same document as paper Y. To answer this question we need to extract the set of citation labels from each document.</p>
+<p>Let’s have a closer look at our input:</p>
+<pre><code>Granger&#39;s work on graphs \cite{dd-gr2007,gr2009},
+particularly ones obeying Snape&#39;s Inequality
+\cite{ snape87 } (but see \cite{quirrell89}),
+has opened up new lines of research.  However,
+studies at Unseen University \cite{stibbons2002,
+stibbons2008} highlight several dangers.</code></pre>
+<p>Citations in LaTeX are written using <code>\cite{…}</code>, with cross-reference labels in the curly braces. A single citation can include two or more labels separated by commas. There may be white space before or after labels or line breaks where a citation is split across two lines, and there can be multiple citations per line.</p>
+<p>Our first idea is to use a group to capture everything inside the curly braces following the word ‘cite’:</p>
+<pre><code>m = re.search(&#39;cite{(.+)}&#39;, &#39;a \\cite{X} b&#39;)
+print m.groups()</code></pre>
+<p>{:class=“in”} <sub><sub><sub> (‘X’,) </sub></sub></sub> {:class=“out”}</p>
+<p>It seems to work in one simple case, but what if there are multiple citations on a single line?</p>
+<pre><code>m = re.search(&#39;cite{(.+)}&#39;, &#39;a \\cite{X} b \\cite{Y} c&#39;)
+print m.groups()</code></pre>
+<p>{:class=“in”} <sub><sub><sub> (‘X} b \cite{Y’,) </sub></sub></sub> {:class=“out”}</p>
+<p>It looks like we’re capturing the text <em>between</em> the citations. The reason is that regular expression matching is <a href="glossary.html#greedy-matching">greedy</a>: it matches as much text as it can, and the ‘.’ in <code>'.+'</code> will match all the characters from the first curly brace to the last one, including the intervening citations and curly braces.</p>
+<p>The diagnosis of our problem suggests its solution: let’s have the regular expression match everything <em>except</em> a closing curly brace. This is easy to do: if the first character of a set in square brackets is the circumflex ‘^’, then the set is negated, i.e., it matches everything <em>except</em> the characters in the set. The expression <code>[^}]</code> therefore matches every character except a closing curly brace. Let’s try it out:</p>
+<pre><code>m = re.search(&#39;cite{([^}]+)}&#39;, &#39;a \\cite{X} b&#39;)
+print m.groups()</code></pre>
+<p>{:class=“in”} <sub><sub><sub> (’X,) </sub></sub></sub> {:class=“out”}</p>
+<p>This works for a single citation: all we’ve done is change ‘.’ to the negated set. What about multiple citations on a single line?</p>
+<pre><code>m = re.search(&#39;cite{([^}]+)}&#39;, &#39;a \\cite{X} b \\cite{Y} c&#39;)
+print m.groups()</code></pre>
+<p>{:class=“in”} <sub><sub><sub> (’X,) </sub></sub></sub> {:class=“out”}</p>
+<p>It’s not gobbling up text we don’t want it to, but it’s only capturing the first citation. Somehow, we need to extract all matches, not just the first.</p>
+<p>The regular expression library has a function to do exactly this: if we use <code>re.findall</code> instead of <code>re.search</code>, it will give us back a list of all the substrings that matched our pattern. Remember, whatever your problem is, someone has probably run into it before, and there’s probably something in the library to help you. Knowing what’s in the library is as important to a programmer as knowing what’s in the literature is to a scientist. The bad news is, it’s usually hard to find things in libraries or their documentation unless you already know enough about your problem to know what keywords to search for.</p>
+<p>Let’s give <code>findall</code> a try:</p>
+<pre><code>print re.findall(&#39;cite{([^}]+)}&#39;, &#39;a \\cite{X} b \\cite{Y} c&#39;)</code></pre>
+<p>{:class=“in”} <sub><sub><sub> [‘X’, ‘Y’] </sub></sub></sub> {:class=“out”}</p>
+<p>It seems to produce the right output—not bad for a 7-character change. What about spaces in citations?</p>
+<pre><code>print re.search(&#39;cite{([^}]+)}&#39;, &#39;a \\cite{ X} b \\cite{Y } c&#39;).groups()</code></pre>
+<p>{:class=“in”} <sub><sub><sub> [‘X’, ‘Y’] </sub></sub></sub> {:class=“out”}</p>
+<p>The good news is, nothing breaks. The bad news is, the spaces are saved by <code>findall</code>, which isn’t really what we want. We could tidy this up after the fact using <code>string.strip</code>, but let’s modify the pattern instead:</p>
+<pre><code>print re.findall(&#39;cite{\\s*([^}]+)\\s*}&#39;, &#39;a \\cite{ X} b \\cite{Y } c&#39;)</code></pre>
+<p>{:class=“in”} <sub><sub><sub> [‘X’, ‘Y’] </sub></sub></sub> {:class=“out”}</p>
+<p>If you recall, <code>'\s'</code> is an abbrevation for the set of whitespace characters, so these uses of <code>'\s*'</code> match zero or more spaces immediately after the opening curly brace, or immediately before the closing one (and as always we have to write <code>'\\s'</code> to get the backslash into the Python string). However, the space after the ‘Y’ is still being returned in the matched text.</p>
+<p>Once again, the problem is that regular expressions are greedy: the space after the ‘Y’ isn’t a closing curly brace, so it’s matched by the negated character set, and included in the returned string. The <code>'\s*'</code> that’s supposed to match the trailing space is then matched against zero characters instead of one. It’s not what we want, but it’s legal.</p>
+<p>Let’s force our match to line up with the break from word to non-word characters using <code>'\b'</code>:</p>
+<pre><code>print re.findall(&#39;cite{\\s*\\b([^}]+)\\b\\s*}&#39;, &#39;a \\cite{ X} b \\cite{Y } c&#39;)</code></pre>
+<p>{:class=“in”} <sub><sub><sub> [‘X’, ‘Y’] </sub></sub></sub> {:class=“out”}</p>
+<p>It works! check this last example: in the PowerPoint, there’s still a space before the ‘X’ The change is to put <code>'\b'</code> after the first unwanted spaces, and before the last ones. Since the curly braces around the citation labels are also non-word characters, the pattern matches even if there aren’t any opening or trailing spaces.</p>
+<p>The last hurdle is to handle multiple labels inside a single pair of curly braces. The pattern we’ve built so far doesn’t explode when there are two or more labels, and it even handles spaces after the commas, but it returns all those labels as a single lump of text:</p>
+<pre><code>print re.findall(&#39;cite{\\s*\\b([^}]+)\\b\\s*}&#39;, &#39;\\cite{X,Y} &#39;)</code></pre>
+<p>{:class=“in”} <sub><sub><sub> [‘X,Y’] </sub></sub></sub> {:class=“out”}</p>
+<pre><code>print re.findall(&#39;cite{\\s*\\b([^}]+)\\b\\s*}&#39;, &#39;\\cite{X, Y, Z} &#39;)</code></pre>
+<p>{:class=“in”} <sub><sub><sub> [‘X, Y, Z’] </sub></sub></sub> {:class=“out”}</p>
+<p>We actually could write a pattern that would break everything up on commas, but it would need some very advanced features of the regular expression library. Instead, let’s use another basic function, <code>re.split</code>, to separate multiple labels. <code>re.split</code> does the same thing as <code>string.split</code>, but unlike its simpler cousin, it breaks things up everywhere that a pattern matches.</p>
+<p>The best way to show how it works is to write the function we originally set out to create. Let’s start with a skeleton that includes some test data, a function that does nothing (but doesn’t just fail), and a couple of lines that call that function and display the result:</p>
+<pre><code>def get_citations(text):
+    &#39;&#39;&#39;Return the set of all citation tags found in a block of text.&#39;&#39;&#39;
+    return set() # to be done
+
+if __name__ == &#39;__main__&#39;:
+    test = &#39;&#39;&#39;\
+Granger&#39;s work on graphs \cite{dd-gr2007,gr2009},
+particularly ones obeying Snape&#39;s Inequality
+\cite{ snape87 } (but see \cite{quirrell89}),
+has opened up new lines of research.  However,
+studies at Unseen University \cite{stibbons2002,
+stibbons2008} highlight several dangers.&#39;&#39;&#39;
+
+    print get_citations(test)</code></pre>
+<p>{:class=“in”} <sub><sub><sub> set([]) </sub></sub></sub> {:class=“out”}</p>
+<p>Now let’s write our function. For readability’s sake, we’ll put our patterns at the top and give them memorable names. Inside the function, we’ll pull out all the citations using the first pattern, then split each result everywhere there’s a comma with optional spaces before or after it. We’ll stuff all the results into a set, and return that. If no matches were found, that set will be empty.</p>
+<pre><code>p_cite = &#39;cite{\\s*\\b([^}]+)\\b\\s*}&#39;
+p_split = &#39;\\s*,\\s*&#39;
+
+def get_citations(text):
+    &#39;&#39;&#39;Return the set of all citation tags found in a block of text.&#39;&#39;&#39;
+
+    result = set()
+    match = re.findall(p_cite, text)
+    if match:
+        for citation in match:
+            cites = re.split(p_split, citation)
+            for c in cites:
+                result.add(c)
+
+    return result</code></pre>
+<p>{:class=“in”}</p>
+<p>We can use one more trick from the regular expression library to make this function more efficient. Instead of turning the regular expression into a finite state machine over and over again, we can compile the regular expression and save the resulting object:</p>
+<pre><code>p_cite = re.compile(&#39;cite{\\s*\\b([^}]+)\\b\\s*}&#39;)
+p_split = re.compile(&#39;\\s*,\\s*&#39;)
+
+def get_citations(text):
+    &#39;&#39;&#39;Return the set of all citation tags found in a block of text.&#39;&#39;&#39;
+
+    result = set()
+    match = p_cite.findall(text)
+    if match:
+        for citations in match:
+            label_list = p_split.split(citations)
+            for label in label_list:
+                result.add(label)
+
+    return result</code></pre>
+<p>{:class=“in”}</p>
+<p>That object has methods with the same names as the functions we’ve been using from the library, like <code>search</code> and <code>findall</code>, but if we’re using the same pattern over and over again, compiling it once and re-using the compiled object is much faster.</p>
+<p>As you can see, the changes required are very small: instead of saving the textual representations of our expressions, we compile them, and then instead of calling the top-level functions from the regular expression library, we call the methods of those saved objects. The result is a set of all the citations in our test data, pulled out with just a dozen lines of code:</p>
+<pre><code>if __name__ == &#39;__main__&#39;:
+    test = &#39;&#39;&#39;\
+Granger&#39;s work on graphs \cite{dd-gr2007,gr2009},
+particularly ones obeying Snape&#39;s Inequality
+\cite{ snape87 } (but see \cite{quirrell89}),
+has opened up new lines of research.  However,
+studies at Unseen University \cite{stibbons2002,
+stibbons2008} highlight several dangers.&#39;&#39;&#39;
+
+    print get_citations(test)</code></pre>
+<p>{:class=“in”} <sub><sub><sub> set([‘gr2009’, ‘stibbons2002’, ‘dd-gr2007’, ‘stibbons2008’, ‘snape87’, ‘quirrell89’]) </sub></sub></sub> {:class=“out”}</p>
+<p>Finally, if we are going to compile our regular expressions, we can make them even easier to understand by using <em>verbose mode</em> to add comments. Verbose mode tells Python to ignore whitespace and comments in the regular expression, which lets us write patterns like this:</p>
+<pre><code>p_cite = &#39;&#39;&#39;
+    cite{          # start with literal &#39;cite{&#39;
+    \\s*           # then some optional spaces
+    \\b            # up to a start-of-word boundary
+    ([^}]+)        # then anything that isn&#39;t a closing &#39;}&#39;
+    \\b            # then an end-of-word boundary
+    \\s*           # and some more optional spaces
+    }              # and the closing &#39;}&#39;
+&#39;&#39;&#39;
+matcher = re.compile(p_cite, re.VERBOSE)</code></pre>
+<p>{:class=“in”}</p>
+<p>Documenting patterns like this makes them much easier to fix and extend.</p>
+        </div>
+      </div>
+      </article>
+      <div class="footer">
+        <a class="label swc-blue-bg" href="http://software-carpentry.org">Software Carpentry</a>
+        <a class="label swc-blue-bg" href="http://xwmooc.net">xwMOOC</a>
+        <a class="label swc-blue-bg" href="https://github.com/statkclee/swcarpentry-version-5-3-new">한글소스</a>
+        <a class="label swc-blue-bg" href="https://github.com/swcarpentry">영문소스</a>
+        <a class="label swc-blue-bg" href="mailto:i@xwmooc.net">Contact</a>
+        <a class="label swc-blue-bg" href="http://statkclee.github.io/swcarpentry-version-5-3-new/LICENSE.html">License</a>
+      </div>
+    </div>
+    <!-- Javascript placed at the end of the document so the pages load faster -->
+    <script src="http://software-carpentry.org/v5/js/jquery-1.9.1.min.js"></script>
+    <script src="css/bootstrap/bootstrap-js/bootstrap.js"></script>
+  </body>
+</html>

@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="generator" content="pandoc">
+    <title>xwMOOC: Collaborating</title>
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" type="text/css" href="http://statkclee.github.io/swcarpentry-version-5-3-new/css/bootstrap/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="http://statkclee.github.io/swcarpentry-version-5-3-new/css/bootstrap/bootstrap-theme.css" />
+    <link rel="stylesheet" type="text/css" href="http://statkclee.github.io/swcarpentry-version-5-3-new/css/swc.css" />
+    <link rel="alternate" type="application/rss+xml" title="Software Carpentry Blog" href="http://software-carpentry.org/feed.xml"/>
+    <meta charset="UTF-8" />
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body class="lesson">
+    <div class="container card">
+      <div class="banner">
+        <a href="http://software-carpentry.org" title="Software Carpentry">
+          <img alt="Software Carpentry banner" src="http://statkclee.github.io/swcarpentry-version-5-3-new/img/software-carpentry-banner.png" />
+      <!--     <img alt="xwMOOC banner" src="img/xwMOOC.png" />
+       -->  </a>
+      </div>
+      <article>
+      <div class="row">
+        <div class="col-md-10 col-md-offset-1">
+          <h1 class="title">Collaborating</h1>
+          
+<div class="objectives" markdown="1">
+<h4>Objectives</h4>
+<ul>
+<li>Explain what remote repositories are and why they are useful.</li>
+<li>Explain what happens when a remote repository is cloned.</li>
+<li>Explain what happens when changes are pushed to or pulled from a remote repository.</li>
+</ul>
+</div>
+<p>Version control really comes into its own when we begin to collaborate with other people. We already have most of the machinery we need to do this; the only thing missing is to copy changes from one person’s repository to another.</p>
+<p>Systems like Mercurial allow us to move work between any two repositories. In practice, though, it’s easiest to use one copy as a central hub, and to keep it on the web rather than on someone’s laptop. Most programmers use hosting services like <a href="http://bitbucket.org">BitBucket</a> and similar to hold those master copies; we’ll explore the pros and cons of this in the final section of this lesson.</p>
+<p>Let’s start by sharing the changes we’ve made to our current project with the world. Log in to BitBucket, then click on the icon in the top right corner to create a new repository called <code>planets</code>:</p>
+<p><img src="img/bitbucket-create-repo-01.png" width="600px" alt="Creating a Repository on BitBucket (Step 1)" /></p>
+<p>Name your repository “planets” and then click “Create Repository”:</p>
+<p><img src="img/bitbucket-create-repo-02.png" width="600px" alt="Creating a Repository on BitBucket (Step 2)" /></p>
+<p>As soon as the repository is created, BitBucket displays a page with a URL and some information on how to configure your local repository:</p>
+<p><img src="img/bitbucket-create-repo-03.png" width="800px" alt="Creating a Repository on BitBucket (Step 3)" /></p>
+<p>This effectively does the following on BitBucket’s servers:</p>
+<pre><code>$ mkdir planets
+$ cd planets
+$ hg init</code></pre>
+<p>{:class=“in”}</p>
+<p>Our local repository still contains our earlier work on <code>mars.txt</code>, but the remote repository on BitBucket doesn’t contain any files yet:</p>
+<p><img src="img/hg-freshly-made-bitbucket-repo.svg" alt="Freshly-Made BitBucket Repository" /></p>
+<p>The next step is to connect the two repositories. We do this by making the BitBucket repository a <a href="../../gloss.html#repository-remote">remote</a> for the local repository. The home page of the repository on BitBucket includes the string we need to identify it after clicking on “I have an existing project to push up”:</p>
+<p><img src="img/bitbucket-find-repo-string.png" width="800px" alt="Where to Find Repository URL on BitBucket" /></p>
+<p>Change the ‘ssh://’ string to ‘https://’ in the url <a href="../../gloss.html#protocol">protocol</a>. It’s slightly less convenient for day-to-day use, but much less work for beginners to set up.</p>
+<p>Copy that URL from the browser, go into the local <code>planets</code> repository, and use your text editor to add the following lines to <code>.hg/hgrc</code>:</p>
+<pre><code>[paths]
+default = https://bitbucket.org/vlad/planets</code></pre>
+<p>Make sure to use the URL for your repository rather than Vlad’s; the only difference should be your username instead of <code>vlad</code>.</p>
+<p>We can check that the command has worked by running <code>hg paths</code>:</p>
+<pre><code>$ hg paths</code></pre>
+<p>{:class=“in”} <sub>~</sub> default = https://bitbucket.org/vlad/planets <sub>~</sub> {:class=“out”}</p>
+<p>Once the default path is set up, this command will push the changes from our local repository to the repository on BitBucket:</p>
+<pre><code>$ hg push</code></pre>
+<p>{:class=“in”} <sub>~</sub> pushing to https://bitbucket.org/vlad/planets searching for changes adding changesets adding manifests adding file changes added 1 changesets with 1 changes to 1 files <sub>~</sub> {:class=“out”}</p>
+<p>Our local and remote repositories are now in this state:</p>
+<p><img src="img/bitbucket-repo-after-first-push.svg" alt="BitBucket Repository After First Push" /></p>
+<p>We can pull changes from the remote repository to the local one as well:</p>
+<pre><code>$ hg pull</code></pre>
+<p>{:class=“in”} <sub>~</sub> pulling from https://bitbucket.org/vlad/planets searching for changes no changes found <sub>~</sub> {:class=“out”}</p>
+<p>Pulling has no effect in this case because the two repositories are already synchronized. If someone else had pushed some changes to the repository on BitBucket, though, this command would download them to our local repository.</p>
+<p>We can simulate working with a collaborator using another copy of the repository on our local machine. To do this, <code>cd</code> to the directory <code>/tmp</code>. (Note the absolute path: don’t make <code>tmp</code> a subdirectory of the existing repository). Instead of creating a new repository here with <code>hg init</code>, we will <a href="../../gloss.html#repository-clone">clone</a> the existing repository from BitBucket:</p>
+<pre><code>$ cd /tmp
+$ hg clone https://bitbucket.org/vlad/planets</code></pre>
+<p>{:class=“in”}</p>
+<p><code>hg clone</code> creates a fresh local copy of a remote repository. (We did it in <code>/tmp</code> or some other directory so that we don’t overwrite our existing <code>planets</code> directory.) Our computer now has two copies of the repository:</p>
+<p><img src="img/hg-after-duplicate-clone.svg" alt="After Creating Duplicate Clone of Repository" /></p>
+<p>Let’s make a change in the copy in <code>/tmp/planets</code>:</p>
+<pre><code>$ cd /tmp/planets
+$ nano pluto.txt
+$ cat pluto.txt</code></pre>
+<p>{:class=“in”} <sub>~</sub> It is so a planet! <sub><sub><sub> {:class=“out”} </sub></sub></sub> $ hg add pluto.txt $ hg commit -m “Some notes about Pluto” <sub>~</sub> {:class=“in”}</p>
+<p>then push the change to BitBucket:</p>
+<pre><code>$ hg push</code></pre>
+<p>{:class=“in”} <sub>~</sub> pushing to https://bitbucket.org/vlad/planets searching for changes adding changesets adding manifests adding file changes added 1 changesets with 1 changes to 1 files <sub>~</sub> {:class=“out”}</p>
+<p>Note that we didn’t have to create a remote called <code>default</code>: Mercurial does this automatically, using that name, when we clone a repository. (This is why <code>default</code> was a sensible choice earlier when we were setting up remotes by hand.)</p>
+<p>Our three repositories now look like this:</p>
+<p><img src="img/hg-after-change-to-duplicate-repo.svg" alt="After Pushing Change from Duplicate Repository" /></p>
+<p>We can now download changes into the original repository on our machine:</p>
+<pre><code>$ cd ~/planets
+$ hg pull</code></pre>
+<p>{:class=“in”} <sub>~</sub> pulling from https://bitbucket.org/vlad/planets searching for changes adding changesets adding manifests adding file changes added 1 changesets with 1 changes to 1 files (run ‘hg update’ to get a working copy) <sub>~</sub> {:class=“out”}</p>
+<p>If we look at our repository history now with the <code>hg log --graph</code> command we can see that the <code>@</code> character marks the revision that our working copy of the files is at and the revision that we pulled from Bitbucket is above that, meaning it has not yet been applied to our working files:</p>
+<pre><code>$ hg log --graph</code></pre>
+<p>{:class=“in”} <sub>~</sub> o changeset: 3:2e9c23a9090d | user: Vlad Dracula <script type="text/javascript">
+<!--
+h='&#116;&#114;&#x61;&#110;&#46;&#x73;&#x79;&#108;&#118;&#x61;&#110;&#46;&#x69;&#x61;';a='&#64;';n='&#118;&#108;&#x61;&#100;';e=n+a+h;
+document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'" clas'+'s="em' + 'ail">'+e+'<\/'+'a'+'>');
+// -->
+</script><noscript>&#118;&#108;&#x61;&#100;&#32;&#x61;&#116;&#32;&#116;&#114;&#x61;&#110;&#32;&#100;&#x6f;&#116;&#32;&#x73;&#x79;&#108;&#118;&#x61;&#110;&#32;&#100;&#x6f;&#116;&#32;&#x69;&#x61;</noscript> | date: Mon Apr 14 16:56:42 2014 -0400 | summary: Some notes about Pluto | @ changeset: 2:43da31fb96ec | user: Vlad Dracula <script type="text/javascript">
+<!--
+h='&#116;&#114;&#x61;&#110;&#46;&#x73;&#x79;&#108;&#118;&#x61;&#110;&#46;&#x69;&#x61;';a='&#64;';n='&#118;&#108;&#x61;&#100;';e=n+a+h;
+document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'" clas'+'s="em' + 'ail">'+e+'<\/'+'a'+'>');
+// -->
+</script><noscript>&#118;&#108;&#x61;&#100;&#32;&#x61;&#116;&#32;&#116;&#114;&#x61;&#110;&#32;&#100;&#x6f;&#116;&#32;&#x73;&#x79;&#108;&#118;&#x61;&#110;&#32;&#100;&#x6f;&#116;&#32;&#x69;&#x61;</noscript> | date: Mon Apr 14 16:37:12 2014 -0400 | summary: Thoughts about the climate | o changeset: 1:9b3b65e50b8c | user: Vlad Dracula <script type="text/javascript">
+<!--
+h='&#116;&#114;&#x61;&#110;&#46;&#x73;&#x79;&#108;&#118;&#x61;&#110;&#46;&#x69;&#x61;';a='&#64;';n='&#118;&#108;&#x61;&#100;';e=n+a+h;
+document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'" clas'+'s="em' + 'ail">'+e+'<\/'+'a'+'>');
+// -->
+</script><noscript>&#118;&#108;&#x61;&#100;&#32;&#x61;&#116;&#32;&#116;&#114;&#x61;&#110;&#32;&#100;&#x6f;&#116;&#32;&#x73;&#x79;&#108;&#118;&#x61;&#110;&#32;&#100;&#x6f;&#116;&#32;&#x69;&#x61;</noscript> | date: Mon Apr 14 15:52:43 2014 -0400 | summary: Concerns about Mars’s moons on my furry friend | o changeset: 0:72ab25fa99a1 user: Vlad Dracula <script type="text/javascript">
+<!--
+h='&#116;&#114;&#x61;&#110;&#46;&#x73;&#x79;&#108;&#118;&#x61;&#110;&#46;&#x69;&#x61;';a='&#64;';n='&#118;&#108;&#x61;&#100;';e=n+a+h;
+document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'" clas'+'s="em' + 'ail">'+e+'<\/'+'a'+'>');
+// -->
+</script><noscript>&#118;&#108;&#x61;&#100;&#32;&#x61;&#116;&#32;&#116;&#114;&#x61;&#110;&#32;&#100;&#x6f;&#116;&#32;&#x73;&#x79;&#108;&#118;&#x61;&#110;&#32;&#100;&#x6f;&#116;&#32;&#x69;&#x61;</noscript> date: Mon Apr 14 14:41:58 2014 -0400 summary: Starting to think about Mars <sub>~</sub> {:class=“out”}</p>
+<p>To apply those changes we use <code>hg update</code> (as Mercurial helpfully suggested at the end of the <code>hg pull</code> process):</p>
+<pre><code>$ hg update</code></pre>
+<p>{:class=“in”} <sub>~</sub> 1 files updated, 0 files merged, 0 files removed, 0 files unresolved <sub>~</sub> {:class=“out”}</p>
+<p>You can use <code>hg log --graph</code> again to that the <code>@</code> has been moved to changeset 3 which tells us that our working copy is up to date.</p>
+<p>Here is what our 2 local repositories and our Bitbucket repository look like now, showing how the <code>pluto.txt</code> file has been copied from Bitbucket to our <code>planets/</code> repository clone:</p>
+<p><img src="img/hg-after-pulling-to-local-repo.svg" alt="After Pulling Change to Local Repository" /></p>
+<p>In practice, we would probably never have two copies of the same remote repository on our laptop at once. Instead, one of those copies would be on our laptop, and the other on a lab machine, or on someone else’s computer. Pushing and pulling changes gives us a reliable way to share work between different people and machines.</p>
+<div class="keypoints" markdown="1">
+<h4>Key Points</h4>
+<ul>
+<li>A local Mercurial repository can be connected to one or more remote repositories.</li>
+<li>Use the HTTPS protocol to connect to remote repositories until you have learned how to set up SSH.</li>
+<li><code>hg push</code> copies changes from a local repository to a remote repository.</li>
+<li><code>hg pull</code> copies changes from a remote repository to a local repository.</li>
+<li><code>hg clone</code> copies a remote repository to create a local repository with a remote called <code>default</code> automatically set up.</li>
+</ul>
+</div>
+<div class="challenges" markdown="1">
+<h4>Challenges</h4>
+<ol style="list-style-type: decimal">
+<li>Create a repository on BitBucket, clone it, add a file, push those changes to BitBucket, and then look at the <a href="../../gloss.html#timestamp">timestamp</a> of the change on BitBucket. How does BitBucket record times, and why?</li>
+</ol>
+</div>
+        </div>
+      </div>
+      </article>
+      <div class="footer">
+        <a class="label swc-blue-bg" href="http://software-carpentry.org">Software Carpentry</a>
+        <a class="label swc-blue-bg" href="http://xwmooc.net">xwMOOC</a>
+        <a class="label swc-blue-bg" href="https://github.com/statkclee/swcarpentry-version-5-3-new">한글소스</a>
+        <a class="label swc-blue-bg" href="https://github.com/swcarpentry">영문소스</a>
+        <a class="label swc-blue-bg" href="mailto:i@xwmooc.net">Contact</a>
+        <a class="label swc-blue-bg" href="http://statkclee.github.io/swcarpentry-version-5-3-new/LICENSE.html">License</a>
+      </div>
+    </div>
+    <!-- Javascript placed at the end of the document so the pages load faster -->
+    <script src="http://software-carpentry.org/v5/js/jquery-1.9.1.min.js"></script>
+    <script src="css/bootstrap/bootstrap-js/bootstrap.js"></script>
+  </body>
+</html>

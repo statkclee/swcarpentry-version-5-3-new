@@ -29,27 +29,43 @@
         <div class="col-md-10 col-md-offset-1">
           <h1 class="title">The Unix Shell</h1>
           
-<p>The Unix shell has been around longer than most of its users have been alive. It has survived so long because it’s a power tool that allows people to do complex things with just a few keystrokes. More importantly, it helps them combine existing programs in new ways and automate repetitive tasks so that they don’t have to type the same things over and over again.</p>
+<p>유닉스 쉘(Unix Shell)은 대부분의 컴퓨터 사용자가 살아온 것보다 오래 동안 존재했다. 오래동안 생존한 이유는 사용자로 하여금 단지 키보드 몇번 쳐서 복잡한 작업을 할 수 있게 하는 강력한 도구이기 때문이다. 좀더 중요하게는 기존의 프로그램을 새로운 방식으로 조합해서 반복적인 작업을 자동화해서 동일한 작업을 반복적으로 타이핑하지 않게 만든다.</p>
+<p>쉘 사용이 광범위한 다른 강력한 도구와 컴퓨팅 자원을 사용하는 근본이다. 여기에는 “고성능 컴퓨팅(high-performance computing)” 슈퍼컴퓨터가 포함된다. 이번 학습을 통해서 효과적으로 컴퓨팅 자원을 사용하는 경로를 안내한다.</p>
+<div id="필수-전제조건" class="prereq panel panel-warning">
+<div class="panel-heading">
+<h2><span class="glyphicon glyphicon-education"></span>필수 전제조건</h2>
+</div>
+<div class="panel-body">
+<p>파일 시스템과 쉘 기초를 학습한다. 만약 컴퓨터에 파일을 저장했고 “파일”과 (동일한 것에 대해 사용하는 일반적인 두 단어)“디렉토리” 혹은 “폴더”를 인식하고 있다면, 이번 학습에 준비됐다.</p>
+<p>만약 파일과 디렉토리를 다루고 <code>grep</code> 과 <code>find</code> 명령어로 파일을 찾고, 간단한 루프와 스크립트를 작성하는데 친숙하다면, 이번 학습을 통해서 그다지 많은 것을 배우지 못할 수도 있다.</p>
+</div>
+</div>
 <blockquote>
-<h2>Prerequisites</h2>
-<p>FIXME A short paragraph describing what learners need to know before tackling this lesson.</p>
-</blockquote>
-<h2 id="topics">Topics</h2>
+<h2>준비물</h2>
+<p>이번 학습에 사용될 파일을 다운로드한다:</p>
 <ol style="list-style-type: decimal">
-<li><a href="00-intro.html">Introducing the Shell</a></li>
-<li><a href="01-filedir.html">Files and Directories</a></li>
-<li><a href="02-create.html">Creating Things</a></li>
-<li><a href="03-pipefilter.html">Pipes and Filters</a></li>
-<li><a href="04-loop.html">Loops</a></li>
-<li><a href="05-script.html">Shell Scripts</a></li>
-<li><a href="06-find.html">Finding Things</a></li>
+<li><code>shell-novice</code>라는 이름으로 바탕화면에 디렉토리를 신규로 생성한다.</li>
+<li><a href="./shell-novice-data.zip">shell-novice-data.zip</a> 파일을 다운로드하고 나서 파일을 <code>shell-novice</code> 디렉토리로 이동한다.</li>
+<li>아직 압축을 풀지 않았다면, 두번 클릭해서 압축을 푼다. <code>data</code>라는 이름의 신규 폴더가 종국에는 나타나야 된다.</li>
+<li>다음 명령어로 유닉스 쉘에서 압축을 푼 디렉토리로 접근한다.</li>
 </ol>
-<h2 id="other-resources">Other Resources</h2>
+<pre class="input"><code>$ cd &amp;&amp; cd Desktop/shell-novice/data</code></pre>
+</blockquote>
+<h2 id="학습-주제">학습 주제</h2>
+<ol style="list-style-type: decimal">
+<li><a href="00-intro.html">쉘(shell) 소개</a></li>
+<li><a href="01-filedir.html">파일과 디렉토리</a></li>
+<li><a href="02-create.html">파일과 디렉토리 생성</a></li>
+<li><a href="03-pipefilter.html">파이프(pipe)와 필터(filter)</a></li>
+<li><a href="04-loop.html">루프(Loops)</a></li>
+<li><a href="05-script.html">쉘 스크립트(shell script)</a></li>
+<li><a href="06-find.html">파일, 문자, 디렉토리 등 찾기</a></li>
+</ol>
+<h2 id="기타-교재">기타 교재</h2>
 <ul>
-<li><a href="motivation.html">Motivation</a></li>
-<li><a href="reference.html">Reference</a></li>
-<li><a href="discussion.html">Discussion</a></li>
-<li><a href="instructors.html">Instructor’s Guide</a></li>
+<li><a href="reference.html">참고문헌</a></li>
+<li><a href="discussion.html">토론</a></li>
+<li><a href="instructors.html">강사 안내서</a></li>
 </ul>
         </div>
       </div>

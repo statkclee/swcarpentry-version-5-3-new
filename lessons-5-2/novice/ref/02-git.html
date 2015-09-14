@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="generator" content="pandoc">
+    <title>xwMOOC: Git Reference</title>
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" type="text/css" href="http://statkclee.github.io/swcarpentry-version-5-3-new/css/bootstrap/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="http://statkclee.github.io/swcarpentry-version-5-3-new/css/bootstrap/bootstrap-theme.css" />
+    <link rel="stylesheet" type="text/css" href="http://statkclee.github.io/swcarpentry-version-5-3-new/css/swc.css" />
+    <link rel="alternate" type="application/rss+xml" title="Software Carpentry Blog" href="http://software-carpentry.org/feed.xml"/>
+    <meta charset="UTF-8" />
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body class="lesson">
+    <div class="container card">
+      <div class="banner">
+        <a href="http://software-carpentry.org" title="Software Carpentry">
+          <img alt="Software Carpentry banner" src="http://statkclee.github.io/swcarpentry-version-5-3-new/img/software-carpentry-banner.png" />
+      <!--     <img alt="xwMOOC banner" src="img/xwMOOC.png" />
+       -->  </a>
+      </div>
+      <article>
+      <div class="row">
+        <div class="col-md-10 col-md-offset-1">
+          <h1 class="title">Git Reference</h1>
+          
+<p>Set global configuration (only needs to be done once per machine):</p>
+<pre><code>git config --global user.name &quot;Your Name&quot;
+git config --global user.email &quot;you@some.domain&quot;
+git config --global color.ui &quot;auto&quot;
+git config --global core.editor &quot;your_editor&quot;</code></pre>
+<p>Initialize the current working directory as a repository:</p>
+<pre><code>git init</code></pre>
+<p>Display the status of the repository:</p>
+<pre><code>git status</code></pre>
+<p>Add specific files to the staging area:</p>
+<pre><code>git add filename_1 filename_2</code></pre>
+<p>Add all modified files in the current directory and its sub-directories to the staging area:</p>
+<pre><code>git add -A .</code></pre>
+<p>Commit changes in the staging area to the repository’s history: (Without <code>-m</code> and a message, this command runs a text editor.)</p>
+<pre><code>git commit -m &quot;Some message&quot;</code></pre>
+<p>View the history of the repository:</p>
+<pre><code>git log</code></pre>
+<p>Display differences between the current state of the repository and the last saved state:</p>
+<pre><code>git diff</code></pre>
+<p>Display differences between the current state of a particular file and the last saved state:</p>
+<pre><code>git diff path/to/file</code></pre>
+<p>Display differences between the last saved state and what’s in the staging area:</p>
+<pre><code>git diff --staged</code></pre>
+<p>Compare files to the previously saved state:</p>
+<pre><code>git diff HEAD~1 path/to/file</code></pre>
+<p>Compare files to an earlier saved state:</p>
+<pre><code>git diff HEAD~27 path/to/file</code></pre>
+<p>Compare files to a specific earlier state:</p>
+<pre><code>git diff 123456 path/to/file</code></pre>
+<p>Erase changes since the last save:</p>
+<pre><code>git reset --hard HEAD</code></pre>
+<p>Restore file to its state in a previous revision:</p>
+<pre><code>git checkout 123456 path/to/file</code></pre>
+<p>Add a remote to a repository:</p>
+<pre><code>git remote add nickname remote_specification</code></pre>
+<p>Display a repository’s remotes:</p>
+<pre><code>git remote -v</code></pre>
+<p>Push changes from a local repository to a remote (assuming <code>master</code> already exists in the remote):</p>
+<pre><code>git push nickname master</code></pre>
+<p>Push changes from a local repository to a remote (if <code>master</code> doesn’t yet exist in the remote):</p>
+<pre><code>git push -u nickname master</code></pre>
+<p>Pull changes from a remote repoisitory:</p>
+<pre><code>git pull nickname master</code></pre>
+<p>Note: <code>master</code> may be replaced with another branch name by more advanced users.</p>
+<p>Clone a remote repository:</p>
+<pre><code>git clone remote_specification</code></pre>
+<p>Markers used to show conflict in a file during a merge:</p>
+<pre><code>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD
+lines from local file
+=======
+lines from remote file
+&gt;&gt;&gt;&gt;&gt;&gt;&gt; 1234567890abcdef1234567890abcdef12345678</code></pre>
+        </div>
+      </div>
+      </article>
+      <div class="footer">
+        <a class="label swc-blue-bg" href="http://software-carpentry.org">Software Carpentry</a>
+        <a class="label swc-blue-bg" href="http://xwmooc.net">xwMOOC</a>
+        <a class="label swc-blue-bg" href="https://github.com/statkclee/swcarpentry-version-5-3-new">한글소스</a>
+        <a class="label swc-blue-bg" href="https://github.com/swcarpentry">영문소스</a>
+        <a class="label swc-blue-bg" href="mailto:i@xwmooc.net">Contact</a>
+        <a class="label swc-blue-bg" href="http://statkclee.github.io/swcarpentry-version-5-3-new/LICENSE.html">License</a>
+      </div>
+    </div>
+    <!-- Javascript placed at the end of the document so the pages load faster -->
+    <script src="http://software-carpentry.org/v5/js/jquery-1.9.1.min.js"></script>
+    <script src="css/bootstrap/bootstrap-js/bootstrap.js"></script>
+  </body>
+</html>

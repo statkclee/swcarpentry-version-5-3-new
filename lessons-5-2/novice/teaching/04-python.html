@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="generator" content="pandoc">
+    <title>xwMOOC: 파이썬 프로그래밍</title>
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" type="text/css" href="http://statkclee.github.io/swcarpentry-version-5-3-new/css/bootstrap/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="http://statkclee.github.io/swcarpentry-version-5-3-new/css/bootstrap/bootstrap-theme.css" />
+    <link rel="stylesheet" type="text/css" href="http://statkclee.github.io/swcarpentry-version-5-3-new/css/swc.css" />
+    <link rel="alternate" type="application/rss+xml" title="Software Carpentry Blog" href="http://software-carpentry.org/feed.xml"/>
+    <meta charset="UTF-8" />
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body class="lesson">
+    <div class="container card">
+      <div class="banner">
+        <a href="http://software-carpentry.org" title="Software Carpentry">
+          <img alt="Software Carpentry banner" src="http://statkclee.github.io/swcarpentry-version-5-3-new/img/software-carpentry-banner.png" />
+      <!--     <img alt="xwMOOC banner" src="img/xwMOOC.png" />
+       -->  </a>
+      </div>
+      <article>
+      <div class="row">
+        <div class="col-md-10 col-md-offset-1">
+          <h1 class="title">파이썬 프로그래밍</h1>
+          
+<p>파이썬 소개로 학습 교재가 작성되었지만, 실제 목적은 프로그래밍에 있어 단 한가지 가장 중요한 아이디어를 소개하는 것이다. 어떻게 문제를 함수를 작성함으로써 해결할 수 있을까? 함수 각각은 프로그래머의 작업 저장소에 들어맞아야 한다. 이것을 가르치기 위해서, 데이터를 리스트와 파일 입출력으로 다루는 메커니즘에 대해서 약간 가르쳐야 한다. 그래야만 작성한 함수가 학습참여자가 실제로 신경쓰는 것을 수행할 수 있다. 가르치는 순서는 아이디어가 소개되면 바로 실무에서 사용될 수 있도록 배치되어 있다. 강사는 언의의 “나머지 90%”를 설명하고 싶은 유혹을 참아내야 한다.</p>
+<p>이번 학습의 두번째 목적은 프로그램이 어떻게 실행하는가에 대한 유용한 정신 모델(mental model)을 전달하는 것이다. (컴퓨터 과학 교육전문가들이 <a href="../../gloss.html#notional-machine">관념적 기계(notional machine)</a> 이라고 부르는 것으로 프로그램이 잘못되면 디버그할 수 있다.) 특히, 함수 호출 스택(function call stack)이 어떻게 동작하는지 이해해야만 한다.</p>
+<p>마지막 예제로 유닉스 파이프-필터(pipe-and-filter) 모델과 함께 동작한 명령-라인 툴(command-line tool)을 작성하게 한다. 이렇게 하는 이유는 첫째 유용한 기술이기 때문이고, 둘째로 학습 참여자가 사용하는 소프트웨어가 마술이 아니라는 것을 이해하도록 돕는다. <code>grep</code>같은 도구는 현 시점에서 학습참여자가 작성하는 프로그램보다 훨씬 정교하고 복잡할지 모른다. 하지만, 종류가 다르다는 것보다 규모(scale)의 차이를 인식하는 것이 특히 핵심적이다.</p>
+<h4 id="강의-노트">강의 노트</h4>
+<ul>
+<li>파이썬을 사용하는 이유를 설명한다. 왜냐하면,
+<ul>
+<li>파이썬은 무료다.</li>
+<li>과학관련 라이브러리가 많고, 점점더 많이 개발되어 추가되고 있다.</li>
+<li>매우 큰 과학자 커뮤니티가 있다.</li>
+<li>초보자가 대부분의 성숙된 다른 언어를 배우는 것보다 쉽다. (원래, 소프트웨어 카펜트리는 펄(perl)을 사용했다. 펄에서 파이썬으로 전환했을 때, 펄로 3일 동안 다룬 내용을 파이썬으로 2일 동안 다룰 수 있었고, 학습 참여자 유지율이 더 높았다.)</li>
+</ul></li>
+<li>이번 튜토리얼에는 IPython Notebook을 실행하는 사용방법을 포함하지 <em>않았다</em>. 왜냐하면, 도구 자체보다는 언어에 좀더 초점을 맞췄다. 하지만, 강사는 몇가지 기본 작업을 학습참여자에게 보여줘야 한다.
+<ul>
+<li><code>ipython notebook</code>을 명령 실행창에서 입력하여 실행한다.</li>
+<li>새 노트북을 생성한다.</li>
+<li>셀에 데이터 혹은 코드를 입력하고 실행한다.</li>
+<li><code>In[#]</code> 과 <code>Out[#]</code>의 차이점을 설명한다.</li>
+</ul></li>
+<li><p>파이썬으로 어느 것이라도 강사가 프로그래을 단계적으로 작성해 나가는 것을 학습참여자에게 보여주는 것은 도움이 된다. 반복적으로 하나의 셀을 갱신하고자 하는 것는 자제하라.(하지만, 이것은 실제에서 아마도 그렇게 늘 하는 일이다.) 대신에 이전 셀을 복사하고 클론한 것에 갱신하는 코드를 작성하라. 그래서 학습 참여자가 어떻게 프로그램을 점차적으로 작성해 나가는지 온전한 이력을 가지게 된다. 이것을 수행한 뒤에 바로, “왜 처음부터 작은 함수로 잘게 쪼개서 작성하지 않았을까?” 라고 말할 수 있다.</p></li>
+<li><p>명령-라인 스크립트(command-line scripts) 토론은 학습 참여자가 쉘 학습에서 다뤄진 표준 입출력, 파이프-필터 설계를 이해한다고 가정한다.</p></li>
+<li><p>다음으로 노트북(notebook)을 시작하지 <em>마세요</em>.</p>
+<pre><code>ipython notebook --pylab [backend]</code></pre>
+<p><code>--pylab</code> 옵션은 오랜동안 사용되지 않고 있고, 곧 제거될 것이다.</p></li>
+</ul>
+        </div>
+      </div>
+      </article>
+      <div class="footer">
+        <a class="label swc-blue-bg" href="http://software-carpentry.org">Software Carpentry</a>
+        <a class="label swc-blue-bg" href="http://xwmooc.net">xwMOOC</a>
+        <a class="label swc-blue-bg" href="https://github.com/statkclee/swcarpentry-version-5-3-new">한글소스</a>
+        <a class="label swc-blue-bg" href="https://github.com/swcarpentry">영문소스</a>
+        <a class="label swc-blue-bg" href="mailto:i@xwmooc.net">Contact</a>
+        <a class="label swc-blue-bg" href="http://statkclee.github.io/swcarpentry-version-5-3-new/LICENSE.html">License</a>
+      </div>
+    </div>
+    <!-- Javascript placed at the end of the document so the pages load faster -->
+    <script src="http://software-carpentry.org/v5/js/jquery-1.9.1.min.js"></script>
+    <script src="css/bootstrap/bootstrap-js/bootstrap.js"></script>
+  </body>
+</html>

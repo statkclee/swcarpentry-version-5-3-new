@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="generator" content="pandoc">
+    <title>xwMOOC: 유닉스 쉘(Shell)</title>
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" type="text/css" href="http://statkclee.github.io/swcarpentry-version-5-3-new/css/bootstrap/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="http://statkclee.github.io/swcarpentry-version-5-3-new/css/bootstrap/bootstrap-theme.css" />
+    <link rel="stylesheet" type="text/css" href="http://statkclee.github.io/swcarpentry-version-5-3-new/css/swc.css" />
+    <link rel="alternate" type="application/rss+xml" title="Software Carpentry Blog" href="http://software-carpentry.org/feed.xml"/>
+    <meta charset="UTF-8" />
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body class="lesson">
+    <div class="container card">
+      <div class="banner">
+        <a href="http://software-carpentry.org" title="Software Carpentry">
+          <img alt="Software Carpentry banner" src="http://statkclee.github.io/swcarpentry-version-5-3-new/img/software-carpentry-banner.png" />
+      <!--     <img alt="xwMOOC banner" src="img/xwMOOC.png" />
+       -->  </a>
+      </div>
+      <article>
+      <div class="row">
+        <div class="col-md-10 col-md-offset-1">
+          <h1 class="title">유닉스 쉘(Shell)</h1>
+          
+<p>많은 분들이 쉘(shell)을 지금도 가르쳐야 하는지 질문을 한다. 결국, 수천개 데이터 파일 이름을 변경하고자 하는 사람 누구나 쉽게 파이썬 인터프리터(Python Interpreter)를 통해서 작업을 할 수 있고, 심도 깊은 데이터 분석을 하는 누구나 R Studio나 IPython Notebook 내부에서 원하는 작업 대부분을 할 수 있다. 그런데 왜 쉘을 가르쳐야 할까요?</p>
+<p>첫번째 대답은 “너무나 많은 것들이 쉘에 의존성을 갖기 때문이다.” 소프트웨어 설치, 기본 편집기 환경설정, 원격으로 컴퓨터 제어하기 등등 모두 쉘 사용에 프로그래머/사용자/운영자 모두 친숙하다고 가정한다. 표준 입력, 출력(standard input, output) 같은 아이디어와도 연관이 된다. 또한 많은 도구(tools)도 쉘 용어를 사용한다. (예를 들어, IPython에서 <code>%ls</code>과 <code>%cd</code>는 매직 명령어다.)</p>
+<p>두번째 대답은 “컴퓨터를 어떻게 사용할까에 대한 근본적인 아이디어를 소개하는 쉬운 방법이기 때문이다.” 유닉스 쉘 사용법을 학습 참여자에게 가르칠 때, 복사해서 붙여넣기 같은 반복을 사용자가 스스로 하기 보다는 컴퓨터가 반복적인 작업(탭 자동완성, <code>!</code> 다음 명령문, <code>for</code> 루프)을 할 수 있게 가르친다. 또한, 자주하는 작업인 정보를 찾아내서 뽑아내고, 쉘 스크립트를 통해서 나중에 재사용할 수 있도록 저장하고, 연상가능한 이름을 붙이고, 쉘 스크립트 상단에 주석같은 약간의 문서화 작업을 통해서 나중에 고생하기 않고 삶의 질을 높일 수 있는 방법을 가르친다.</p>
+<p>마지막으로, 쉘을 학습 참여자에게 가르치는 것은 아마도 가장 중요하게는 합성함수(composite function)관점에서 프로그램을 생각할 수 있게 가르친다. 쉘의 경우에 중첩된 함수 호출보다 파이프라인(pipeline) 형태로 구현된다. 하지만, “작은 조각, 느슨한 조합”이라는 핵심 아이디어는 동일하다.</p>
+<p>거의 모든 학습자료를 3시간 동안 다르게 된다. 윈도우 시스템을 사용하는 학습 참여자가 다음과 같은 장애물에 부딪치지 않는다는 가정에서 그렇다.</p>
+<ul>
+<li>홈(home) 디렉토리 위치를 알아낼 수 없다. (특히 Cygwin을 사용한다면 문제가 된다.)</li>
+<li>텍스트 편집기를 실행할 수 없다.</li>
+<li>DOS 라인 엔딩(line ending)을 포함한 쉘 스크립트를 실행할 수 없다.</li>
+</ul>
+<h4 id="강의-노트">강의 노트</h4>
+<ul>
+<li><p>쉘을 열어서 <code>whoami</code>, <code>pwd</code>, <code>ls</code> 명령어를 차례로 실행한다. <code>workshop</code>이라는 이름의 디렉토리를 만들어서 <code>cd</code> 명령어로 디렉토리 내부로 들어간다. 그래서 모든 학습 참여자가 수업동안에 수행한 모든 작업은 기존에 있던 어떤 것도 손대지 않는다.</p></li>
+<li><p>모든 학습 참여자가 가능한 빠른 시점에 편집기를 실행해서 <code>workshop</code> 디렉토리에 파일을 저장하게 한다. 전체 수업에서 이것이 가장 큰 걸림돌이다. 많은 학습 참여자가 강사와 동일한 편집기를 실행(학습 참여자가 Vim 지옥에 빠질수도…)하거나, 작업한 파일을 저장할 디렉토리로 어떻게 돌아다니는지 알지 못하거나, 텍스트 편집기 대신에 워드 프로세서를 사용한다. 이러한 문제를 헤쳐나가는 가장 빠른 방법이 좀더 지식이 있는 동료 학습자가 도움이 필요한 학습 참여자를 돕는 것이다.</p></li>
+<li><p>탭 자동완성(tab completion)이 작은 것처럼 들린다. 하지만 그렇지 않다. <code>!123</code> 혹은 <code>!wc</code>을 사용하여 이전 명령어를 다시 실행하는 것은 절대로 작은 것이 아니다. 와일드카드 확장 <code>for</code> 루프도 마찬가지로 작은 것이 아니다. 각각은 소프트웨어 카펜트리 아이디어 중 하나를 반복할 수 있는 소중한 기회가 된다. 만약 컴퓨터가 <em>반복할</em> 수 있다면, 어디선가 어떤 프로그래머가 거의 확실히 컴퓨터가 *반복하는** 방법을 찾아서 구현해 놨다.</p></li>
+<li><p>4 혹은 5 단계로 구성된 파이프라인(pipeline)을 작성하고, 재사용하려고 쉘 스크립트에 저장하고 <code>for</code> 루프 내부에서 스크립트를 호출하는 실습 사례는 “마법의 수 일곱, 더하거나 빼기 둘” 법칙이 프로그래밍에 어떻게 연결되는지 보여줄 수 있는 훌륭한 기회다. 약간 복잡한 무언가를 어떻게 처리하는 해결하고 나면, 재사용할 수 있게 만들고, 이름을 붙인다. 그렇게 함으로써 머리속 단기 기억장소는 여러 저장공간 대신에 한 저장소만 필요로 한다. 또한 탐색적 프로그래밍(exploratory programming)에 대해서 논의할 수 있는 소중한 시간이기도 하다. 프로그램을 사전에 치밀하게 설계하는 대신에, 몇가지 유용한 프로그램을 만들고 나서 미래 재사용 목적으로 어떤 것을 캡슐화(encapsulation)하면 가치가 있는지 소급적용하는 것이다.</p></li>
+<li><p>한정된 시간 때문에 중요한 많은 사항을 다루지 못하고 넘어간다. 파일 권한(file permission), 작업 관리(job control), SSH가 대표적이다. 만약 학습 참여자가 기본적인 학습 내용을 숙지 하고 있다면, 안내지침으로 제시된 온라인 학습 내용 대신에 심화 내용을 다룰 수도 있다. 시간적인 제약 때문에 다음 후속 결과가 따라온다.</p></li>
+<li>학습에서 다루지 않는 권한관리 없이 <code>#!</code> (shebang, 샤방) 을 논하기는 어렵다.<br /></li>
+<li><p>Bash하고 윈도우 상에서 유닉스 명령어를 실행하는 것은 항상 손을 봐야하고 종종 좌절을 안겨주기도 한다. 수업을 시작하기 <em>전에</em> 강사나 조교가 실습을 하고 최신 설치 안내지침을 참조하라.</p></li>
+<li><p>윈도우 상에서 다음과 같다.</p>
+<pre><code>$ cd
+$ cd Desktop</code></pre>
+<p>{:class=“in”}</p>
+<p>바탕화면에 작업하는 사람이 항상 있다. 쉘 실습을 위해서 예제 디렉토리를 만들게 하라. 그래서 쉽게 찾을 수 있게 하고 진행내용을 지켜볼 수 있게 한다.</p></li>
+<li><p>모든 교학습 교재가 그렇듯이 POSIX 호환가능한 명령어로 한정하라. 다른 컴퓨터에서 동작하지 않는 POSIX 확장 쉘이 강사의 컴퓨터에 설치될 수 있으니 주의한다. 특히, 기본으로 설치된 OSX bash과 윈도우 bash 에뮬레이터가 대표적이다. 예를 들어, POSIX <code>ls</code> 명령어는 <code>--ignore=</code> 혹은 <code>-I</code> 옵션이 없다. POSIX <code>head</code>는 <code>-n 10</code> 혹은 <code>-10</code>을 사용할 수 있지만, 장문의 <code>--lines=10</code> 옵션은 사용되지 않는다.</p></li>
+</ul>
+<h4 id="윈도우">윈도우</h4>
+<p>Bash하고 윈도우 상에서 유닉스 명령어를 실행하는 것은 항상 손을 봐야하고 종종 좌절을 안겨주기도 한다. 수업을 시작하기 <em>전에</em> 강사나 조교가 실습을 하고 최신 설치 안내지침을 참조하라. 소프트웨어 카펜트리에서 먼저 살펴본 옵션은 다음과 같다.</p>
+<ol style="list-style-type: decimal">
+<li><a href="http://msysgit.github.io/">msysGit</a> (“Git Bash”라고도 부른다.),</li>
+<li><a href="http://www.cygwin.com/">Cygwin</a>,</li>
+<li>데스크탑 가상 컴퓨터(virtual machine, VM) 사용,</li>
+<li>클라우드에 VM을 사용하여 원격으로 유닉스 운영체제에 접속.</li>
+</ol>
+<p>2013년 중반까지 Cygwin이 선호되는 옵션이었다. 하지만, Git를 가르치기 시작하면서 msysGit가 더 잘 동작하는 것으로 판명되었다. 데스크탑 가상컴퓨터와 클라우드 기반의 가상 컴퓨터(VM)는 특히 고급 학습 참여자에게 잘 어울리고 워크샵 시작에 설치와 환경설정 시간을 줄여준다. 하지만,</p>
+<ol style="list-style-type: decimal">
+<li>사양이 낮은 컴퓨터가 있어 동작하지 않는다.</li>
+<li>초보자에게 어렵다. (왜냐하면, 복사하고 붙여넣기 같은 단순한 것도 다르게 동작하기 때문이다.)</li>
+<li>학습 참여자가 자신이 선택한 운영체제에 작업환경 설정을 하지 않고 워크샵을 떠난다.</li>
+<li>학습 참여자가 가상 컴퓨터(VM)를 다운로드하지 않은 상태로 워크샵에 나타난다. 무선 네트워크가 수업 중에 동작하지 않거나 과부하로 속도가 매우 느리다.</li>
+</ol>
+<p>어떠한 선택지를 고르든지 상관없이 워크샵 실시 <em>전에</em> 윈도우 운영체제에서는 <em>직접 테스트</em>를 하세요. 마지막 워크샵 다음에 무언가 항상 변경될 수 있다. 그리고 소프트웨어 카펜트리 윈도우 설치 도우미(Windows Setup Helper)를 사용하세요.</p>
+        </div>
+      </div>
+      </article>
+      <div class="footer">
+        <a class="label swc-blue-bg" href="http://software-carpentry.org">Software Carpentry</a>
+        <a class="label swc-blue-bg" href="http://xwmooc.net">xwMOOC</a>
+        <a class="label swc-blue-bg" href="https://github.com/statkclee/swcarpentry-version-5-3-new">한글소스</a>
+        <a class="label swc-blue-bg" href="https://github.com/swcarpentry">영문소스</a>
+        <a class="label swc-blue-bg" href="mailto:i@xwmooc.net">Contact</a>
+        <a class="label swc-blue-bg" href="http://statkclee.github.io/swcarpentry-version-5-3-new/LICENSE.html">License</a>
+      </div>
+    </div>
+    <!-- Javascript placed at the end of the document so the pages load faster -->
+    <script src="http://software-carpentry.org/v5/js/jquery-1.9.1.min.js"></script>
+    <script src="css/bootstrap/bootstrap-js/bootstrap.js"></script>
+  </body>
+</html>

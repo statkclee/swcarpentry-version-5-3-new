@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="generator" content="pandoc">
+    <title>xwMOOC: HTML</title>
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" type="text/css" href="http://statkclee.github.io/swcarpentry-version-5-3-new/css/bootstrap/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="http://statkclee.github.io/swcarpentry-version-5-3-new/css/bootstrap/bootstrap-theme.css" />
+    <link rel="stylesheet" type="text/css" href="http://statkclee.github.io/swcarpentry-version-5-3-new/css/swc.css" />
+    <link rel="alternate" type="application/rss+xml" title="Software Carpentry Blog" href="http://software-carpentry.org/feed.xml"/>
+    <meta charset="UTF-8" />
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body class="lesson">
+    <div class="container card">
+      <div class="banner">
+        <a href="http://software-carpentry.org" title="Software Carpentry">
+          <img alt="Software Carpentry banner" src="http://statkclee.github.io/swcarpentry-version-5-3-new/img/software-carpentry-banner.png" />
+      <!--     <img alt="xwMOOC banner" src="img/xwMOOC.png" />
+       -->  </a>
+      </div>
+      <article>
+      <div class="row">
+        <div class="col-md-10 col-md-offset-1">
+          <h1 class="title">HTML</h1>
+          
+<div class="objectives" markdown="1">
+<h4>Learning Objectives</h4>
+<ul>
+<li>Explain the difference between text, elements, and tags.</li>
+<li>Explain the difference between a model and a view, and correctly identify instances of each.</li>
+<li>Write correctly-formatted HTML (using escape sequences for special characters).</li>
+<li>Identify and fix improperly-nested HTML.</li>
+<li>Explain what element attributes are, and what they are for.</li>
+<li>Write HTML that uses attributes to alter a document’s appearance.</li>
+<li>Explain when to use attributes rather than nested elements.</li>
+<li>Write correctly-formatted HTML pages containing lists, tables, images, and links.</li>
+<li>Add correctly-formatted metadata to the head of an HTML page.</li>
+</ul>
+</div>
+<p>A basic HTML <a href="../../gloss.html#document">document</a> contains <a href="../../gloss.html#text">text</a> and <a href="../../gloss.html#element">elements</a>. (The full specification allows for many other things with names like “external entity references” and “processing instructions”, but we’ll ignore them.) The text in a document is just characters, and as far as HTML is concerned, it has no intrinsic meaning: “Feynman” is just seven characters, not a person.</p>
+<p>Elements are <a href="../../gloss.html#metadata">metadata</a> that describe the meaning of the document’s content. For example, one element might signal a heading, while another might indicate that something is a cross-reference.</p>
+<p>Elements are written using <a href="../../gloss.html#tag-xml">tags</a>, which must be enclosed in angle brackets <code>&lt;...&gt;</code>. For example, <code>&lt;cite&gt;</code> is used to mark the start of a citation, and <code>&lt;/cite&gt;</code> is used to mark its end. Elements must be properly nested: if an element called <code>inner</code> begins inside an element called <code>outer</code>, <code>inner</code> must end before <code>outer</code> ends. This means that <code>&lt;outer&gt;...&lt;inner&gt;...&lt;/inner&gt;&lt;/outer&gt;</code> is legal HTML, but <code>&lt;outer&gt;...&lt;inner&gt;...&lt;/outer&gt;&lt;/inner&gt;</code> is not.</p>
+<p>Here are some commonly-used HTML tags:</p>
+<table>
+<tr>
+<th>
+Tag
+</th>
+<pre><code>           &lt;th&gt;Usage&lt;/th&gt;&lt;/tr&gt;</code></pre>
+<tr>
+<td>
+<code>html</code>
+</td>
+<td>
+Root element of entire HTML document.
+</td>
+</tr>
+<tr>
+<td>
+<code>body</code>
+</td>
+<td>
+Body of page (i.e., visible content).
+</td>
+</tr>
+<tr>
+<td>
+<code>h1</code>
+</td>
+<td>
+Top-level heading.
+</td>
+</tr>
+<tr>
+<td>
+<code>h2, h3, ...</code>
+</td>
+<td>
+Lower-level heading.
+</td>
+</tr>
+<tr>
+<td>
+<code>p</code>
+</td>
+<pre><code>&lt;td&gt;Paragraph.&lt;/td&gt;&lt;/tr&gt;</code></pre>
+<tr>
+<td>
+<code>em</code>
+</td>
+<td>
+Emphasized text.
+</td>
+</tr>
+</table>
+<p>Finally, every well-formed document started with a <code>DOCTYPE</code> declaration, which looks like:</p>
+<pre>
+<!DOCTYPE html>
+</pre>
+<p>This tells programs what kind of elements are allowed to appear in the document: <code>html</code> (by far the most common case), <code>math</code> for MathML, and so on. Here is a simple HTML document that uses everything we’ve seen so far:</p>
+<pre><code>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;body&gt;
+&lt;h1&gt;Dimorphism&lt;/h1&gt;
+&lt;p&gt;Occurring or existing in two different &lt;em&gt;forms&lt;/em&gt;.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+<p>A web browser like Firefox might present this document like this:</p>
+<p>FIXME: screenshot</p>
+<p>Other devices will display it differently. A phone, for example, might use a different background color for the heading, while a screen reader for people with visual disabilities would read the text aloud.</p>
+<p>There are a couple of other formatting rules we need to know in order to create and understand documents. The first is that browsers and other programs will usually ignore whitespace in documents, so this:</p>
+<pre><code>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+  &lt;body&gt;
+    &lt;h1&gt;Dimorphism&lt;/h1&gt;
+    &lt;p&gt;Occurring or existing in two different &lt;em&gt;forms&lt;/em&gt;.&lt;/p&gt;
+  &lt;/body&gt;
+&lt;/html&gt;</code></pre>
+<p>will be displayed in exactly the same way as the first version. Most people find that the indentation in the second makes it easier to read.</p>
+<p>Second, we must use <a href="../../gloss.html#escape-sequence">escape sequences</a> to represent the special characters <code>&lt;</code> and <code>&gt;</code> for the same reason that we have to use <code>\&amp;quot;</code> inside a double-quoted string in a program. In HTML and XML, an escape sequence is an ampersand ‘&amp;’ followed by the abbreviated name of the character (such as ‘amp’ for “ampersand”) and a semi-colon. The four most common escape sequences are:</p>
+<table>
+<tr>
+<th>
+Sequence
+</th>
+<th>
+Character
+</th>
+</tr>
+<tr>
+<td>
+&amp;lt;
+</td>
+<td>
+&lt;
+</td>
+</tr>
+<tr>
+<td>
+&amp;gt;
+</td>
+<td>
+<blockquote>
+</td>
+</tr>
+<tr>
+<td>
+&amp;quot;
+</td>
+<td>
+’
+</td>
+</tr>
+<tr>
+<td>
+&amp;amp;
+</td>
+<td>
+&amp;
+</td>
+</tr>
+</table>
+</blockquote>
+<p>One final formatting rule is that every document must have a single <a href="../../gloss.html#root-element">root element</a>, i.e., a single element must enclose everything else. A document like this is therefore not strictly legal:</p>
+<pre><code>&lt;h1&gt;Dimorphism&lt;/h1&gt;
+&lt;p&gt;Occurring or existing in two different &lt;em&gt;forms&lt;/em&gt;.&lt;/p&gt;</code></pre>
+<p>because it has two top-level elements (the <code>h1</code> and the <code>p</code>). Most browsers will render it correctly, though, since they’re designed to accommodate improperly-formatted HTML, but most other programs will complain.</p>
+<blockquote>
+<h4>Beautiful Soup</h4>
+<p>There are a lot of incorrectly-formatted HTML pages out there. To deal with them, people have written libraries like <a href="http://www.crummy.com/software/BeautifulSoup/">Beautiful Soup</a>, which does its best to turn real-world HTML into something that a run-of-the-mill program can handle. It almost always gets things right, but sticking to the standard makes life a lot easier for everyone.</p>
+</blockquote>
+<p>Elements can be customized by giving them <a href="../../gloss.html#attribute">attributes</a>. These are name/value pairs enclosed in the opening tag like this:</p>
+<pre><code>&lt;h1 align=&quot;center&quot;&gt;A Centered Heading&lt;/h1&gt;</code></pre>
+<p>or:</p>
+<pre><code>&lt;p class=&quot;disclaimer&quot;&gt;This planet provided as-is.&lt;/p&gt;</code></pre>
+<p>Any particular attribute name may appear at most once in any element, so <code>&lt;p align=&quot;left&quot; align=&quot;right&quot;&gt;...&lt;/p&gt;</code> is illegal. Attributes’ values <em>must</em> be in quotes in XML and older dialects of HTML; HTML5 allows single-word values to be unquoted, but quoting is still recommended.</p>
+<p>Another important feature of attributes is that they are unordered. They have to be <em>written</em> in some order, but as far as the rules of HTML are concerned:</p>
+<pre><code>&lt;p align=&quot;center&quot; class=&quot;disclaimer&quot;&gt;This web page is made from 100% recycled pixels.&lt;/p&gt;</code></pre>
+<p>and:</p>
+<pre><code>&lt;p class=&quot;disclaimer&quot; align=&quot;center&quot;&gt;This web page is made from 100% recycled pixels.&lt;/p&gt;</code></pre>
+<p>mean the same thing.</p>
+<blockquote>
+<h4>HTML and Version Control</h4>
+<p>FIXME</p>
+</blockquote>
+<p>When should we use attributes, and when should we nest elements? As a general rule, we should use attributes when:</p>
+<ul>
+<li>each value can occur at most once for any element;</li>
+<li>the order of the values doesn’t matter; and</li>
+<li>those values have no internal structure, i.e., we will never need to parse an attribute’s value in order to understand it.</li>
+</ul>
+<p>In all other cases, we should use nested elements. However, many widely-used XML formats break these rules in order to make it easier for people to write XML by hand. For example, in the Scalable Vector Graphics (SVG) format used to describe images as XML, we would define a rectangle as follows:</p>
+<pre><code>&lt;rect width=&quot;300&quot; height=&quot;100&quot; style=&quot;fill:rgb(0,0,255); stroke-width:1; stroke:rgb(0,0,0)&quot;/&gt;</code></pre>
+<p>In order to understand the <code>style</code> attribute, a program has to somehow know to split it on semicolons, and then to split each piece on colons. This means that a generic program for reading XML can’t extract all the information that’s in SVG, which partly defeats the purpose of using XML in the first place.</p>
+<p>Web pages can contain a lot more than just headings and italics. To start with, HTML provides two kinds of lists: <code>ul</code> to mark an unordered (bulleted) list, and <code>ol</code> for an ordered (numbered) one. Items inside either kind of list must be wrapped in <code>li</code> elements:</p>
+<pre><code>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;body&gt;
+  &lt;ul&gt;
+    &lt;li&gt;A. Binet
+      &lt;ol&gt;
+        &lt;li&gt;H. Ebbinghaus&lt;/li&gt;
+        &lt;li&gt;W. Wundt&lt;/li&gt;
+      &lt;/ol&gt;
+    &lt;/li&gt;
+    &lt;li&gt;C. S. Pierce
+      &lt;ol&gt;
+        &lt;li&gt;W. Wundt&lt;/li&gt;
+      &lt;/ol&gt;
+    &lt;/li&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+<p>FIXME: image</p>
+<p>Note how elements are nested: since the ordered lists “belong” to the unordered list items above them, they are inside those items’ <code>&lt;li&gt;...&lt;/li&gt;</code> tags.</p>
+<p>HTML also provides tables, but they are awkward to use: tables are naturally two-dimensional, but text is one-dimensional. This is exactly like the problem of representing a two-dimensional array in memory, and we solve it in the same way: by writing down the rows, and the columns within each row, in a fixed order. The <code>table</code> element marks the table itself; within that, each row is wrapped in <code>tr</code> (for “table row”), and within those, column items are wrapped in <code>th</code> (for “table heading”) or <code>td</code> (for “table data”):</p>
+<pre><code>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;body&gt;
+  &lt;table&gt;
+    &lt;tr&gt;
+      &lt;th&gt;&lt;/th&gt;
+      &lt;th&gt;A. Binet&lt;/th&gt;
+      &lt;th&gt;C. S. Pierce&lt;/th&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;th&gt;H. Ebbinghaus&lt;/th&gt;
+      &lt;td&gt;88%&lt;/td&gt;
+      &lt;td&gt;NA&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;th&gt;W. Wundt&lt;/th&gt;
+      &lt;td&gt;29%&lt;/td&gt;
+      &lt;td&gt;45%&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/table&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+<p>FIXME: table</p>
+<blockquote>
+<h4>Tables, Layout, and CSS</h4>
+<p>Tables are sometimes used to do multi-column layout, as well as for tabular data, but this is a bad idea. To understand why, consider two other HTML tags: <code>i</code>, meaning “italics”, and <code>em</code>, meaning “emphasis”. The former directly controls how text is displayed, but by doing so, it breaks the separation between model and view that is the heart of markup’s usefulness. Without understanding the text that has been italicized, a program cannot understand whether it is meant to indicate someone shouting, the definition of a new term, or the title of a book. The <code>em</code> tag, on the other hand, has exactly one meaning, and that meaning is different from the meaning of <code>dfn</code> (a definition) or <code>cite</code> (a citation).</p>
+<p>Conscientious authors use <a href="../../gloss.html#css">Cascading Style Sheets</a> (or CSS) to describe how they want pages to appear, and only use <code>table</code> elements for actual tables. CSS is beyond the scope of this lesson, but is described briefly in <a href="extras.html#s:web:Css">The Appendix</A>.</p>
+</blockquote>
+<p>HTML pages can also contain images. (In fact, the World Wide Web didn’t really take off until the Mosaic browser allowed people to mix images with text.) The word “contain” is misleading, though: HTML documents can only contain text, so we cannot store an image “in” a page. Instead, we must put it in some other file, and insert a reference to that file in the HTML using the <code>img</code> tag. Its <code>src</code> attribute specifies where to find the image file; this can be a path to a file on the same host as the web page, or a URL for something stored elsewhere. For example, when a browser displays this:</p>
+<pre><code>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+  &lt;body&gt;
+    &lt;p&gt;My daughter&#39;s first online chat:&lt;/p&gt;
+    &lt;img src=&quot;img/maddie-chat.jpg&quot;/&gt;
+    &lt;p&gt;but probably not her last.&lt;/p&gt;
+  &lt;/body&gt;
+&lt;/html&gt;</code></pre>
+<p>it looks for the file <code>maddie-chat.jpg</code> in the same directory as the HTML file:</p>
+<p>FIXME: screenshot</p>
+<p>Notice, by the way, that the <code>img</code> element is written as <code>&lt;img.../&gt;</code>, i.e., with a trailing slash inside the <code>&lt;&gt;</code> rather than with a separate closing tag. This makes sense because the element doesn’t contain any text: the content is referred to by its <code>src</code> attribute. Any element that doesn’t contain anything can be written using this short form.</p>
+<p>Notice also that images don’t have to be in the same directory as the pages that refer to them: the browser will follow relative paths (ones that don’t start with <code>/</code>).</p>
+<blockquote>
+<h4>It’s Always Interpreted</h4>
+<p>FIXME: Absolute paths - the path is <em>always</em> interpreted (web browser config).</p>
+</blockquote>
+<p>Whenever we refer to an image, we should use the <code>img</code> tag’s <code>alt</code> attribute to provide a title or description of the image. This is what screen readers for people with visual handicaps will say aloud to “display” the image; it’s also what search engines rely on, since they can’t “see” the image either. Adding this to our previous example gives:</p>
+<pre><code>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;body&gt;
+  &lt;p&gt;My daughter&#39;s first online chat:&lt;/p&gt;
+  &lt;img src=&quot;maddie-chat.jpg&quot; alt=&quot;Madeleine&#39;s first online chat&quot;/&gt;
+  &lt;p&gt;but probably not her last.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+<p>The other element — the one that makes HTML pages “hypertext” — is <code>a</code>. Whatever is inside the element is displayed and highlighted for clicking; this is usually a few words of text, but it can be an entire paragraph or an image.</p>
+<p>The <code>a</code> element’s <code>href</code> attribute specifies what the link is pointing at; as with images, this can be either a local filename or a URL. For example, we can create a listing of the examples we’ve written so far like this:</p>
+<pre><code>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;body&gt;
+  &lt;p&gt;
+    Simple HTML examples for
+    &lt;a href=&quot;http://software-carpentry.org&quot;&gt;Software Carpentry&lt;/a&gt;.
+  &lt;/p&gt;
+  &lt;ol&gt;
+    &lt;li&gt;&lt;a href=&quot;very-simple.html&quot;&gt;a very simple page&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href=&quot;hide-paragraph.html&quot;&gt;hiding paragraphs&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href=&quot;nested-lists.html&quot;&gt;nested lists&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href=&quot;simple-table.html&quot;&gt;a simple table&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href=&quot;simple-image.html&quot;&gt;a simple image&lt;/a&gt;&lt;/li&gt;
+  &lt;/ol&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+<p>FIXME: image</p>
+<p>The hyperlink element is called <code>a</code> because it can also used to create <a href="../../gloss.html#anchor">anchors</a> in documents by giving them a <code>name</code> attribute instead of an <code>href</code>. An anchor is simply a location in a document that can be linked to. For example, suppose we formatted the Feynman quotation given earlier like this:</p>
+<pre><code>&lt;blockquote&gt;
+As a by-product of this same view, I received a telephone call one day
+at the graduate college at &lt;a name=&quot;princeton-university&quot;&gt;Princeton&lt;/a&gt;
+from Professor Wheeler, in which he said,
+&quot;Feynman, I know why all electrons have the same charge and the same mass.&quot;
+&quot;Why?&quot;
+&quot;Because, they are all the same electron!&quot;
+&lt;/blockquote&gt;</code></pre>
+<p>If this quotation was in a file called <code>quote.html</code>, we could then create a hyperlink directly to the mention of Princeton using <code>&lt;a&amp;nbsp;href=&quot;quote.html#princeton-university&quot;&gt;</code>. The <code>#</code> in the <code>href</code>’s value separates the path to the document from the anchor we’re linking to. Inside <code>quote.html</code> itself, we could link to that same location simply using <code>&lt;a&amp;nbsp;href=&quot;#pu&quot;&gt;</code>.</p>
+<p>Using the <code>a</code> element for both links and targets was poor design: programs are simpler to write if each element has one purpose, and one alone. A better way to create anchors is to add an <code>id</code> attribute to some other element. For example, if we wanted to be able to link to the quotation itself, we could write:</p>
+<pre><code>&lt;blockquote id=&quot;wheeler-electron-quote&quot;&gt;
+As a by-product of this same view, I received a telephone call one day
+at the graduate college at &lt;span id=&quot;princeton-university&quot;&gt;Princeton&lt;/span&gt;
+from Professor Wheeler, in which he said,
+&quot;Feynman, I know why all electrons have the same charge and the same mass.&quot;
+&quot;Why?&quot;
+&quot;Because, they are all the same electron!&quot;
+&lt;/blockquote&gt;</code></pre>
+<p>and then refer to <code>quote.html#wheeler-electron-quote</code> or <code>quote.html#princeton-university</code>.</p>
+<p>Finally, well-written HTML pages have a <code>head</code> element as well as a <code>body</code>. The head isn’t displayed; instead, it’s used to store metadata about the page as a whole. The most common element inside <code>head</code> is <code>title</code>, which, as its name suggests, gives the page’s title. (This is usually displayed in the browser’s title bar.) Another common item in the head is <code>meta</code>, whose two attributes <code>name</code> and <code>content</code> let authors add arbitrary information to their pages. If we add these to the web page we wrote earlier, we might have:</p>
+<pre><code>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+  &lt;head&gt;
+    &lt;title&gt;Dimorphism Defined&lt;title&gt;
+    &lt;meta name=&quot;author&quot; content=&quot;Alan Turing&quot;/&gt;
+    &lt;meta name=&quot;institution&quot; content=&quot;Euphoric State University&quot;/&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;h1&gt;Dimorphism&lt;/h1&gt;
+    &lt;p&gt;Occurring or existing in two different &lt;em&gt;forms&lt;/em&gt;.&lt;/p&gt;
+  &lt;/body&gt;
+&lt;/html&gt;</code></pre>
+<p>Well-written pages also use comments (just like code), which start with <code>&lt;!--</code> and end with <code>--&gt;</code>.</p>
+<blockquote>
+<h4>Hiding Content</h4>
+<p>Commenting out part of a page does <em>not</em> hide the content from people who really want to see it: while a browser won’t display what’s inside a comment, it’s still in the page, and anyone who uses “View Source” can read it. For example, if you are looking at this page in a web browser right now, try viewing the source and searching for the word “Surprise”.</p>
+<!-- Surprise: this isn't displayed by the browser, but is still in the document. -->
+<p>If you really don’t want people to be able to read something, the only safe thing to do is to keep it off the web.</p>
+</blockquote>
+<div class="keypoints" markdown="1">
+<h4>Summary</h4>
+<ul>
+<li>HTML documents contain elements and text.</li>
+<li>Elements are represented using tags.</li>
+<li>Different devices may display HTML differently.</li>
+<li>Every document must have a single root element.</li>
+<li>Special characters must be written using escape sequences beginning with &amp;.</li>
+<li>Elements can be customized by adding key-value pairs called attributes.</li>
+<li>An element’s attributes must be unique, and are unordered.</li>
+<li>Attribute values should not have any internal structure.</li>
+<li>Put metadata in <code>meta</code> elements in a page’s <code>head</code> element.</li>
+<li>Use <code>ul</code> for unordered lists and <code>ol</code> for ordered lists.</li>
+<li>Add comments to pages using <code>&lt;!--</code> and <code>--&gt;</code>.</li>
+<li>Use <code>table</code> for tables, with <code>tr</code> for rows and <code>td</code> for values.</li>
+<li>Use <code>img</code> for images.</li>
+<li>Use <code>a</code> to create hyperlinks.</li>
+<li>Give elements a unique <code>id</code> attribute to link to it.</li>
+</ul>
+</div>
+        </div>
+      </div>
+      </article>
+      <div class="footer">
+        <a class="label swc-blue-bg" href="http://software-carpentry.org">Software Carpentry</a>
+        <a class="label swc-blue-bg" href="http://xwmooc.net">xwMOOC</a>
+        <a class="label swc-blue-bg" href="https://github.com/statkclee/swcarpentry-version-5-3-new">한글소스</a>
+        <a class="label swc-blue-bg" href="https://github.com/swcarpentry">영문소스</a>
+        <a class="label swc-blue-bg" href="mailto:i@xwmooc.net">Contact</a>
+        <a class="label swc-blue-bg" href="http://statkclee.github.io/swcarpentry-version-5-3-new/LICENSE.html">License</a>
+      </div>
+    </div>
+    <!-- Javascript placed at the end of the document so the pages load faster -->
+    <script src="http://software-carpentry.org/v5/js/jquery-1.9.1.min.js"></script>
+    <script src="css/bootstrap/bootstrap-js/bootstrap.js"></script>
+  </body>
+</html>

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="generator" content="pandoc">
+    <title>xwMOOC: Variables</title>
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" type="text/css" href="http://statkclee.github.io/swcarpentry-version-5-3-new/css/bootstrap/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="http://statkclee.github.io/swcarpentry-version-5-3-new/css/bootstrap/bootstrap-theme.css" />
+    <link rel="stylesheet" type="text/css" href="http://statkclee.github.io/swcarpentry-version-5-3-new/css/swc.css" />
+    <link rel="alternate" type="application/rss+xml" title="Software Carpentry Blog" href="http://software-carpentry.org/feed.xml"/>
+    <meta charset="UTF-8" />
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body class="lesson">
+    <div class="container card">
+      <div class="banner">
+        <a href="http://software-carpentry.org" title="Software Carpentry">
+          <img alt="Software Carpentry banner" src="http://statkclee.github.io/swcarpentry-version-5-3-new/img/software-carpentry-banner.png" />
+      <!--     <img alt="xwMOOC banner" src="img/xwMOOC.png" />
+       -->  </a>
+      </div>
+      <article>
+      <div class="row">
+        <div class="col-md-10 col-md-offset-1">
+          <h1 class="title">Variables</h1>
+          
+<p>This chapter describes yet another way to make Makefiles rules more generic. Make <em>variables</em> can contain be used to specify any part of a rule (the target, the prerequisites, the commands to run, parts of file names, etc.). They can also be specified externally when invoking <code>make</code>, adapting the rules without modifying the Makefile.</p>
+<h2 id="objectives">Objectives</h2>
+<ul>
+<li>show the general syntax for using Makefile variables</li>
+<li>show how variables can be defined in the Makefile</li>
+<li>show how variables can be specified when invoking <code>make</code></li>
+</ul>
+<p>Just when we thought we were done writing our Makefile, our supervisor reminded us that all papers must conform to the university’s new style rules. That means that <code>paper.pdf</code> has one more dependency: the official university style file <code>euphoric.wps</code>. Unfortunately, on our laptop, that file lives in <code>C:\papers</code>, but on the machine we use in the lab, it’s in <code>/lib/styles</code>.</p>
+<p>We could create a directory called <code>/lib/styles</code> on our laptop, and put a copy of <code>euphoric.wps</code> there, but the university also has a style guide for diagrams, which is in a file called <code>euphoric.fig</code>. Once again, on our laptop, it’s installed in <code>C:\papers</code>, but it’s in <code>/lib/styles</code> in the lab. How should we handle this difference?</p>
+<p>If we start with the Makefile we’ve written so far, the brute-force approach is to just add the style files to our commands:</p>
+<pre><code>paper.pdf : paper.wdp figure-1.svg figure-2.svg
+        wdp2pdf --style c:/papers/euphoric.wps $&lt;</code></pre>
+<p>{:class=“in”}</p>
+<pre><code>figure-%.svg : summary-%.dat
+        sgr -N -r -s c:/papers/euphoric.fig $@ $^</code></pre>
+<p>{:class=“in”}</p>
+<pre><code>summary-%.dat : data-%-*.dat
+        stats.py $@ $^</code></pre>
+<p>{:class=“in”}</p>
+<pre><code>data-*-*.dat : stats.py
+        touch $@</code></pre>
+<p>{:class=“in”}</p>
+<p>There’s some redundancy here, though: we are specifying the same directory twice. And notice that we haven’t explicitly listed <code>euphoric.wps</code> or <code>euphoric.fig</code> as prerequisites of <code>paper.pdf</code>, or of the two figure we’re generating. Some people would include them, just to be safe, but it’s more common not to list dependencies on “system” files like libraries, style files, and so on.</p>
+<p>Now, how do we handle the fact that these two paths need to be different when we’re re-creating our paper in the lab? The first option is to use copy and paste, and write two completely separate Makefiles. What we really mean, though, is write <em>and maintain</em>, and that’s why this is a bad idea. As soon as we have two of anything, we’ll eventually update one but forget to update the other. Makefiles are already hard enough to debug; any “solution” that adds more complexity and risk isn’t really a solution at all.</p>
+<p>Our second option is to put everything in one Makefile, and then to comment out the bits intended for the machine we <em>aren’t</em> on, but this is also problematic. First, we have to make sure we always comment and uncomment lines consistently. If we uncomment the line for creating the paper on our laptop, for example, but forget to uncomment the line for building the figures, we’re going to have another debugging headache.</p>
+<p>Commenting and uncommenting lines also makes life more difficult for our version control system. If we update our Makefile from version control, then change the commenting on a few lines, the version control system will want to save those changes in the repository the next time we commit. We probably don’t actually want to do that, since it would mean that the next time we updated on the other machine, its Makefile would be overwritten.</p>
+<p>The third option—the right one—is to refactor our Makefile to make the problem go away entirely. We can do this by defining a <a href="../../gloss.html#variable">variable</a>, just as we would define a constant or variable in a program. Here’s our Makefile with a variable defined and used:</p>
+<pre><code># with-macro.mk
+STYLE_DIR=c:/papers/
+
+paper.pdf : paper.wdp figure-1.svg figure-2.svg
+        wdp2pdf --style ${STYLE_DIR}/euphoric.wps $&lt;
+
+figure-%.svg : summary-%.dat
+        sgr -N -r -s ${STYLE_DIR}/euphoric.fig $@ $^
+
+summary-%.dat : data-%-*.dat
+        stats.py $@ $^
+
+data-*-*.dat : stats.py
+        touch $@</code></pre>
+<p>{:class=“in”}</p>
+<p>The definition looks like definitions in most programming languages: the variable is called <code>STYLE_DIR</code>, and its value is <code>c:/papers/</code>. To use the variable, we put a dollar sign in front of it (just as we would do in the shell) and wrap its name in curly or round brackets. This tells Make to insert the variable’s value, so that these two directory paths are what we want on our laptop.</p>
+<p>This is certainly a step forward: now, when we want to move our Makefile from one machine to another, we only have to change one definition in one place. However, while we no longer have to worry about consistency, we’re still making changes to a file that’s under version control that we <em>don’t</em> want written back to the repository.</p>
+<blockquote>
+<h4>Parenthesizing Variables in Make</h4>
+<p>We have to put curly brackets or parentheses around a variable’s name when we use it—we can’t just write <code>$VARIABLE</code>. If we do, <code>make</code> will interpret it as <code>$V</code> (a reference to the variable <code>V</code>) followed by “ARIABLE”. Since we probably don’t have a variable called <code>V</code>, <code>$V</code> will expand to the empty string, so <code>$VARIABLE</code> without parentheses will just be “ARIABLE”. Why? To make a long story short, it’s another wart left over from history. Almost everyone trips over it occasionally, and as with other bugs, it can be very hard to track down.</p>
+</blockquote>
+<h2 id="using-variables-for-program-parameters">Using variables for program parameters</h2>
+<p>It’s common practice to use variables to define all the flags that tools need, so that if a tool is invoked in two or more actions, it’s passed a consistent set of flags. Here, for example, we’re defining <code>STYLE_DIR</code> to point to the directory holding our style files, then using that definition in two other variables:</p>
+<pre><code># with-lots-of-macros.mk
+
+STYLE_DIR=c:/papers/
+WDP2PDF_FLAGS=--style ${STYLE_DIR}/euphoric.wps
+SGR_FLAGS=-N -r -s ${STYLE_DIR}/euphoric.fig
+
+paper.pdf : paper.wdp figure-1.svg figure-2.svg
+        wdp2pdf ${WDP2PDF_FLAGS} $&lt;
+
+figure-%.svg : summary-%.dat
+        sgr ${SGR_FLAGS} $@ $^
+
+summary-%.dat : data-%-*.dat
+        stats.py $@ $^
+
+data-*-*.dat : stats.py
+        touch $@</code></pre>
+<p>{:class=“in”}</p>
+<p>The first, <code>WPD2PDF_FLAGS</code>, is the single flag and argument we want to pass to the tool that turns our word processor file into a PDF. The second, <code>SGR_FLAGS</code>, combines <code>STYLE_DIR</code> with a couple of other flags to build the arguments for the tool that turns data files into SVG diagrams.</p>
+<p>We are now ready to solve our original problem. Let’s move the definition of <code>STYLE_DIR</code>—the variable that changes from machine to machine—out of our main Makefile, and into a Makefile of its own called <code>config.mk</code>:</p>
+<pre><code># config.mk</code></pre>
+<p>{:class=“in”}</p>
+<pre><code>STYLE_DIR=c:/papers/</code></pre>
+<p>{:class=“in”}</p>
+<p>We can then include that file in our main Makefile using Make’s <code>include</code> command. Our other variables and commands can then use the definition of <code>STYLE_DIR</code> just as if it had been defined in the main Makefile:</p>
+<pre><code># with-include.mk
+include config.mk</code></pre>
+<p>{:class=“in”}</p>
+<pre><code>WDP2PDF_FLAGS=--style ${STYLE_DIR}/euphoric.wps
+SGR_FLAGS=-N -r -s ${STYLE_DIR}/euphoric.fig</code></pre>
+<p>{:class=“in”}</p>
+<pre><code>paper.pdf : paper.wdp figure-1.svg figure-2.svg
+        wdp2pdf ${WDP2PDF_FLAGS} $&lt;</code></pre>
+<p>{:class=“in”}</p>
+<pre><code>figure-%.svg : summary-%.dat
+        sgr ${SGR_FLAGS} $@ $^</code></pre>
+<p>{:class=“in”}</p>
+<pre><code>summary-%.dat : data-%-*.dat
+        stats.py $@ $^</code></pre>
+<p>{:class=“in”}</p>
+<pre><code>data-*-*.dat : stats.py
+        touch $@</code></pre>
+<p>{:class=“in”}</p>
+<p>Once we’ve tested this to make sure it works, we can copy <code>config.mk</code> to create two files that we’ll put in version control. The first, <code>config-home.mk</code>, defines <code>STYLE_DIR</code> for use on our laptop. The second, <code>config-lab.mk</code>, defines it for use in the lab. These two files are only changed when they need to be (i.e., when the style files move, or their names change). We then copy one or the other on the machine we’re using to create the file <code>config.mk</code> that our main Makefile actually includes.</p>
+<p>For example, here’s what we have in the <code>paper</code> directory on our home machine when we do a fresh checkout from version control. Along with our data files and the word processor file, we have our main Makefile and the two machine-specific configuration makefiles. So we copy <code>config-home.mk</code> to create <code>config.mk</code>. Meanwhile, when we check out in the lab, we copy <code>config-lab.mk</code> to create <code>config.mk</code>. Our main Makefile is now happy in both cases because the file it’s including now exists, and has the right definition of <code>STYLE_DIR</code>.</p>
+<p>We can also solve this problem by defining <code>STYLE_DIR</code> on the command line each time we run Make. To do this, we set the variable on the command line when invoking <code>make</code>:</p>
+<pre><code>$ make STYLE_DIR=/lib/styles -f Makefile</code></pre>
+<p>{:class=“in”}</p>
+<p>This is often a bad idea, though. We have to remember to type the definition each time, and we have to type it <em>correctly</em> each time, or rely on shell history to retrieve the right invocation. The biggest problem is that it leaves no record in the Makefile itself of the settings used, which makes life harder for other people who want to re-create our paper: how do they know what to type?</p>
+        </div>
+      </div>
+      </article>
+      <div class="footer">
+        <a class="label swc-blue-bg" href="http://software-carpentry.org">Software Carpentry</a>
+        <a class="label swc-blue-bg" href="http://xwmooc.net">xwMOOC</a>
+        <a class="label swc-blue-bg" href="https://github.com/statkclee/swcarpentry-version-5-3-new">한글소스</a>
+        <a class="label swc-blue-bg" href="https://github.com/swcarpentry">영문소스</a>
+        <a class="label swc-blue-bg" href="mailto:i@xwmooc.net">Contact</a>
+        <a class="label swc-blue-bg" href="http://statkclee.github.io/swcarpentry-version-5-3-new/LICENSE.html">License</a>
+      </div>
+    </div>
+    <!-- Javascript placed at the end of the document so the pages load faster -->
+    <script src="http://software-carpentry.org/v5/js/jquery-1.9.1.min.js"></script>
+    <script src="css/bootstrap/bootstrap-js/bootstrap.js"></script>
+  </body>
+</html>

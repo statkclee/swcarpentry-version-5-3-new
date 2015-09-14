@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="generator" content="pandoc">
+    <title>xwMOOC: Basic Tasks</title>
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" type="text/css" href="http://statkclee.github.io/swcarpentry-version-5-3-new/css/bootstrap/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="http://statkclee.github.io/swcarpentry-version-5-3-new/css/bootstrap/bootstrap-theme.css" />
+    <link rel="stylesheet" type="text/css" href="http://statkclee.github.io/swcarpentry-version-5-3-new/css/swc.css" />
+    <link rel="alternate" type="application/rss+xml" title="Software Carpentry Blog" href="http://software-carpentry.org/feed.xml"/>
+    <meta charset="UTF-8" />
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body class="lesson">
+    <div class="container card">
+      <div class="banner">
+        <a href="http://software-carpentry.org" title="Software Carpentry">
+          <img alt="Software Carpentry banner" src="http://statkclee.github.io/swcarpentry-version-5-3-new/img/software-carpentry-banner.png" />
+      <!--     <img alt="xwMOOC banner" src="img/xwMOOC.png" />
+       -->  </a>
+      </div>
+      <article>
+      <div class="row">
+        <div class="col-md-10 col-md-offset-1">
+          <h1 class="title">Basic Tasks</h1>
+          
+<h2 id="objectives">Objectives</h2>
+<ul>
+<li>show the basic <code>Makefile</code> syntax</li>
+<li>show how to run <code>make</code> from the commandline</li>
+<li>explain how rules and targets determine commands to be executed</li>
+<li>show the default target and the default Makefile</li>
+</ul>
+<p>To illustrate how <code>make</code> works, here’s the dependency tree for the paper that the robot is working on. <code>paper.pdf</code> depends on <code>paper.wdp</code> (the raw word processor file), and on <code>figure-1.svg</code> and <code>figure-2.svg</code>. <code>figure-1.svg</code> depends on <code>summary-1.dat</code>, which in turn depends on <code>data-1-1.dat</code>, <code>data-1-2.dat</code>, and so on, while <code>figure-2.svg</code> depends on files with similar names.</p>
+<p>In order to create <code>paper.pdf</code>, we have to run some command (maybe <code>latexmk</code>). For the purpose of this lecture, it doesn’t matter what <code>latexmk</code> actually does and we will not use this command further. All we need to know is that if <code>paper.tex</code> or either of the figure SVG’s change, we need to re-build <code>paper.pdf</code>.</p>
+<p>To create <code>figure-1.svg</code>, we run <code>python create_figure.py figure-1.svg summary-1.dat</code>. Again, it doesn’t matter for now what <code>create_figure.py</code> command actually is. What matters is that we need to run it whenever <code>figure-1.svg</code> is out of date, i.e., whenever it is older than the <code>summary-1.dat</code> file it depends on. Finally, in order to update <code>summary-1.dat</code>, we need to run our own little script, <code>stats.py</code>, with all the files named <code>data-1-something.dat</code> as input. We don’t know in advance how many of these there will be: we could conceivably have dozens or hundreds of raw data files to summarize.</p>
+<p>That little program <code>stats.py</code> adds one more wrinkle to our example problem. We’re constantly updating it as we think of new ways to process our raw data files. We’re also finding and fixing bugs more often than we’d like. Each time it changes, we should probably update <code>summary-1.dat</code>, just in case a new feature or bug fix changes the summary values. We should therefore include <code>stats.py</code> in the list of things <code>summary-1.dat</code> depends on, so that changes to <code>stats.py</code> will trigger recalculation of <code>summary-1.dat</code>.</p>
+<p>This is all a bit much to digest at once, so let’s look at the simplest piece. How can we get <code>make</code> to re-create <code>figure-1.svg</code> automatically whenever <code>summary-1.dat</code> changes?</p>
+<p>Let’s start by going into the directory containing the files we’re using in the paper, and use the <code>ls</code> command to get a listing of what’s there. The <code>-1t</code> flag to <code>ls</code> tells it to list things one per line, ordered by age, with the youngest file first and the oldest last:</p>
+<pre><code>$ ls -t *.dat *.svg
+summary-1.dat    figure-1.svg</code></pre>
+<p>{:class=“in”}</p>
+<p>This listing tells us that our data file <code>summary-1.dat</code> is newer than the SVG file that depends on it, so the SVG file needs to be re-created. Using our favorite editor, let’s create a file called <code>hello.mk</code> and put these three lines in it.</p>
+<pre><code># hello.mk
+figure-1.svg : summary-1.dat
+    python create_figure.py figure-1.svg summary-1.dat</code></pre>
+<p>{:class=“in”}</p>
+<p>A configuration file for <code>make</code> like this one is called a <a href="../../gloss.html#makefile">Makefile</a>. The first line, starting with <code>#</code>, is a comment. (Our comments should be more meaningful than just the name of the file.) The second and third lines are a <a href="../../gloss.html#rule">rule</a> that tell <code>make</code> what we want to do.</p>
+<p>The filename on the left of the colon in the first line is the <a href="../../gloss.html#target">target</a> of the rule. The rule tells <code>make</code> how to update or re-create this file. The target’s <a href="../../gloss.html#prerequisite">prerequisites</a>—the things it depends on—are listed to the right of the colon. In our case, <code>figure-1.svg</code> only has one prerequisite, <code>summary-1.dat</code>.</p>
+<p>The second line of the rule is its <a href="../../gloss.html#action">action</a>. This tells <code>make</code> what shell command or commands to run to bring the target up to date if it is older than any of its prerequisites. This rule only has one command, but a rule can contain any number.</p>
+<p>One thing to note is that the actions in rules <em>must</em> be indented with a single tab character. <code>make</code> will not accept spaces, or mixes of spaces and tabs. (As we said in the introduction, it was written by a summer intern in 1975, and sometimes that shows.)</p>
+<p>Now that we’ve created our <code>Makefile</code>, we can tell <code>make</code> to execute its instructions by running it from the command line:</p>
+<pre><code>$ gmake -f hello.mk
+python create_figure.py figure-1.svg summary-1.dat</code></pre>
+<p>{:class=“in”}</p>
+<blockquote>
+<p>Nowadays, <code>make</code> is almost synonymous with the most popular implementation, GNU Make. But on some systems GNU Make may be installed as <code>gmake</code>, and the command <code>make</code> be either unavailable, or point to a different Make implementation. So if the former doesn’t work for you, try the latter name as well.</p>
+</blockquote>
+<p>The arguments <code>-f hello.mk</code> tell <code>make</code> that we want it to use the commands in the file <code>hello.mk</code>. If we don’t tell it what file to look in, it looks for a file called <code>Makefile</code> in the current directory and uses that if it exists.</p>
+<p><code>make</code>’s output shows us that it has run the command we wanted it to. It did this because at least one prerequisite for <code>figure-1.svg</code> was newer than <code>figure-1.svg</code> itself. By default, <code>make</code> uses the time a file was last modified as its age. (Opening a file in an editor to view it doesn’t change this timestamp, but any change to its contents will.) Since <code>summary-1.dat</code>’s timestamp was younger than <code>figure-1.svg</code>’s, <code>make</code> ran the shell command we gave it and created a new version of <code>figure-1.svg</code>.</p>
+<p>Let’s run <code>make</code> again:</p>
+<pre><code>$ gmake -f hello.mk</code></pre>
+<p>{:class=“in”}</p>
+<p>This time, it doesn’t execute any commands. This happened—or didn’t—because the target is newer than its prerequisites. Since there’s nothing to bring up to date, <code>make</code> doesn’t change anything.</p>
+<p>If we were only allowed one rule per file, <code>make</code> wouldn’t be any simpler than typing commands by hand or putting them in little shell scripts. Luckily, <code>make</code> allows us to put any number of rules in a single configuration file. Here is another Makefile called <code>double.mk</code> with rules to re-create both <code>figure-1.svg</code> and <code>figure-2.svg</code>. These rules are identical except for the 1’s and 2’s in the filenames; we’ll see later how to combine these rules into one.</p>
+<pre><code># double.mk
+figure-1.svg : summary-1.dat
+    python create_figure.py figure-1.svg summary-1.dat</code></pre>
+<p>{:class=“in”}</p>
+<pre><code>figure-2.svg : summary-2.dat
+    python create_figure.py figure-2.svg summary-2.dat</code></pre>
+<p>{:class=“in”}</p>
+<p>Let’s pretend we’ve just updated our data files by running <code>touch *.dat</code>. (The Unix <code>touch</code> command doesn’t change the contents of files, but updates their timestamps as if they had been modified.) Now, when we run <code>make</code>, it re-creates <code>figure-1.svg</code> again—and then stops:</p>
+<pre><code>$ touch *.dat
+$ gmake -f double.mk
+python create_figure.py figure-1.svg summary-1.dat</code></pre>
+<p>{:class=“in”}</p>
+<p>Why wasn’t <code>figure-2.svg</code> re-created? The answer is that <code>make</code> uses the first rule in the Makefile as its <a href="../../gloss.html#default-rule">default rule</a>. Unless it’s told otherwise, it only executes this rule. If we want <code>make</code> to rebuild <code>figure-2.svg</code>, we have to tell it so explicitly. We use <code>-f double.mk</code> to tell <code>make</code> what Makefile to use, and then give it the name of the target we want it to handle:</p>
+<pre><code>$ gmake -f double.mk figure-2.svg
+python create_figure.py figure-2.svg summary-2.dat</code></pre>
+<p>{:class=“in”}</p>
+<p>Again, building things one at a time like this is slightly better than typing individual commands, but only slightly. To get <code>make</code> to build everything at once, we have to introduce a <a href="../../gloss.html#phony-target">phony target</a>. This is just a target name that doesn’t correspond to any actual file. Since it doesn’t actually exist, it can’t ever be up to date, but other things can still depend on it. Here’s our third Makefile, <code>phony.mk</code>:</p>
+<pre><code># phony.mk</code></pre>
+<p>{:class=“in”}</p>
+<pre><code>all : figure-1.svg figure-2.svg</code></pre>
+<p>{:class=“in”}</p>
+<pre><code>figure-1.svg : summary-1.dat
+    python create_figure.py figure-1.svg summary-1.dat</code></pre>
+<p>{:class=“in”}</p>
+<pre><code>figure-2.svg : summary-2.dat
+    python create_figure.py figure-2.svg summary-2.dat</code></pre>
+<p>{:class=“in”}</p>
+<p>We’ve introduced a phony target called <code>all</code>, which depends on <code>figure-1.svg</code> and <code>figure-2.svg</code>. Since there’s no file called <code>all</code> in the current directory, if we type <code>make all</code>, <code>make</code> will decide that the <code>all</code> target is out of date. And since <code>all</code> depends on <code>figure-1.svg</code> and <code>figure-2.svg</code>, <code>make</code> will go and update them both, which is exactly what we want.</p>
+<p>Let’s <code>touch</code> our data files again, and run <code>make -f phony.mk all</code>. Sure enough, <code>make</code> runs the <code>sgr</code> command twice to re-create both figures:</p>
+<pre><code>$ touch *.dat
+$ gmake -f phony.mk
+python create_figure.py figure-1.svg summary-1.dat
+python create_figure.py figure-2.svg summary-2.dat</code></pre>
+<p>{:class=“in”}</p>
+<blockquote>
+<h3>Exercise</h3>
+<p>You decide that you want to make another figure called <code>figure-2-copy.svg</code> that is a copy of <code>figure-2.svg</code>. Create a make file that has <code>figure-2-copy.svg</code> depend on <code>figure-2.svg</code> and updates <code>figure-2-copy.svg</code> appropriately. <em>Hint</em>: <code>cp</code> is copy in the Unix shell.</p>
+</blockquote>
+<p>One thing to note is that the order in which commands are executed is arbitrary. <code>make</code> could decide to update <code>figure-2.svg</code> first, rather than <code>figure-1.svg</code>, because there’s no dependency to respect between the two. <code>make</code> could also update them in parallel if it had more than one processor to use—we’ll return to this idea later.</p>
+<p>Something else this example shows us is that a single thing can be a target in one rule, and a prerequisite in others. The dependencies between the files mentioned in the Makefile make up a directed graph. In order for <code>make</code> to run, this graph must not contain any cycles. For example, if X depends on Y, Y depends on Z, and Z depends on X, everything depends on something else, so there is nothing <code>make</code> can build first. If it detects a cycle in a Makefile, <code>make</code> will print an error message and stop. Unfortunately, whether or not a cycle exists depends on which files exist, and <code>make</code>’s error message is usually not particularly informative.</p>
+<h2 id="the-default-target-and-the-default-makefile">The default target and the default Makefile</h2>
+<p>In the previous section, a phony target <code>all</code> was added to make it easy to remake “all” targets. It turns out that many Makefiles have a target with this meaning and this name. If a target is not specified on the command line, <code>make</code> will use <code>all</code> as the default:</p>
+<pre><code>$ make -f phony.mk
+make: Nothing to be done for &#39;all&#39;.</code></pre>
+<p>Does the name make it special? No, target <code>all</code> is special simply because it specified <em>first</em> in the Makefile. Nevertheless, it is customary to call it just that.</p>
+<p>What happens if the Makefile name is not specified using the <code>-f</code> switch? <code>make</code> by default will use <code>Makefile</code> as the name of the Makefile. This means that our Makefile should usually be called just that. Combining the use of the default target and the default Makefile allows us to remake everything by simply saying <code>make</code> (without further parameters).</p>
+        </div>
+      </div>
+      </article>
+      <div class="footer">
+        <a class="label swc-blue-bg" href="http://software-carpentry.org">Software Carpentry</a>
+        <a class="label swc-blue-bg" href="http://xwmooc.net">xwMOOC</a>
+        <a class="label swc-blue-bg" href="https://github.com/statkclee/swcarpentry-version-5-3-new">한글소스</a>
+        <a class="label swc-blue-bg" href="https://github.com/swcarpentry">영문소스</a>
+        <a class="label swc-blue-bg" href="mailto:i@xwmooc.net">Contact</a>
+        <a class="label swc-blue-bg" href="http://statkclee.github.io/swcarpentry-version-5-3-new/LICENSE.html">License</a>
+      </div>
+    </div>
+    <!-- Javascript placed at the end of the document so the pages load faster -->
+    <script src="http://software-carpentry.org/v5/js/jquery-1.9.1.min.js"></script>
+    <script src="css/bootstrap/bootstrap-js/bootstrap.js"></script>
+  </body>
+</html>

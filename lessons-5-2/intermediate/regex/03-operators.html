@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="generator" content="pandoc">
+    <title>xwMOOC: Operators</title>
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" type="text/css" href="http://statkclee.github.io/swcarpentry-version-5-3-new/css/bootstrap/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="http://statkclee.github.io/swcarpentry-version-5-3-new/css/bootstrap/bootstrap-theme.css" />
+    <link rel="stylesheet" type="text/css" href="http://statkclee.github.io/swcarpentry-version-5-3-new/css/swc.css" />
+    <link rel="alternate" type="application/rss+xml" title="Software Carpentry Blog" href="http://software-carpentry.org/feed.xml"/>
+    <meta charset="UTF-8" />
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body class="lesson">
+    <div class="container card">
+      <div class="banner">
+        <a href="http://software-carpentry.org" title="Software Carpentry">
+          <img alt="Software Carpentry banner" src="http://statkclee.github.io/swcarpentry-version-5-3-new/img/software-carpentry-banner.png" />
+      <!--     <img alt="xwMOOC banner" src="img/xwMOOC.png" />
+       -->  </a>
+      </div>
+      <article>
+      <div class="row">
+        <div class="col-md-10 col-md-offset-1">
+          <h1 class="title">Operators</h1>
+          
+<p>Let’s go back to those measurements. Notebook 1 has the site, date, changes as suggested by <span class="citation">@ctjacobs</span> and background evil level with single tabs as separators. Some of the site names have spaces, and the dates are in the international standard format YYYY-MM-DD. However, the fields in Notebook 2 are separated by slashes, and use month names instead of numbers. What’s more, some of the month names are three characters long, while others are four, and the days are either one or two digits.</p>
+<h3 id="using-simple-string-operations-gets-tedious-quickly">Using simple string operations gets tedious quickly</h3>
+<p>Before looking at how to use regular expressions to extract data from Notebook 2, let’s see how we would do it with simple string operations. If our records look like <code>'Davison/May 22, 2010/1721.3'</code>, we can split on slashes to separate the site, date, and reading. We could then split the middle field on spaces to get the month, day, and year, and then remove the comma from the day if it is present (because some of our readings don’t have a comma after the day).</p>
+<p>This is a <a href="../../gloss.html#procedural-programming">procedural</a> way to solve the problem: we tell the computer what procedure to follow step by step to get an answer. In contrast, regular expressions are <a href="../../gloss.html#declarative-programming">declarative</a>: we declare, “This is what we want,” and let the computer figure out how to calculate it.</p>
+<p>Good definitions rely on us being able to define characters that stand in place for others. Having to explicitly define the literal string usually isn’t a big help, what we want is someway of defining the general pattern. This is where operators in regular expressions come in handy.</p>
+<h3 id="operators-specify-patterns-that-simplify-regular-expressions">Operators specify patterns that simplify regular expressions</h3>
+<p>Operators are the bread and butter of regular expressions. They are simply characters that specify other patterns of characters (sometimes of varying length).</p>
+<p>You’ll have seen operators in use before. The <code>*</code> operator familiar from many a GUI’s find box or command-line wildcards is a very common one. Many combinations of characters such as <code>\s</code> are operators too.</p>
+<p>Here is a quick quiz. What happens if I try to use the pattern <code>txt/files/(*.txt)</code> on this text <code>txt/files/file.txt</code>?</p>
+<ol style="list-style-type: decimal">
+<li>It matches <code>file.txt</code></li>
+<li>It matches the whole string</li>
+<li>It won’t work at all (the regex won’t compile)</li>
+</ol>
+<p>Perhaps surprisingly, the answer is <code>3</code>. The regex won’t compile because the <code>.</code> and <code>*</code> are operators that don’t mean the same as they do in GUI search boxes and are a source of gotcha’s when building regular expressions.</p>
+<h3 id="using-operators">Using operators</h3>
+<p>Our first attempt to parse this data will rely on the <code>*</code> operator. It is a <a href="../../gloss.html#postfix-operator">postfix</a> operator, and means “Zero or more repetitions of the pattern that comes before it”. For example, <code>a*</code> matches zero or more <code>a</code> characters, while <code>.*</code> matches any sequence of characters (including the empty string) because <code>.</code> matches anything and <code>*</code> repeats. Note that the characters matched by <code>.*</code> do <em>not</em> all have to be the same: the rule is not, “Match a character against the dot, then repeat that match zero or more times,” but rather, “Zero or more times, match any character.”</p>
+<p>Here’s a test of a simple pattern using <code>.*</code>:</p>
+<pre><code>match = re.search(&#39;(.*)/(.*)/(.*)&#39;,
+                  &#39;Davison/May 22, 2010/1721.3&#39;)
+print match.group(1)
+print match.group(2)
+print match.group(3)</code></pre>
+<p>{:class=“in”}</p>
+<p>In order for the entire pattern to match, the slashes <code>/</code> have to line up exactly, because ‘/’ only matches against itself. That constraint ought to make the three uses of <code>.*</code> match the site name, date, and reading. Sure enough, the output is:</p>
+<pre><code>Davison
+May 22, 2010
+1271.3</code></pre>
+<p>{:class=“out”}</p>
+<p>Unfortunately, we’ve been over-generous. Let’s put brackets around each group in our output to make matches easier to see, then apply this pattern to the string <code>'//'</code>:</p>
+<pre><code>match = re.search(&#39;(.*)/(.*)/(.*)&#39;,
+                  &#39;//&#39;)
+print &#39;[&#39; + match.group(1) + &#39;]&#39;
+print &#39;[&#39; + match.group(2) + &#39;]&#39;
+print &#39;[&#39; + match.group(3) + &#39;]&#39;</code></pre>
+<p>{:class=“in”}</p>
+<pre><code>[]
+[]
+[]</code></pre>
+<p>{:class=“out”}</p>
+<p>We don’t want our pattern to match invalid records like this (remember, “Fail early, fail often”). However, <code>'.*'</code> can match the empty string because it is zero occurrences of a character.</p>
+<p>Let’s try a variation that uses <code>+</code> instead of <code>*</code>. <code>+</code> is also a postfix operator, but it means “one or more”, i.e., it has to match at least one occurrence of the pattern that comes before it.</p>
+<pre><code>match = re.search(&#39;(.+)/(.+)/(.+)&#39;,
+                  &#39;//&#39;)
+print match</code></pre>
+<p>{:class=“in”}</p>
+<pre><code>None</code></pre>
+<p>{:class=“out”}</p>
+<p>As we can see, the pattern <code>(.+)/(.+)/(.+)</code> <em>doesn’t</em> match a string containing only slashes because there aren’t characters before, between, or after the slashes. And if we go back and check it against valid data, it seems to do the right thing:</p>
+<pre><code>print re.search(&#39;(.+)/(.+)/(.+)&#39;,
+                &#39;Davison/May 22, 2010/1721.3&#39;)
+print &#39;[&#39; + m.group(1) + &#39;]&#39;
+print &#39;[&#39; + m.group(2) + &#39;]&#39;
+print &#39;[&#39; + m.group(3) + &#39;]&#39;</code></pre>
+<p>{:class=“in”}</p>
+<pre><code>[Davison]
+[May 22, 2010]
+[1721.3]</code></pre>
+<p>{:class=“out”}</p>
+<p>We’re going to match a lot of patterns against a lot of strings, so let’s write a function to apply a pattern to a piece of text, report whether it matches or not, and print out the match groups if it does:</p>
+<pre><code>def show_groups(pattern, text):
+    m = re.search(pattern, text)
+    if m is None:
+        print &#39;NO MATCH&#39;
+        return
+    for i in range(1, 1 + len(m.groups())):
+        print &#39;%2d: %s&#39; % (i, m.group(i))</code></pre>
+<p>{:class=“in”}</p>
+<p>We’ll test our function against the two records we were just using:</p>
+<pre><code>show_groups(&#39;(.+)/(.+)/(.+)&#39;,
+            &#39;Davison/May 22, 2010/1721.3&#39;)</code></pre>
+<p>{:class=“in”}</p>
+<pre><code>1: Davison
+2: May 22, 2010
+3: 1721.3</code></pre>
+<p>{:class=“out”}</p>
+<pre><code>show_groups(&#39;(.+)/(.+)/(.+)&#39;,
+            &#39;//&#39;)</code></pre>
+<p>{:class=“in”}</p>
+<pre><code>NO MATCH</code></pre>
+<p>{:class=“out”}</p>
+<p>All right: if we’re using regular expressions to extract the site, date, and reading, why not add more groups to break up the date while we’re at it?</p>
+<pre><code>show_groups(&#39;(.+)/(.+) (.+), (.+)/(.+)&#39;,
+            &#39;Davison/May 22, 2010/1721.3&#39;)</code></pre>
+<p>{:class=“in”}</p>
+<pre><code>1: Davison
+2: May
+3: 22
+4: 2010
+5: 1721.3</code></pre>
+<p>{:class=“out”}</p>
+<p>But wait a second: why doesn’t this work?</p>
+<pre><code>show_groups(&#39;(.+)/(.+) (.+), (.+)/(.+)&#39;,
+            &#39;Davison/May 22 2010/1721.3&#39;)</code></pre>
+<p>{:class=“in”}</p>
+<pre><code>None</code></pre>
+<p>{:class=“out”}</p>
+<p>The problem is that the string we’re trying to match doesn’t have a comma after the day. There is one in the pattern, so matching fails.</p>
+<p>We could try to fix this by putting <code>*</code> after the comma in the pattern, but that would match any number of consecutive commas in the data, which we don’t want either. Instead, let’s use a question mark <code>?</code>, which is yet another postfix operator meaning, “0 or 1 of whatever comes before it”. Another way of saying this is that the pattern that comes before the question mark is optional. If we try our tests again, we get the right answer in both cases:</p>
+<pre><code># with comma in data
+show_groups(&#39;(.+)/(.+) (.+),? (.+)/(.+)&#39;,
+            &#39;Davison/May 22, 2010/1721.3&#39;)</code></pre>
+<p>{:class=“in”}</p>
+<pre><code>1: Davison
+2: May
+3: 22
+4: 2010
+5: 1721.3</code></pre>
+<p>{:class=“out”}</p>
+<pre><code># without comma in data
+show_groups(&#39;(.+)/(.+) (.+),? (.+)/(.+)&#39;,
+            &#39;Davison/May 22 2010/1721.3&#39;)</code></pre>
+<p>{:class=“in”}</p>
+<pre><code>1: Davison
+2: May
+3: 22
+4: 2010
+5: 1721.3</code></pre>
+<p>{:class=“out”}</p>
+<p>Let’s tighten up our pattern a little bit more. We <em>don’t</em> want to match this record:</p>
+<pre><code>Davison/May 22, 201/1721.3</code></pre>
+<p>because somebody mis-typed the year, entering three digits instead of four. (Either that, or whoever took this reading was also using the physics department’s time machine.) We could use four dots in a row to force the pattern to match exactly four digits:</p>
+<pre><code>(.+)/(.+) (.+),? (....)/(.+)</code></pre>
+<p>but this won’t win any awards for readability. Instead, let’s put the digit <code>4</code> in curly braces <code>{}</code> after the dot:</p>
+<pre><code>(.+)/(.+) (.+),? (.{4})/(.+)</code></pre>
+<p>In a regular expression, curly braces with a number between them means, “Match the pattern exactly this many times”. Since <code>.</code> matches any character, <code>.{4}</code> means “match any four characters”.</p>
+<p>Let’s do a few more tests. Here are some records in which the dates are either correct or mangled:</p>
+<pre><code>tests = (
+    &#39;Davison/May , 2010/1721.3&#39;,
+    &#39;Davison/May 2, 2010/1721.3&#39;,
+    &#39;Davison/May 22, 2010/1721.3&#39;,
+    &#39;Davison/May 222, 2010/1721.3&#39;,
+    &#39;Davison/May 2, 201/1721.3&#39;,
+    &#39;Davison/ 22, 2010/1721.3&#39;,
+    &#39;/May 22, 2010/1721.3&#39;,
+    &#39;Davison/May 22, 2010/&#39;
+)</code></pre>
+<p>{:class=“in”}</p>
+<p>And here’s a pattern that should match all the records that are correct, but should fail to match all the records that have been mangled:</p>
+<pre><code>pattern = &#39;(.+)/(.+) (.{1,2}),? (.{4})/(.+)&#39;</code></pre>
+<p>{:class=“in”}</p>
+<p>We are expecting four digits for the year, and we are allowing 1 or 2 digits for the day, since the expression <code>{M,N}</code> matches a pattern from M to N times.</p>
+<p>When we run this pattern against our test data, three records match:</p>
+<pre><code>show_matches(pattern, tests)</code></pre>
+<p>{:class=“in”}</p>
+<pre><code>** Davison/May , 2010/1721.3
+** Davison/May 2, 2010/1721.3
+** Davison/May 22, 2010/1721.3
+   Davison/May 222, 2010/1721.3
+   Davison/May 2, 201/1721.3
+   Davison/ 22, 2010/1721.3
+   /May 22, 2010/1721.3
+   Davison/May 22, 2010/</code></pre>
+<p>{:class=“out”}</p>
+<p>The second and third matches make sense: <code>May 2</code> and <code>May 22</code> are both valid. But why does <code>May</code> with no date at all match this pattern? Let’s look at that test case more closely:</p>
+<pre><code>show_groups(&#39;(.+)/(.+) (.{1,2}),? (.{4})/(.+)&#39;,
+            &#39;Davison/May , 2010/1721.3&#39;)</code></pre>
+<p>{:class=“in”}</p>
+<pre><code>1: Davison
+2: May
+3: ,
+4: 2010
+5: 1721.3</code></pre>
+<p>{:class=“out”}</p>
+<p>The groups are <code>Davison</code> (that looks right), <code>May</code> (ditto), a <code>,</code> on its own (which is clearly wrong), and then the right year and the right reading.</p>
+<p>Here’s what’s happened. The space <code>` after</code>May<code>matches the space</code> <code>in the pattern.  The expression &quot;1 or 2 occurrences of any character&quot; matches the comma</code>,<code>because</code>,<code>is a character and it occurs once. The expression</code>, <code>is then not matched against anything, because it's allowed to match zero characters.</code>?` means “optional”, and in this case, the regular expression pattern matcher is deciding not to match it against anything, because that’s the only way to get the whole pattern to match the whole string. After that, the second space matches the second space in our data. This is obviously not what we want, so let’s modify our pattern again:</p>
+<pre><code>show_groups(&#39;(.+)/(.+) ([0-9]{1,2}),? (.{4})/(.+)&#39;,
+            &#39;Davison/May , 2010/1721.3&#39;)</code></pre>
+<p>{:class=“in”}</p>
+<pre><code>None</code></pre>
+<p>{:class=“out”}</p>
+<pre><code>show_groups(&#39;(.+)/(.+) ([0-9]{1,2}),? (.{4})/(.+)&#39;,
+            &#39;Davison/May 22, 2010/1721.3&#39;)</code></pre>
+<p>{:class=“in”}</p>
+<pre><code>1: Davison
+2: May
+3: 22
+4: 2010
+5: 1721.3</code></pre>
+<p>{:class=“out”}</p>
+<p>The pattern <code>(.+)/(.+) ([0-9]{1,2}),? (.{4})/(.+)</code> does the right thing for the case where there is no day, and also for the case where there is one. It works because we have used <code>[0-9]</code> instead of <code>.</code>.</p>
+<p>In regular expressions, square brackets <code>[]</code> are used to create sets of characters (sometimes called character classes). For example, the expression <code>[aeiou]</code> matches exactly one vowel, i.e., exactly one occurrence of any character in the set. We can either write these sets out character by character, as we’ve done with vowels, or as “first character <code>-</code> last character” if the characters are in a contiguous range. This is why <code>[0-9]</code> matches exactly one digit.</p>
+<p>Here’s our completed pattern:</p>
+<pre><code>(.+)/([A-Z][a-z]+) ([0-9]{1,2}),? ([0-9]{4})/(.+)</code></pre>
+<p>We have added one more feature to it: the name of the month has to begin with an upper-case letter, i.e., a character in the set <code>[A-Z]</code>, which must followed by one or more lower-case characters in the set <code>[a-z]</code>.</p>
+<p>This pattern still isn’t perfect: the day is one or more occurrences of the digits <code>0</code> through <code>9</code>, which will allow “days” like <code>0</code>, <code>00</code>, and <code>99</code>. It’s easiest to check for mistakes like this after we convert the day to an integer, since trying to handle things like leap years with regular expressions would be like trying to build a house with a Swiss army knife.</p>
+<p>Finally, the year in our final pattern is exactly four digits, so it’s the set of characters <code>[0-9]</code> repeated four times. Again, we will check for invalid values like <code>0000</code> after we convert to integer.</p>
+<p>Using the tools we’ve seen so far, we can write a simple function that will extract the date from either of the notebooks we have seen so far and return the year, the month, and the day as strings:</p>
+<pre><code>def get_date(record):
+    &#39;&#39;&#39;Return (Y, M, D) as strings, or None.&#39;&#39;&#39;
+
+    # 2010-01-01
+    m = re.search(&#39;([0-9]{4})-([0-9]{2})-([0-9]{2})&#39;,
+                  record)
+    if m:
+        return m.group(1), m.group(2), m.group(3)
+
+    # Jan 1, 2010 (comma optional, day may be 1 or 2 digits)
+    m = re.search(&#39;/([A-Z][a-z]+) ([0-9]{1,2}),? ([0-9]{4})/&#39;,
+                  record)
+    if m:
+        return m.group(3), m.group(1), m.group(2)
+
+    return None</code></pre>
+<p>{:class=“in”}</p>
+<p>We start by testing whether the record contains an ISO-formatted date YYYY-MM-DD. If it does, then we return those three fields right away. Otherwise, we test the record against a second pattern to see if we can find the name of a month, one or two digits for the day, and four digits for the year with slashes between the fields. If so, we return what we find, permuting the order to year, month, day. Finally, if neither pattern matched we return <code>None</code> to signal that we couldn’t find anything in the data.</p>
+<p>This is probably the most common way to use regular expressions: rather than trying to combine everything into one enormous pattern, we have one pattern for each valid case. We test of those cases in turn; if it matches, we return what we found, and if it doesn’t, we move on to the next pattern. Writing our code this way make it easier to understand than using a single monster pattern, and easier to extend if we have to handle more data formats.</p>
+<h3 id="anchors">Anchors</h3>
+<p>It is possible to ‘anchor’ the pattern to a particular part of the string, so that it can only match in one region, like at the start or end of the string. the <code>^</code> anchor will match the subsequent pattern only at the start of a string. Likewise the <code>$</code> operator will match the previous pattern only at the end of a line. Let’s look at a contrived example and imagine that we’re only interested in data from one site.</p>
+<pre><code>m = re.search(&#39;(^Davison.*)&#39;, &#39;Davison/May 22, 2010/1721.3&#39;)
+print m.group(1)</code></pre>
+<p>{:class=“in”} <sub>~</sub> Davison/May 22, 2010/1721.3 <sub>~</sub> {:class=“out”}</p>
+<p>Whereas,</p>
+<pre><code>m = re.search(&#39;(^Baker.*)&#39;, &#39;Davison/May 22, 2010/1721.3&#39;)
+print m</code></pre>
+<p>{:class=“in”} <sub><sub><sub> None </sub></sub></sub> {:class=“out”}</p>
+<p>Likewise, if we switch the order of columns:</p>
+<pre><code>m = re.search(&#39;(^Davison)&#39;, &#39;1721.3/May 22, 2010/Davison&#39;)
+print m</code></pre>
+<p>{:class=“in”}</p>
+<pre><code>None</code></pre>
+<p>{:class=“out”}</p>
+<p>Since <code>^Davison</code> will only match the occurrence at the beginning of the string. Matching the end of the string behaves similarly:</p>
+<pre><code>m = re.search(&#39;(.*Davison$)&#39;, &#39;1721.3/May 22, 2010/Davison&#39;)
+print m.group(1)</code></pre>
+<p>{:class=“in”}</p>
+<h3 id="metacharacters">Metacharacters</h3>
+<p>A common thing in regular expressions are metacharacters. These are special pairs of characters that denote classes of characters and help make regular expressions more readable. There is no special syntax for using them, they’re just like single characters so here’s a table.</p>
+<table>
+<tr>
+<th>
+Metacharacter
+</th>
+<th>
+Represents
+</th>
+</tr>
+<tr>
+<td>
+<code></code>
+</td>
+<td>
+a tab
+</td>
+</tr>
+<tr>
+<td>
+<code></code>
+</td>
+<td>
+any space
+</td>
+</tr>
+<tr>
+<td>
+<code></code>
+</td>
+<td>
+any word character (it is the same as <code>[aA-zZ0-9_]</code>)
+</td>
+</tr>
+<tr>
+<td>
+<code></code>
+</td>
+<td>
+any digit (it is the same as <code>[0-9]</code>)
+</td>
+</tr>
+<tr>
+<td>
+<code></code>
+</td>
+<td>
+any non-word char
+</td>
+</tr>
+<tr>
+<td>
+<code></code>
+</td>
+<td>
+any non-digit char
+</td>
+</tr>
+</table>
+<div class="keypoints" markdown="1">
+<h4>Key Points</h4>
+<ul>
+<li>Operators specify patterns that simplify regular expressions</li>
+<li>Operators are simply characters that specify other more general patterns</li>
+<li>Metacharacters are special pairs of characters that denote classes of characters</li>
+<li>Anchors match the pattern <em>only</em> when it occurs at the start or end of a string</li>
+</ul>
+</div>
+<div class="challenge" markdown="1">
+<h4>Review</h4>
+<p>So now we have enough knowledge to try a quick quiz. What does this pattern match <code>(wo.+d)</code> return, when applied to this string <code>How much wood, would a woodchuck chuck?</code>, that is to say what does this print out:</p>
+<pre><code>m = re.search(&#39;(wo.+d)&#39;, &quot;How much wood, would a woodchuck chuck?&quot;)
+print m.group(1)</code></pre>
+<p>{:class=“in”}</p>
+<ol style="list-style-type: decimal">
+<li><code>wood</code></li>
+<li><code>would, would a wood</code></li>
+<li><code>would, would</code></li>
+</ol>
+</div>
+        </div>
+      </div>
+      </article>
+      <div class="footer">
+        <a class="label swc-blue-bg" href="http://software-carpentry.org">Software Carpentry</a>
+        <a class="label swc-blue-bg" href="http://xwmooc.net">xwMOOC</a>
+        <a class="label swc-blue-bg" href="https://github.com/statkclee/swcarpentry-version-5-3-new">한글소스</a>
+        <a class="label swc-blue-bg" href="https://github.com/swcarpentry">영문소스</a>
+        <a class="label swc-blue-bg" href="mailto:i@xwmooc.net">Contact</a>
+        <a class="label swc-blue-bg" href="http://statkclee.github.io/swcarpentry-version-5-3-new/LICENSE.html">License</a>
+      </div>
+    </div>
+    <!-- Javascript placed at the end of the document so the pages load faster -->
+    <script src="http://software-carpentry.org/v5/js/jquery-1.9.1.min.js"></script>
+    <script src="css/bootstrap/bootstrap-js/bootstrap.js"></script>
+  </body>
+</html>

@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="generator" content="pandoc">
+    <title>xwMOOC: 숫자(Numbers)</title>
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" type="text/css" href="http://statkclee.github.io/swcarpentry-version-5-3-new/css/bootstrap/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="http://statkclee.github.io/swcarpentry-version-5-3-new/css/bootstrap/bootstrap-theme.css" />
+    <link rel="stylesheet" type="text/css" href="http://statkclee.github.io/swcarpentry-version-5-3-new/css/swc.css" />
+    <link rel="alternate" type="application/rss+xml" title="Software Carpentry Blog" href="http://software-carpentry.org/feed.xml"/>
+    <meta charset="UTF-8" />
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body class="lesson">
+    <div class="container card">
+      <div class="banner">
+        <a href="http://software-carpentry.org" title="Software Carpentry">
+          <img alt="Software Carpentry banner" src="http://statkclee.github.io/swcarpentry-version-5-3-new/img/software-carpentry-banner.png" />
+      <!--     <img alt="xwMOOC banner" src="img/xwMOOC.png" />
+       -->  </a>
+      </div>
+      <article>
+      <div class="row">
+        <div class="col-md-10 col-md-offset-1">
+          <h1 class="title">숫자(Numbers)</h1>
+          
+<p>어떻게 숫자가 저장되는지 살펴보면서 시작해봅시다. 만약 0과 1 두 개의 숫자(digit)만 있다면, 양의 정수를 저장하는 자연스러운 방식은 기수(base)가 2인 이진법을 사용하는 것이다. 그래서 이진수 1001<sub>2</sub> 은 십진수로 (1×2<sup>3</sup>)+(0×2<sup>2</sup>)+(0×2<sup>1</sup>)+(1×2<sup>0</sup>) = 9<sub>10</sub>이 된다. 마찬가지 방식으로 기호 표기를 위해서 1 비트를 따로 떼어서 음수에 대해서 이 방식을 확장하는 것도 자연스럽니다. 예를 들어, 양수로 0을, 음수로 1을 사용한다면, +9<sub>10</sub> 은 01001<sub>2</sub>이 될 것이고, -9<sub>10</sub> 은 11001<sub>10</sub>이 될 것이다.</p>
+<p>이 표기법에는 두가지 문제가 있다. 첫번째는 이 기법은 0에 대해서 2가지 표현법이 있다. (00000<sub>2</sub> and 10000<sub>2</sub>) 반듯이 치명적이지는 않지만, 다음과 같이 코드를 작성할 때, 이 기법이 “자연”스럽다고 주장은 사라져버린다.</p>
+<pre><code>if (length != +0) and (length != -0)</code></pre>
+<p>{:class=“in”}</p>
+<p>또 다른 문제는 <a href="../../gloss.html#sign-and-magnitude">부호 크기 표현(sign and magnitude representation)</a>으로 덧셈과 다른 연산에 필요한 회로는 <a href="../../gloss.html#twos-complement">2의 보수(two’s complement)</a>로 불리는 것에 필요한 하드웨어보다도 더 복잡하다. 양의 정수를 미러링하는 대신에 2의 보수는 자동차의 속도계처럼 0 이하로 내려갈때 다시 이월한다. 만약 숫자마다 4 비트를 사용한다면, 0<sub>10</sub> 은 0000<sub>2</sub>, -1<sub>10</sub>은 1111<sub>2</sub>이 된다. -2<sub>10</sub>은 1110<sub>2</sub>, -3<sub>10</sub> 은 1101<sub>2</sub>, 등등이 되고, 표현할 수 있는 가장 큰 음수는 1000<sub>2</sub>, 즉 -8이 된다. 그리고 나서 다시 표현이 다시 돌아가서 0111<sub>2</sub> 은 7<sub>10</sub>이 된다.</p>
+<p>이 기법이 직관적이지는 않지만 부호 크기 표현의 “0이 두개 되는” 문제를 해결하고, 하드웨어가 더 싸고 빠르게 할 수 있다. 보너스로, 첫번째 비트를 살펴보는 것만으로 숫자가 양수인지 음수인지 분간할 수 있다. 음수는 1, 양수는 1이 숫자의 첫번째 비트가 된다. 다만 이상한 것은 비대칭성이다. 왜냐하면 0 이 양수로 분류가 되어서 숫자가 -8에서 7 혹은 -16에서 15, 등등이 된다. 결과적으로 <code>x</code>가 유효한 숫자일지라도, <code>-x</code>는 유효하지 않을 수 있다.</p>
+<p>실수(<a href="../../gloss.html#float-point-number">부동 소수점수(floating point numbers)</a>로 불리는데 소수부가 이동할 수 있기 때문이다.))에 대한 좋은 표현방법을 찾는 것은 훨씬 더 어려운 문제다. 문제의 근본적인 원인은 유한 집합의 비트 패턴으로 실수의 무한수를 표현할 수 없기 때문이다. 그리고 정수와는 달리 어떤 값을 <em>표현</em>하더라도 표현할 수 없는 각각 사이에 존재하는 무한수가 있다.</p>
+<p>부동 소수점수는 대체로 기호(sign), 절대값(magnitude), 그리고 지수(exponent)로 구성된다. 32비트체계에서 IEEE 754 표준은 1 비트는 기호, 23 비트는 절대값(혹은 <em>소수부/가수</em>), 그리고 8비트는 지수로 정했다. 부동소수점 문제를 시연하기 위해서 심하게 단순한 표현을 사용한다. 소수부분 없는 양수 값만 관심을 가질 것이고, 가수에 3비트, 지수에 2비트만 사용한다.</p>
+<!--- Remove this style when vertical headers was supported by pandoc:
+https://github.com/jgm/pandoc/issues/1359 -->
+<style>
+.table-exponent td {
+    width:17%;
+}
+.table-exponent td.table-exponent-header {
+    font-weight: bold;
+}
+</style>
+<!--- Merge cells around "Exponent" when colspan was supported by pandoc:
+https://github.com/jgm/pandoc/issues/1340 -->
+<table class="table table-striped table-exponent">
+<tr>
+<td>
+</td>
+<pre><code>    &lt;td&gt;   &lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;td class=&quot;table-exponent-header&quot;&gt;Exponent&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;/tr&gt;</code></pre>
+<tr>
+<td>
+</td>
+<pre><code>    &lt;td&gt;   &lt;/td&gt;&lt;td class=&quot;table-exponent-header&quot;&gt;00&lt;/td&gt;&lt;td class=&quot;table-exponent-header&quot;&gt;01&lt;/td&gt;&lt;td class=&quot;table-exponent-header&quot;&gt;10&lt;/td&gt;&lt;td class=&quot;table-exponent-header&quot;&gt;11&lt;/td&gt;&lt;/tr&gt;</code></pre>
+<tr>
+<td>
+</td>
+<pre><code>    &lt;td class=&quot;table-exponent-header&quot;&gt;000&lt;/td&gt;&lt;td&gt; 0&lt;/td&gt;&lt;td&gt; 0&lt;/td&gt;&lt;td&gt; 0&lt;/td&gt;&lt;td&gt; 0&lt;/td&gt;&lt;/tr&gt;</code></pre>
+<tr>
+<td>
+</td>
+<pre><code>    &lt;td class=&quot;table-exponent-header&quot;&gt;001&lt;/td&gt;&lt;td&gt; 1&lt;/td&gt;&lt;td&gt; 2&lt;/td&gt;&lt;td&gt; 4&lt;/td&gt;&lt;td&gt; 8&lt;/td&gt;&lt;/tr&gt;</code></pre>
+<tr>
+<td>
+</td>
+<pre><code>    &lt;td class=&quot;table-exponent-header&quot;&gt;010&lt;/td&gt;&lt;td&gt; 2&lt;/td&gt;&lt;td&gt; 4&lt;/td&gt;&lt;td&gt; 8&lt;/td&gt;&lt;td&gt;16&lt;/td&gt;&lt;/tr&gt;</code></pre>
+<tr>
+<td class="table-exponent-header">
+Mantissa
+</td>
+<td class="table-exponent-header">
+011
+</td>
+<td>
+3
+</td>
+<td>
+6
+</td>
+<td>
+12
+</td>
+<td>
+24
+</td>
+</tr>
+<tr>
+<td>
+</td>
+<pre><code>    &lt;td class=&quot;table-exponent-header&quot;&gt;100&lt;/td&gt;&lt;td&gt; 4&lt;/td&gt;&lt;td&gt; 8&lt;/td&gt;&lt;td&gt;16&lt;/td&gt;&lt;td&gt;32&lt;/td&gt;&lt;/tr&gt;</code></pre>
+<tr>
+<td>
+</td>
+<pre><code>    &lt;td class=&quot;table-exponent-header&quot;&gt;101&lt;/td&gt;&lt;td&gt; 5&lt;/td&gt;&lt;td&gt;10&lt;/td&gt;&lt;td&gt;20&lt;/td&gt;&lt;td&gt;40&lt;/td&gt;&lt;/tr&gt;</code></pre>
+<tr>
+<td>
+</td>
+<pre><code>    &lt;td class=&quot;table-exponent-header&quot;&gt;110&lt;/td&gt;&lt;td&gt; 6&lt;/td&gt;&lt;td&gt;12&lt;/td&gt;&lt;td&gt;24&lt;/td&gt;&lt;td&gt;48&lt;/td&gt;&lt;/tr&gt;</code></pre>
+<tr>
+<td>
+</td>
+<pre><code>    &lt;td class=&quot;table-exponent-header&quot;&gt;111&lt;/td&gt;&lt;td&gt; 7&lt;/td&gt;&lt;td&gt;14&lt;/td&gt;&lt;td&gt;28&lt;/td&gt;&lt;td&gt;56&lt;/td&gt;&lt;/tr&gt;</code></pre>
+</table>
+<p>상기 테이블은 표현할 수 있는 모든 값을 보여준다. 각각은 가수 곱하기 2의 지수2승이다. 예를 들어, 소수점 48은 이진수 111 에 이진법 11승으로, 6 곱하기 2의 이진법 3 승, 즉 6 곱하기 8이 된다. (IEEE 754 표준같은 실수 부동소수점 표현은 상기 표에 있는 중복이 없지만 여기서 펼치는 주장에는 영향이 없음을 주목하기 바란다.)</p>
+<p>주목할 첫번째 것은 저장할 수 <em>없는</em> 많은 값이 있다. 예를 들어 8 그리고 10은 표현할 수 있지만, 9는 표현할 수 없다. 전자 계산기가 1/3같은 소수점 처리에서 갖는 정확하게 동일한 문제다. 소수부에서 0.3333 혹은 0.3334으로 반올림해야 한다.</p>
+<p>하지만, 이 기법이 9에 대한 표현법이 없다면, 8+1은 8 혹은 10으로 저장되어야 한다. 이것이 흥미로운 문제를 불러 일으킨다. 만약 8+1이 8이라면, 8+1+1은 무엇이 될까? 왼편에서부터 더한다면, 8+1은 8, 더하기 또 다른 1을 더하면 8이 된다. 하지만, 만약 오른편에서부터 더한다면 1+1은 2가 되고 2+8은 10이 된다. 연산 순서를 바꾸는 것이 옳고 그름의 차이를 만들 수 있다. 무작위성(randomness)이 있으면 안된다. 즉, 특정 연산 순서는 항상 동일한 결과를 만들어 내야 한다. 하지만, 연산 단계가 증가하면서 가장 최선의 순서가 무엇인지 파악하는 것도 어려워진다.</p>
+<p>수치해석 분석가는 이런 종류의 문제 해결에 시간을 보낸다. 상기 경우에 만약 더하고자 하는 값을 정렬하고 나서 가장 작은 값부터 차례로 가장 큰 값을 더한다면, 가능한 최선의 정답에 도달할 확률을 높여준다. 역행렬을 구하는 같은 다른 상황에서는 규칙이 훨씬 더 복잡해진다.</p>
+<p>균등하지 않은 숫자 라인(number line)에 대한 또 다른 관찰점이 여기에 있다. 표현할 수 있는 값과 값 사이 간격이 균등하지는 않지만, 각 값 사이의 상대적인 간격은 동일한 경우다. 즉, 첫번째 숫자 그룹은 1 씩 떨어져 있고, 구분 간격이 2, 4, 8 그래서 값 사이의 간격 비율은 대략 상수가 된다. 이와 같은 상황이 발생하는 이유는 동일한 고정 집합의 가수를 점점 더 큰 지수로 곱하기 때문이다. 이것이 몇가지 유용한 정의로 유도한다.</p>
+<p>근사할 때 <a href="../../gloss.html#absolute-error">절대 오차(absolute error)</a>는 단순하게 실제 값과 근사 값의 절대 값의 차이다. 반대로, <a href="../../gloss.html#relative-error">상대 오차(relative error)</a>는 절대 오차와 근사하려고하는 값의 비율이다. 예를 들어, 만약 근사적으로 1만큼 차이가 있어서 8+1과 56+1이 된다면, 절대 오차는 두 경우 모두 동일하지만, 첫번째 경우는 상대 오류는 1/9 = 11%가 되는 반면에 두번째 경우의 상대 오차는 단지 1/57 = 1.7%만 된다. 부동 소수점수에 대해서 생각할 때, 절대 오차보다는 상대 오차가 거의 항상 더 유용하다. 결국, 문제의 값이 10억일 때 100만큼 오차가 있다는 것은 거의 의미가 없다.</p>
+<p>왜 이것이 중요한지 살펴보기 위해서, 다음의 작은 프로그램을 살펴보자.</p>
+<pre><code>nines = []
+sums = []
+current = 0.0
+for i in range(1, 10):
+    num = 9.0 / (10.0 ** i)
+    nines.append(num)
+    current += num
+    sums.append(current)
+
+for i in range(len(nines)):
+    print &#39;%.18f %.18f&#39; % (nines[i], sums[i])</code></pre>
+<p>{:class=“in”}</p>
+<p>루프를 정수 1에서 9까지 반복한다. 이 값을 이용하여 0.9, 0.09, 0.009 등등의 숫자를 생성하고 <code>vals</code> 리스트에 담는다. 그리고 나서 이들 숫자의 합을 계산한다. 명확하게 0.9, 0.99, 0.999 등등이 되어야 한다. 하지만, 정말 그럴까?</p>
+<table class="table table-striped">
+<tr>
+<td>
+1
+</td>
+<td>
+0.900000000000000022
+</td>
+<td>
+0.900000000000000022
+</td>
+</tr>
+<tr>
+<td>
+2
+</td>
+<td>
+0.089999999999999997
+</td>
+<td>
+0.989999999999999991
+</td>
+</tr>
+<tr>
+<td>
+3
+</td>
+<td>
+0.008999999999999999
+</td>
+<td>
+0.998999999999999999
+</td>
+</tr>
+<tr>
+<td>
+4
+</td>
+<td>
+0.000900000000000000
+</td>
+<td>
+0.999900000000000011
+</td>
+</tr>
+<tr>
+<td>
+5
+</td>
+<td>
+0.000090000000000000
+</td>
+<td>
+0.999990000000000046
+</td>
+</tr>
+<tr>
+<td>
+6
+</td>
+<td>
+0.000009000000000000
+</td>
+<td>
+0.999999000000000082
+</td>
+</tr>
+<tr>
+<td>
+7
+</td>
+<td>
+0.000000900000000000
+</td>
+<td>
+0.999999900000000053
+</td>
+</tr>
+<tr>
+<td>
+8
+</td>
+<td>
+0.000000090000000000
+</td>
+<td>
+0.999999990000000061
+</td>
+</tr>
+<tr>
+<td>
+9
+</td>
+<td>
+0.000000009000000000
+</td>
+<td>
+0.999999999000000028
+</td>
+</tr>
+</table>
+<p>해답이 여기 있다. 첫번째 칼럼은 루프 인덱스, 두번째 칼럼은 0.9, 0.99 등등 값을 계산할 때 실제 얻은 값, 세번째 칼럼은 누적합이다.</p>
+<p>주목할 첫번째 것은 누적합에 기여하는 첫번째 값이 이미 약간 오차가 있다. 심지어 가수를 32비트포 표현해도 10진수로 1/3을 정확하게 표현할 수 있는 이상으로 2진수로 0.9를 정확하게는 표현할 수 없다. 가수 크기를 두배로 하는 것이 오차를 줄일 수는 있지만 오차를 완전히 제거할 수는 없다.</p>
+<p>주목할 두번째 것은 0.0009에 근사가 그 다음의 모든 근사값도 그렇지만, 실질적으로 정확한 것처럼 보인다. 하지만 이것은 잘못 오도될 수 있다. 결국 소수점 아래 18째 자리까지만 출력했다. 누적합의 마지막 숫자 오차에 대해서 증가하는지 감소하는지에 대한 어떤 규칙적인 패턴이 있어 보이지 않는다.</p>
+<p>이런 현상이 과학 프로그램을 테스트하는 것을 어렵게 만드는 이유중의 하나다. 만약 함수가 부동 소수점수를 사용한다면, 작성한 함수가 제대로 동작하는지 확인하기 위해서 결과를 무엇과 비교하여야 할까? 만약 <code>vals</code>에 있는 처음 몇개의 숫자 합계와 당연히 되어야 하는 이론적 합계와 비교한다면, 설사 리스트를 정확한 값으로 초기화한 후에 정확하게 합을 계산할지라도 정답은 거짓(<code>False</code>)이 된다. 이것은 진정으로 어려운 문제이고, 누구도 일반적인 좋은 답을 제시하지 못했다. 문제의 본질은 근사를 사용한다는 것이고 각각의 근사는 그 자체의 장점에서 판단되어야 한다.</p>
+<p>하지만, 여러분이 포기하지 말고 할 수 있는 것이 있다. 첫번째 규칙은 계산할 수만 있다면, 해석적인 해답과 컴퓨터로 얻은 값을 비교하라. 예를 들어, 만약 액체 헬륨 방울 행동을 살펴본다면, 무중력 상태에서 정지된 구형 방울에 대한 프로그램 출력결과를 점검하는 데서 시작한다. 이 경우에 정답을 계산할 수 있어야 하고, 만약 작성한 프로그램의 결과와 맞지 않는다면 아마도 다른 상황에도 작동하지 않을 것이다.</p>
+<p>두번째 규칙은 좀더 간단한 버젼의 코드와 더 훨씬 복잡한 버젼의 코드와 비교하는 것이다. 연전달을 계산하는 간단한 알고리즘을 더 복잡하지만 희망적으로 좀더 빠른 알고리즘으로 바꾸려고 한다면, 이전 코드를 버리지 마세요. 대신에 새로운 코드의 정합성을 확인하는 용도로 사용하세요. 그리고, 만약 여러분의 것과 동일한 결과를 계산하는 프로그램을 작성한 누군가와 마주친다면, 데이터를 교환하세요. 모두에게 도움이 된다.</p>
+<p>세번째 규칙은 부동 소수점수에 <code>==</code> (혹은 <code>!=</code>)을 사용하지 마세요. 다른 방식으로 계산된 두 숫자는 아마도 정확하게 같은 비트를 갖지 않을 것이다. 대신에 두 값이 특정 허용 오차 안에 있는지를 점검하고, 만약 허용 오차 안에 있다면, 같다고 처리하세요. 이와 같은 것이 허용 오차를 명시적으로 설정하게 하고, 그 자체로도 유용한다. (실험 결과에 오차 막대를 설정하는 유용한 것과 마찬가지다.)</p>
+        </div>
+      </div>
+      </article>
+      <div class="footer">
+        <a class="label swc-blue-bg" href="http://software-carpentry.org">Software Carpentry</a>
+        <a class="label swc-blue-bg" href="http://xwmooc.net">xwMOOC</a>
+        <a class="label swc-blue-bg" href="https://github.com/statkclee/swcarpentry-version-5-3-new">한글소스</a>
+        <a class="label swc-blue-bg" href="https://github.com/swcarpentry">영문소스</a>
+        <a class="label swc-blue-bg" href="mailto:i@xwmooc.net">Contact</a>
+        <a class="label swc-blue-bg" href="http://statkclee.github.io/swcarpentry-version-5-3-new/LICENSE.html">License</a>
+      </div>
+    </div>
+    <!-- Javascript placed at the end of the document so the pages load faster -->
+    <script src="http://software-carpentry.org/v5/js/jquery-1.9.1.min.js"></script>
+    <script src="css/bootstrap/bootstrap-js/bootstrap.js"></script>
+  </body>
+</html>

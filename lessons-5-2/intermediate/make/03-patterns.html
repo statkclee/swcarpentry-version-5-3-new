@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="generator" content="pandoc">
+    <title>xwMOOC: Patterns</title>
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" type="text/css" href="http://statkclee.github.io/swcarpentry-version-5-3-new/css/bootstrap/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="http://statkclee.github.io/swcarpentry-version-5-3-new/css/bootstrap/bootstrap-theme.css" />
+    <link rel="stylesheet" type="text/css" href="http://statkclee.github.io/swcarpentry-version-5-3-new/css/swc.css" />
+    <link rel="alternate" type="application/rss+xml" title="Software Carpentry Blog" href="http://software-carpentry.org/feed.xml"/>
+    <meta charset="UTF-8" />
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body class="lesson">
+    <div class="container card">
+      <div class="banner">
+        <a href="http://software-carpentry.org" title="Software Carpentry">
+          <img alt="Software Carpentry banner" src="http://statkclee.github.io/swcarpentry-version-5-3-new/img/software-carpentry-banner.png" />
+      <!--     <img alt="xwMOOC banner" src="img/xwMOOC.png" />
+       -->  </a>
+      </div>
+      <article>
+      <div class="row">
+        <div class="col-md-10 col-md-offset-1">
+          <h1 class="title">Patterns</h1>
+          
+<p>Rules shown in previous chapter named the input and output files (the prerequisites and the target) explicitly. This chapter shows how to use <em>patterns</em> to represent identical parts of similar filenames used in a rule.</p>
+<h2 id="objectives">Objectives</h2>
+<ul>
+<li>explain the syntax for patterns</li>
+<li>show how patterns can be used to simplify rule writing</li>
+</ul>
+<p>Our Makefile is better than it was, but still contains a lot of redundancy. The rules for <code>figure-1.svg</code> and <code>figure-2.svg</code> are identical except for the ‘1’ and ‘2’ in their names, as are the rules for <code>summary-1.dat</code> and <code>summary-2.dat</code>.</p>
+<p>We’d like to “fold” the rules for the figures together for two reasons. First, if we add a third figure, we don’t want to have to duplicate rules a third time. Second, if we ever want to change the way we generate figures, we’d like to make that change once, in one place: if we have to make it in several places, the odds are good we’ll forget one, and then waste time trying to figure out why some of our commands aren’t running.</p>
+<h2 id="pattern-rule-basics">Pattern rule basics</h2>
+<p>The way to do this in Make is to use a <a href="../../gloss.html#pattern-rule">pattern rule</a> to capture the common idea. Here’s our Makefile rewritten to use such a rule:</p>
+<pre><code># pattern-rule.mk</code></pre>
+<p>{:class=“in”}</p>
+<pre><code>figure-%.svg : summary-%.dat
+    python create_figure.py $@ $^</code></pre>
+<p>{:class=“in”}</p>
+<pre><code>summary-1.dat : data-1-*.dat
+    python stats.py $@ $^</code></pre>
+<p>{:class=“in”}</p>
+<pre><code>summary-2.dat : data-2-*.dat
+    python stats.py $@ $^</code></pre>
+<p>{:class=“in”}</p>
+<pre><code>summary-1.dat : stats.py
+summary-2.dat : stats.py</code></pre>
+<p>{:class=“in”}</p>
+<p>In this rule, <code>%</code> is a wildcard. When it is expanded, it has the same value on both sides of the rule: if it matches ‘1’ on the left, it must match ‘1’ on the right as well. <code>%</code> only means something to Make, though. It doesn’t have a value in the rule’s action, which is handed off to the shell for execution. So in the action, we have to use the automatic variables <code>$@</code> and <code>$^</code> as before.</p>
+<p>Let’s try running our modified Makefile:</p>
+<pre><code>$ make -f pattern-rule.mk
+python stats.py summary-1.dat data-1-1.dat data-1-2.dat data-1-3.dat</code></pre>
+<p>{:class=“in”}</p>
+<p><code>summary-1.dat</code> is updated, but not <code>summary-2.dat</code> or either of the figure files. The reason the other commands didn’t run is that pattern rules don’t create dependencies: they just tell Make what to do <em>if</em> there’s a dependency. In other words, <em>if</em> Make decides it wants to create <code>figure-1.svg</code>, it can use our pattern rule, but we still have to tell Make to care about <code>figure-1.svg</code>. Let’s do this by putting the rule for <code>paper.pdf</code> back in our Makefile:</p>
+<pre><code># use-pattern.mk</code></pre>
+<p>{:class=“in”}</p>
+<pre><code>paper.pdf : paper.tex figure-1.svg figure-2.svg
+    cat $^ &gt; $@</code></pre>
+<p>{:class=“in”}</p>
+<pre><code>figure-%.svg : summary-%.dat
+    python create_figure.py $@ $^</code></pre>
+<p>{:class=“in”}</p>
+<pre><code>summary-1.dat : data-1-*.dat
+    python stats.py $@ $^</code></pre>
+<p>{:class=“in”}</p>
+<pre><code>summary-2.dat : data-2-*.dat
+    python stats.py $@ $^</code></pre>
+<p>{:class=“in”}</p>
+<pre><code>summary-1.dat : stats.py
+summary-2.dat : stats.py</code></pre>
+<p>{:class=“in”}</p>
+<p>Here, <code>paper.pdf</code> depends on <code>figure-1.svg</code> and <code>figure-2.svg</code>. Make now knows that it needs these figures. Since there aren’t specific rules for them, it uses the pattern rule instead.</p>
+<h2 id="wildcards-cannot-be-used-for-files-which-are-generated-by-make-rules">Wildcards cannot be used for files which are generated by <code>make</code> rules</h2>
+<p>It’s tempting to go one step further, and make <code>paper.pdf</code> depend on <code>figure-*.svg</code>:</p>
+<pre><code>paper.pdf : paper.wdp figure-*.svg
+        cat $^ &gt; $@</code></pre>
+<p>{:class=“in”}</p>
+<p>This doesn’t work, though. The reason is that the figure files may not exist when Make starts to run—after all, Make creates them. In that case, <code>figure-*.svg</code> will expand to nothing, so Make would mistakenly believe that <code>paper.pdf</code> depended only on <code>paper.tex</code>. This kind of bug can be very hard to figure out, and while Make does have a debugger called <a href="http://gmd.sourceforge.net/">GMD</a>, it’s not an easy tool for beginners to use.</p>
+<p>Our raw data files <em>do</em> always exist, though, so we can get rid of some more redundancy by folding these two rules into one using the <code>*</code> wildcard:</p>
+<pre><code># all-patterns.mk</code></pre>
+<p>{:class=“in”}</p>
+<pre><code>paper.pdf : paper.tex figure-1.svg figure-2.svg
+    cat $^ &gt; $@</code></pre>
+<p>{:class=“in”}</p>
+<pre><code>figure-%.svg : summary-%.dat
+    python create_figure.py $@ $^</code></pre>
+<p>{:class=“in”}</p>
+<pre><code>summary-%.dat : data-%-*.dat
+    python stats.py $@ $^</code></pre>
+<p>{:class=“in”}</p>
+<pre><code>summary-1.dat : stats.py
+summary-2.dat : stats.py</code></pre>
+<p>{:class=“in”}</p>
+<p>It’s safe to do this because Make isn’t responsible for creating <code>data-1-whatever.dat</code> and <code>data-2-whatever.dat</code>: there’s no possibility of the <code>*</code> missing things because it’s evaluated when Make starts running.</p>
+<p>Just as a reminder, the <code>%</code> is a Make wildcard: it matches the same thing on the left and right side of a pattern rule. <code>*</code> is a shell wildcard: it matches zero or more characters in a filename when it’s evaluated.</p>
+<p>We cannot get rid of the last bit of redundancy by making <code>summary-%.dat</code> depend on <code>stats.py</code>. Even with this pattern rule, the summary files only depend on the corresponding raw data files, not on <code>stats.py</code>. The reason is that when Make sees two or more pattern rules that could match a filename, it uses the first and ignores the other. It’s another wart, and another source of hard-to-find headaches in Makefiles.</p>
+<p>If we really want to avoid making <code>summary-1.dat</code> and <code>summary-2.dat</code> depend on <code>stats.py</code> separately, the only way is to go back to using false dependencies. This Makefile tells Make to update the timestamps on the raw data files using <code>touch</code> whenever <code>stats.py</code> changes. Doing this indirectly triggers the re-creation of the summary files—it does what we want, just in a roundabout way.</p>
+<pre><code># false-dependencies.mk</code></pre>
+<p>{:class=“in”}</p>
+<pre><code>paper.pdf : paper.tex figure-1.svg figure-2.svg
+    cat $^ &gt; $@</code></pre>
+<p>{:class=“in”}</p>
+<pre><code>figure-%.svg : summary-%.dat
+    python create_figure.py $@ $^</code></pre>
+<p>{:class=“in”}</p>
+<pre><code>summary-%.dat : data-%-*.dat
+    python stats.py $@ $^</code></pre>
+<p>{:class=“in”}</p>
+<p><sub>~</sub> data-<em>-</em>.dat : stats.py touch $@</p>
+        </div>
+      </div>
+      </article>
+      <div class="footer">
+        <a class="label swc-blue-bg" href="http://software-carpentry.org">Software Carpentry</a>
+        <a class="label swc-blue-bg" href="http://xwmooc.net">xwMOOC</a>
+        <a class="label swc-blue-bg" href="https://github.com/statkclee/swcarpentry-version-5-3-new">한글소스</a>
+        <a class="label swc-blue-bg" href="https://github.com/swcarpentry">영문소스</a>
+        <a class="label swc-blue-bg" href="mailto:i@xwmooc.net">Contact</a>
+        <a class="label swc-blue-bg" href="http://statkclee.github.io/swcarpentry-version-5-3-new/LICENSE.html">License</a>
+      </div>
+    </div>
+    <!-- Javascript placed at the end of the document so the pages load faster -->
+    <script src="http://software-carpentry.org/v5/js/jquery-1.9.1.min.js"></script>
+    <script src="css/bootstrap/bootstrap-js/bootstrap.js"></script>
+  </body>
+</html>

@@ -22,9 +22,9 @@ subtitle: Reference
     `ls` on its own lists the current working directory.
 *   `pwd` prints the user's current working directory.
 *   `whoami` shows the user's current identity.
-*   `/` on its own is the root directory of the whole filesystem.
+*   `/` on its own is the root directory of the whole file system.
 *   A relative path specifies a location starting from the current location.
-*   An absolute path specifies a location from the root of the filesystem.
+*   An absolute path specifies a location from the root of the file system.
 *   Directory names in a path are separated with '/' on Unix, but '\\' on Windows.
 *   '..' means "the directory above the current one";
     '.' on its own means "the current directory".
@@ -41,7 +41,6 @@ subtitle: Reference
 *   `mv old new` moves (renames) a file or directory.
 *   `rm path` removes (deletes) a file.
 *   `rmdir path` removes (deletes) an empty directory.
-*   `touch path` creates an empty file if it doesn't already exist.
 *   Unix documentation uses '^A' to mean "control-A".
 *   The shell does not have a trash bin: once something is deleted, it's really gone.
 *   Nano is a very simple text editor --- please use something else for real work.
@@ -59,13 +58,13 @@ subtitle: Reference
 
 ## [Loops](04-loop.html)
 
-*   `history` displays recent commands, and `!number` to repeat a command by number.
 *   A `for` loop repeats commands once for every thing in a list.
 *   Every `for` loop needs a variable to refer to the current "thing".
 *   Use `$name` to expand a variable (i.e., get its value).
 *   Do not use spaces, quotes, or wildcard characters such as '*' or '?' in filenames, as it complicates variable expansion.
 *   Give files consistent names that are easy to match with wildcard patterns to make it easy to select them for looping.
 *   Use the up-arrow key to scroll up through previous commands to edit and repeat them.
+*   Use "control-r" to search through the previously entered commands.
 *   Use `history` to display recent commands, and `!number` to repeat a command by number.
 
 ## [Shell Scripts](05-script.html)
@@ -97,11 +96,11 @@ absolute path
     See also: [relative path](#relative-path).
 
 argument
-:   A value given to a function or program when it runs. 
+:   A value given to a function or program when it runs.
     The term is often used interchangeably (and inconsistently) with [parameter](#parameter).
 
 command shell
-:   FIXME
+:   See [shell](#shell)
 
 command-line interface
 :   An interface based on typing commands,
@@ -125,8 +124,8 @@ current working directory
 
 file system
 :   A set of files, directories, and I/O devices (such as keyboards and screens).
-    A filesystem may be spread across many physical devices,
-    or many filesystems may be stored on a single physical device;
+    A file system may be spread across many physical devices,
+    or many file systems may be stored on a single physical device;
     the [operating system](#operating-system) manages access.
 
 filename extension
@@ -165,7 +164,7 @@ home directory
     By convention, all of a user's files are stored in or below her home directory.
 
 loop
-:   A set of instructions to be executed multiple times. Consists of a [loop body](#loop-body) and (usually) a 
+:   A set of instructions to be executed multiple times. Consists of a [loop body](#loop-body) and (usually) a
     condition for exiting the loop. See also [for loop](#for-loop) and [while loop](#while-loop).
 
 loop body
@@ -204,7 +203,7 @@ pipe
     When two or more programs are connected in this way, they are called a "pipeline".
 
 process
-:   A running instance of a program, containing code, variable values, 
+:   A running instance of a program, containing code, variable values,
     open files and network connections, and so on.
     Processes are the "actors" that the [operating system](#operating-system) manages;
     it typically runs each process for a few milliseconds at a time

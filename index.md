@@ -9,12 +9,29 @@ title: 소프트웨어 카펜트리 버젼 5.3.
 
 단, 2일간 실습위주(hands-on) 워크숍 교육을 통해서 프로그램 설계, 버젼 제어, 데이터 관리, 작업 자동화를 포함한 기본 개념과 도구를 실습위주로 학습한다. 모든 워크샵 참여자가 서로 돕고 학습한 것을 본인 업무에 적용하길 기대합니다.
 
-## 학습 주제
+## 대한민국 소프트웨어 카펜트리 
+
+- [파이콘 2015 라이트닝 토크](http://www.pycon.kr/2015/program/77)
+    * [한국에서 소프트웨어 카펜트리 1년...](http://statkclee.github.io/slideshows/korea/index.html)  
+- 소프트웨어 카펜트리 교재
+    *  [GitHub 저장소](https://github.com/statkclee/swcarpentry-version-5-3-new)
+    *  [xwMOOC 소프트웨어 카펜트리](http://swcarpentry.xwmooc.org/)
+- 소프트웨어 카펜트리 워크샵
+    *  [한국전파진흥협회(RAPA)](http://statkclee.github.io/2015-02-25-seoul/)
+    *  [경기콘텐츠코리아랩](http://statkclee.github.io/2015-04-29-pangyo/)
+    *  [연세대학교](http://statkclee.github.io/2015-06-29-yonsei/)
+    *  [나노종합기술원 대전창조경제혁신센터](http://statkclee.github.io/2015-08-20-daejeon/)
+
+## 학습 주제 (5.3 버젼)
 		
 1. [유닉스 쉘(Unix Shell)](lessons/shell/index.html)
-    1. 유닉스 소개 
-    1. 파이프와 필터
-    1. 세번째...
+    1.  [쉘(shell) 소개](lessons/shell/00-intro.html)
+    1.  [파일과 디렉토리](lessons/shell/01-filedir.html)
+    1.  [파일과 디렉토리 생성](lessons/shell/02-create.html)
+    1.  [파이프(pipe)와 필터(filter)](lessons/shell/03-pipefilter.html)
+    1.  [루프(Loops)](lessons/shell/04-loop.html)
+    1.  [쉘 스크립트(shell script)](lessons/shell/05-script.html)
+    1.  [파일, 문자, 디렉토리  등 찾기](lessons/shell/06-find.html)
 1. [Git을 사용한 버젼 관리](lessons/git/index.html)
 1. [R 프로그래밍](lessons/r/index.html)
 1. [파이썬 프로그래밍](lessons/python/index.html)
@@ -24,5 +41,15 @@ title: 소프트웨어 카펜트리 버젼 5.3.
 1. [Make로 작업 자동화](lessons/make/index.html)
 1. [테스팅](lessons/testing/index.html)
 
+## 학습 주제 (5.3 버젼)
 
-
+| 초보자 | 중급자|
+|---------|--------|
+| 1. [유닉스 쉘(Unix Shell)](lessons-5-2/novice/shell/index.html)  |    1. [쉘(Shell)](lessons-5-2/intermediate/shell/index.html) |
+| 2. [Git을 사용한 버젼 관리](lessons-5-2/novice/git/index.html)      |    2. [Git](lessons-5-2/intermediate/git/index.html) |
+| 3. [R 프로그래밍](lessons-5-2/novice/r/index.html)                    |    3. [R 프로그래밍](lessons-5-2/intermediate/r/index.html)|
+| 4. [파이썬 프로그래밍](lessons-5-2/novice/python/index.html)     |    4. [파이썬 프로그래밍](lessons-5-2/intermediate/python/index.html) |
+| 5. [매트랩 프로그래밍](lessons-5-2/novice/matlab/index.html)     |    5.  |  [make 빌드](lessons-5-2/intermediate/make/index.html) 
+| 6. [데이터베이스와 SQL 사용하기](lessons-5-2/novice/sql/index.html) |  6. [정규표현식(regex)](lessons-5-2/intermediate/regex/index.html) |
+| 7. [HG를 사용한 버젼 관리](lessons-5-2/novice/hg/index.html)     |    7. [doit 빌드](lessons-5-2/intermediate/doit/index.html) |
+| 8. [추가 학습](lessons-5-2/novice/extras/index.html)                |    8. [웹데이터(webdata)](lessons-5-2/intermediate/webdata/index.html) |

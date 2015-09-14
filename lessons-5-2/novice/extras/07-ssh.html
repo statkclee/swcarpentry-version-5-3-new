@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="generator" content="pandoc">
+    <title>xwMOOC: 원격 작업(Working Remotely)</title>
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" type="text/css" href="http://statkclee.github.io/swcarpentry-version-5-3-new/css/bootstrap/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="http://statkclee.github.io/swcarpentry-version-5-3-new/css/bootstrap/bootstrap-theme.css" />
+    <link rel="stylesheet" type="text/css" href="http://statkclee.github.io/swcarpentry-version-5-3-new/css/swc.css" />
+    <link rel="alternate" type="application/rss+xml" title="Software Carpentry Blog" href="http://software-carpentry.org/feed.xml"/>
+    <meta charset="UTF-8" />
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body class="lesson">
+    <div class="container card">
+      <div class="banner">
+        <a href="http://software-carpentry.org" title="Software Carpentry">
+          <img alt="Software Carpentry banner" src="http://statkclee.github.io/swcarpentry-version-5-3-new/img/software-carpentry-banner.png" />
+      <!--     <img alt="xwMOOC banner" src="img/xwMOOC.png" />
+       -->  </a>
+      </div>
+      <article>
+      <div class="row">
+        <div class="col-md-10 col-md-offset-1">
+          <h1 class="title">원격 작업(Working Remotely)</h1>
+          
+<h4 id="목표">목표</h4>
+<ul>
+<li>SSH가 무엇인지 설명한다.</li>
+<li>SSH 키(SSH Key)가 무엇인지 설명한다.</li>
+<li>SSH 키 페어(SSH Key Pair)를 생성한다.</li>
+<li>SSH 키를 원격 서버에 추가한다.</li>
+<li>SSH 키를 어떻게 사용하는지 배운다.</li>
+</ul>
+<p>데스크탑이나 노트북 컴퓨터에 쉘을 사용할 때 무슨일이 생기는 좀더 자세히 살펴보자. 첫번째 단계는 로그인(login)해서 운영체제가 접속한 사용자가 누구이고 무슨 작업을 하도록 허락되었는지를 확인한다. 사용자 이름과 비밀번호를 타이핑해서 수행하게 된다. 즉, 운영체제는 레코드에 저장된 입력한 값을 확인하고, 만약 일치하게 된다면 사용자를 위해서 쉘을 실행한다.</p>
+<p>명령어를 타이핑할 때, 타이핑하는 문자를 나타내는 0과 1이 키보드에서 쉘로 전달된다. 쉴은 사용자가 타이핑한 것을 나타내기 위해 문자를 화면에 출력한다. 그리고 나서 만약 타이핑한 것이 명령어면, 쉘은 명령어를 실행하고 출력결과를 (만약 출력할 것이 있다면) 화면에 출력한다.</p>
+<p>실험결과 데이터베이스를 관리하는 지하실 서버 같은 다른 컴퓨터에 명령어를 실행하고자 한다면 어떨까? 이를 위해서, 먼저 해당 컴퓨터에 로그인 해야한다. 이를 <a href="../../gloss.html#remote-login">원격 로그인(remote login)</a>이라고 하고 원격 컴퓨터(remote computer)라고 부른다. 로컬 쉘과 동일하게 사용자를 위해서 원격 컴퓨터에서 명령어를 실행하고 결과를 로컬 컴퓨터 화면에 출력한다.</p>
+<p>원격 로그인하기 위해서 사용하는 툴이 <a href="../../gloss.html#secure-shell">시큐어 쉘(secure shell)</a> 즉, SSH다. 특히, <code>ssh username@computer</code> 명령어는 SSH를 실행해서 지정한 원격 컴퓨터에 접속한다. 로그인한 후에 원격 컴퓨터의 파일과 디렉토리를 사용하기 위해서 원격 쉘을 이용할 수 있다. <code>exit</code>나 컨트롤-D(Control-D)를 타이핑하여 원격 쉘을 끝내고 이전 셀로 돌아온다.</p>
+<p>다음 예제에서, 원격 컴퓨터의 명령어 프롬프트가 <code>$</code> 대신에 <code>moon&gt;</code>다. 어느 컴퓨터가 무엇을 하는지 좀더 명확히하기 위해서, 원격 컴퓨터에 보내는 명령어와 출력결과를 들여쓰기 한다.</p>
+<pre class="shell"><code>$ pwd</code></pre>
+<pre class="output"><code>/users/vlad</code></pre>
+<pre class="shell"><code>$ ssh vlad@moon.euphoric.edu
+Password: ********</code></pre>
+<pre class="shell"><code>    moon&gt; hostname</code></pre>
+<pre class="output"><code>    moon</code></pre>
+<pre class="shell"><code>    moon&gt; pwd</code></pre>
+<pre class="output"><code>    /home/vlad</code></pre>
+<pre class="shell"><code>    moon&gt; ls -F</code></pre>
+<pre class="output"><code>    bin/     cheese.txt   dark_side/   rocks.cfg</code></pre>
+<pre class="shell"><code>    moon&gt; exit</code></pre>
+<pre class="shell"><code>$ pwd</code></pre>
+<pre class="output"><code>/users/vlad</code></pre>
+<p>시큐어 쉘은 원격 쉘(remote shell)을 나타내는 오래된 <code>rsh</code> 프로그램과 대조하기 위해서 “시큐어(secure)”라고 부른다. 과거에 모든 사람이 서로를 신뢰하고, 이름만으로 컴퓨터의 모든 칩을 알고 있을 때, 네트워크를 타고 정보를 전송할 때 가장 민감한 정보를 제외하고 어떤 것도 암호화하지 않았다. 하지만, 악의를 가진 사람이 네트워크 트래픽을 볼 수 있고, 사용자이름과 비밀번호를 훔칠 수 있고, 악의를 가지고 이용할 수도 있다는 것을 뜻한다. SSH는 이러한 점을 방지하거나, 최소한 늦추기 위해서 고안되었다. SSH는 다른 컴퓨터 사이에 주고 받는 메시지에 무엇이 있는지 외부인이 볼 수 없도록 정교하고, 수많은 검증을 거친 암호화 프로토콜을 사용한다.</p>
+<p>“시큐어 복사(secure copy)”를 나타내는 <code>scp</code>로 불리는 동반 프로그램도 <code>ssh</code>는 가지고 있다. SSH같은 종류의 연결을 사용하여 원격 컴퓨터에서 혹은 컴퓨터로 파일을 복사할 수 있게 한다. 명령어 이름은 <code>cp</code>와 <code>ssh</code>를 조합해서 작업을 수행한다. 파일을 복사하기 위해서 원천(소스, source)와 목적 경로를 명기해야한다. 경로명에는 컴퓨터의 이름을 포함할 수도 있다. 만약 컴퓨터 이름을 생략한다면, <code>scp</code>는 지금 실행중인 로컬 컴퓨터를 가정한다. 예를 들어, 다음 명령어는 최신 결과를 복사해서 지하실에 있는 백업 서버로 복사하면서 진행사항을 화면에 출력한다.</p>
+<pre class="shell"><code>$ scp results.dat vlad@backupserver:backups/results-2011-11-11.dat
+Password: ********</code></pre>
+<p>{:class=“in”}</p>
+<pre class="output"><code>results.dat              100%  9  1.0 MB/s 00:00</code></pre>
+<p>전체 디렉토리를 복사하는 것도 유사하다. <code>-r</code> 옵션을 사용해서 재규적으로 복사한다는 신호를 전달한다. 예를 들어, 다음 명령어는 백업서버에서 모든 결과를 노트북으로 복사하여 가져온다.</p>
+<pre class="shell"><code>$ scp -r vlad@backupserver:backups ./backups
+Password: ********</code></pre>
+<pre class="output"><code>results-2011-09-18.dat              100%  7  1.0 MB/s 00:00
+results-2011-10-04.dat              100%  9  1.0 MB/s 00:00
+results-2011-10-28.dat              100%  8  1.0 MB/s 00:00
+results-2011-11-11.dat              100%  9  1.0 MB/s 00:00</code></pre>
+<p>SSH로 할 수 있는 것이 하나 더 있다. 백업서버에 <code>backups/results-2011-11-12.dat</code> 파일을 이미 생성했는지 확인한다고 가정하자. 로그인에서 <code>ls</code> 명령어를 타이핑하는 대신에 다음과 같이 할 수 있다.</p>
+<pre class="shell"><code>$ ssh vlad@backupserver &quot;ls results&quot;
+Password: ********</code></pre>
+<pre class="output"><code>results-2011-09-18.dat  results-2011-10-28.dat
+results-2011-10-04.dat  results-2011-11-11.dat</code></pre>
+<p>SSH가 원격 사용자이름 다음에 인자를 받아서 원격 컴퓨터의 쉘에 전달한다. (단일 인자처럼 보이게 하기 위해서 인용부호 처리를 한다.) 이러한 방식의 인자는 적합한 명령어이기 때문에 원격 쉘이 <code>ls results</code>를 실행하고 결과를 다시 사용자의 로컬 쉘의 화면에 출력한다.</p>
+<h3 id="ssh-키-ssh-key">SSH 키 (SSH Key)</h3>
+<p>비밀번호를 반복해서 매번 타이핑하는 것은 성가시다. 특히, 원격에서 실행하려고 하는 명령어가 루프로 반복된다면 더욱 그렇다. 비밀번호를 반복해서 타이핑하는 필요를 제거하기 위해 <a href="../../gloss.html#ssh-key">SSH 키(SSH key)</a>를 생성해서 원격 컴퓨터에 접속하는 것을 항상 신뢰하도록 할 수 있다.</p>
+<p>SSH 키는 GitHub 같은 서비스와 공유되는 공개키(public key)와 사용자의 로컬에만 저장되는 개인키(private key)로 짝(pair)으로 되어 있다. 만약 두 키가 일치한다면, 접속이 허락된다.</p>
+<p>SSH 키를 지탱하는 암호기술이 공개키로부터 개인키를 역공학(reverse engineering)할 수 없게 보증한다.</p>
+<p>SSH 인증을 사용하는 첫 단계는 자신만의 개인키와 공개키 짝을 생성하는 것이다.</p>
+<p>로컬 컴퓨터에 SSH 키 짝을 이미 가지고 있을 수도 있다. <code>.ssh</code> 디렉토리로 가서 디렉토리 내부 목록을 출력해서 SSH 키 짝이 존재하는지 확인할 수 있다.</p>
+<pre class="shell"><code>$ cd ~/.ssh
+$ ls</code></pre>
+<p>만약 <code>id_rsa.pub</code>을 본다면, 이미 SSH 키 짝을 가지고 있어서 새로 생성할 필요는 없다.</p>
+<p>만약 <code>id_rsa.pub</code>을 볼 수 없다면, 다음 명령어를 사용해서 새로운 SSH 키 짝을 생성할 수 있다. <code>your@email.com</code> 부분을 사용자 여러분의 전자우편 주소로 바꾸도록 확인하세요.</p>
+<pre class="shell"><code>$ ssh-keygen -t rsa -C &quot;your@email.com&quot;</code></pre>
+<p>새로운 키를 어디에 저장할지 물었을 때, 디폴트 장소에 동의하면 “엔터(enter)”를 치세요.</p>
+<pre class="output"><code>Generating public/private rsa key pair.
+Enter file in which to save the key (/Users/username/.ssh/id_rsa):</code></pre>
+<p>그리고 나서, 선택적인 암호(passphrase)를 입력하도록 요청받을 것이다. SSH키를 좀더 안전하게 만드는데 사용될 수 있지만, 만약 여러분이 원하는 것이 매번 비밀번호를 타이핑하는 것을 피하려고 한다면, “엔터(enter)”를 두번 쳐서 건너뛸 수 있다.</p>
+<pre class="output"><code>Enter passphrase (empty for no passphrase):
+Enter same passphrase again:</code></pre>
+<p>SSH 키 생성이 완료되면, 다음 확인 결과를 보게 된다.</p>
+<pre class="output"><code>Your identification has been saved in /Users/username/.ssh/id_rsa.
+Your public key has been saved in /Users/username/.ssh/id_rsa.pub.
+The key fingerprint is:
+01:0f:f4:3b:ca:85:d6:17:a1:7d:f0:68:9d:f0:a2:db your@email.com
+The key&#39;s randomart image is:
++--[ RSA 2048]----+
+|                 |
+|                 |
+|        . E +    |
+|       . o = .   |
+|      . S =   o  |
+|       o.O . o   |
+|       o .+ .    |
+|      . o+..     |
+|       .+=o      |
++-----------------+</code></pre>
+<p>상기 임의 예술 이미지가 SSH 키를 일치시키는 대안이지만 여러분은 필요하치 않을 것이다.</p>
+<p>이제 생성한 공개키를 접속하려는 서버에 보낼 필요가 있다. <code>cat</code> 명령어로 새로 생성한 공개키의 내용을 화면에 출력하자.</p>
+<pre class="shell"><code>$ cat ~/.ssh/id_rsa.pub</code></pre>
+<pre class="output"><code>ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEA879BJGYlPTLIuc9/R5MYiN4yc/YiCLcdBpSdzgK9Dt0Bkfe3rSz5cPm4wmehdE7GkVFXrBJ2YHqPLuM1yx1AUxIebpwlIl9f/aUHOts9eVnVh4NztPy0iSU/Sv0b2ODQQvcy2vYcujlorscl8JjAgfWsO3W4iGEe6QwBpVomcME8IU35v5VbylM9ORQa6wvZMVrPECBvwItTY8cPWH3MGZiK/74eHbSLKA4PY3gM4GHI450Nie16yggEg2aTQfWA1rry9JYWEoHS9pJ1dnLqZU3k/8OWgqJrilwSoC5rGjgp93iu0H8T6+mEHGRQe84Nk1y5lESSWIbn6P636Bl3uQ== your@email.com</code></pre>
+<p>출력결과의 내용 콘텐츠를 복사한다. SSH 키를 사용하여 접속하려는 서버에 로그인한다.</p>
+<pre class="shell"><code>$ ssh vlad@moon.euphoric.edu
+Password: ********</code></pre>
+<p>복사한 콘텐트를 <code>~/.ssh/authorized_keys</code> 끝에 붙여놓는다.</p>
+<pre class="shell"><code>    moon&gt; nano ~/.ssh/authorized_keys`.</code></pre>
+<p>콘텐트를 파일에 추가한 후에 원격 컴퓨터에서 로그 아웃하고 다시 로그인한다. 만약 SSH 키 초기 설정이 올바르게 되었다면, 비밀번호를 다시 타이핑할 필요가 없다.</p>
+<pre class="shell"><code>    moon&gt; exit</code></pre>
+<pre class="output"><code>$ ssh vlad@moon.euphoric.edu</code></pre>
+<div class="keypoints" markdown="1">
+<h4>주요점</h4>
+<ul>
+<li>SSH는 사용자명/비밀번호 인증의 안전한 대안이다.</li>
+<li>SSH 키는 공개/개인 키 짝으로 생성된다. 공개 키는 다른 사람, 컴퓨터와 공유될 수 있다. 개인키는 여러분의 로컬 컴퓨터에만 체재한다.</li>
+</ul>
+</div>
+        </div>
+      </div>
+      </article>
+      <div class="footer">
+        <a class="label swc-blue-bg" href="http://software-carpentry.org">Software Carpentry</a>
+        <a class="label swc-blue-bg" href="http://xwmooc.net">xwMOOC</a>
+        <a class="label swc-blue-bg" href="https://github.com/statkclee/swcarpentry-version-5-3-new">한글소스</a>
+        <a class="label swc-blue-bg" href="https://github.com/swcarpentry">영문소스</a>
+        <a class="label swc-blue-bg" href="mailto:i@xwmooc.net">Contact</a>
+        <a class="label swc-blue-bg" href="http://statkclee.github.io/swcarpentry-version-5-3-new/LICENSE.html">License</a>
+      </div>
+    </div>
+    <!-- Javascript placed at the end of the document so the pages load faster -->
+    <script src="http://software-carpentry.org/v5/js/jquery-1.9.1.min.js"></script>
+    <script src="css/bootstrap/bootstrap-js/bootstrap.js"></script>
+  </body>
+</html>

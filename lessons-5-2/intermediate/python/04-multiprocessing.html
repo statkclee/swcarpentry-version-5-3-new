@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="generator" content="pandoc">
+    <title>xwMOOC: </title>
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" type="text/css" href="http://statkclee.github.io/swcarpentry-version-5-3-new/css/bootstrap/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="http://statkclee.github.io/swcarpentry-version-5-3-new/css/bootstrap/bootstrap-theme.css" />
+    <link rel="stylesheet" type="text/css" href="http://statkclee.github.io/swcarpentry-version-5-3-new/css/swc.css" />
+    <link rel="alternate" type="application/rss+xml" title="Software Carpentry Blog" href="http://software-carpentry.org/feed.xml"/>
+    <meta charset="UTF-8" />
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body class="lesson">
+    <div class="container card">
+      <div class="banner">
+        <a href="http://software-carpentry.org" title="Software Carpentry">
+          <img alt="Software Carpentry banner" src="http://statkclee.github.io/swcarpentry-version-5-3-new/img/software-carpentry-banner.png" />
+      <!--     <img alt="xwMOOC banner" src="img/xwMOOC.png" />
+       -->  </a>
+      </div>
+      <article>
+      <div class="row">
+        <div class="col-md-10 col-md-offset-1">
+          <h1 class="title"></h1>
+          
+<h1 id="parallel-programming-with-pythons-multiprocessing-library">Parallel programming with Python’s multiprocessing library</h1>
+<p>In this lesson, you will learn how to write programs that perform several tasks in parallel using Python’s built-in <a
+href="https://docs.python.org/2.7/library/multiprocessing.html"
+target="_blank">multiprocessing</a> library. You are encouraged to consult the <a
+href="https://docs.python.org/2.7/library/multiprocessing.html"
+target="_blank">documentation</a> to learn more, or to answer any detailed questions as we will only cover a small subset of the library’s functionality.</p>
+<p>This lesson assumes you have completed the <a href="../../novice/python/index.html">Programming with Python</a> lessons or have some familiarity with using functions, loops, conditionals, command line argument processing, NumPy, and matplotlib (though don’t worry if you don’t know NumPy and matplotlib well).</p>
+<blockquote>
+<p>The code in this lesson was written against Python 2.7, but should work with little or no modification under Python 3.</p>
+</blockquote>
+<h2 id="objectives">Objectives</h2>
+<ul>
+<li>Understand the major parallel programming models</li>
+<li>Learn how to implement simple multiprocessor parallelization</li>
+<li>Evaluate the performance speedup gained from parallelization</li>
+</ul>
+<h2 id="parallel-programming-models">Parallel programming models</h2>
+<p>Parallel programming has been important to scientific computing for decades as a way to decrease program run times, making more complex analyses possible (e.g. climate modeling, gene sequencing, pharmaceutical development, aircraft design).</p>
+<p>One of the motivations for parallel programming has been the diminishing marginal increases in single CPU performance with each new generation of CPU (see <a
+href="http://www.gotw.ca/publications/concurrency-ddj.htm"
+target="_blank">The Free Lunch is over</a>). In response, computer makers have introduced multi-core processors that contain more than one processing core. It’s not uncommon for desktop, laptop, and even tablets and smart phones to have two or more CPU cores.</p>
+<h3 id="gpu-and-heterogeneous-computing">GPU and heterogeneous computing</h3>
+<p>In addition to multi-core CPUs, Graphics Processing Units (GPU) have become more powerful recently (often having hundreds of parallel execution units). GPUs are increasingly being use not just for drawing graphics to the screen, but for general purpose computation. GPUs can even be used in conjunction with CPUs to boost parallel computing performance (this is known as heterogeneous computing). GPUs are best suited to applying the same computation over arrays of data, while CPUs are better suited to algorithms that include conditional branches of execution (e.g. different paths through the code based on if statements). Emerging tools, such as <a
+href="http://en.wikipedia.org/wiki/OpenCL" target="_blank">OpenCL</a> help coordinate parallel execution across heterogeneous computer platforms that contain differing CPU and GPU resources.</p>
+<h3 id="cpu-multi-processing-distributed-memory-parallelism">CPU multi-processing / Distributed-memory parallelism</h3>
+<p>Unfortunately, most computer programs cannot take advantage of performance increases offered by GPUs or multi-core CPUs unless we modify these programs. In this lesson we will develop an example program that uses the Python multiprocessing library to simultaneously execute tasks on a multi-core CPU, decreasing the overall program run time.</p>
+<p>Multi-processing is one way to execute tasks in parallel on a multi-core CPU, or across multiple computers in a computing cluster. In multi-processing, each task runs in its own process; each program running on your computer is represented by one or more processes. For example, if you are running a web browser, a text editor, and an e-mail client, you are running at least three processes (and likely many more background processes). On modern operating systems, each process gets its own portion of your computer’s memory, ensuring that no process can interfere with the execution of another (though tools like <a href="http://en.wikipedia.org/wiki/Message_Passing_Interface"
+target="_blank">MPI</a> and even Python’s multiprocessing library can be used to share data between processes running locally or in distributed computing environments).</p>
+<h3 id="cpu-multi-threading-shared-memory-parallelism">CPU multi-threading (shared memory parallelism)</h3>
+<p>Multi-processing is not to be confused with multi-threading, or shared-memory parallelism. In modern operating systems, each process contains one or more threads of execution. These threads share the same portion of memory assigned to their parent process; each thread can run in parallel if the computer has more than one CPU core. For certain algorithms, multi-threading can be more efficient than multi-processing (though multi-processing solutions such as MPI often scale better to larger problem sizes). However, multi-threading is more error-prone to program and is generally only done directly by expert systems programmers. Tools such as <a
+href="http://openmp.org/" target="_blank">OpenMP</a> should in general be used for multi-threading in scientific computing.</p>
+<h2 id="example-application">Example application</h2>
+<p>In our example application, we’ll show how to parallelize the plotting of randomly generated data using multiple processors. You can find the complete solution <a href="plot_rand_mp.py"
+target="_blank">here</a>. Key portions of the code will be discussed below.</p>
+<p>Due to the design of the multiprocessing library, the code portions generally will not work in interactive interpreters such as IPython. Consult the <a
+href="https://docs.python.org/2.7/library/multiprocessing.html"
+target="_blank">documentation</a> for details. To run the example application, download it <a href="plot_rand_mp.py"
+target="_blank">here</a>, and then, from your command line interface, type:</p>
+<pre><code>python plot_rand_mp.py --help</code></pre>
+<p>for usage instructions. We suggest you create an output directory called “temp” to store the plots in (to make deletion easier).</p>
+<h3 id="defining-the-work-to-be-done">Defining the work to be done</h3>
+<p>Before running code in parallel, we need to define the work to be done. In multiprocessing, this work is defined as a <em>callable</em> object, usually a Python function. Here is the function we’ll use:</p>
+<pre><code>def plotData(outputDir, plotNum):
+    outFilename = &quot;plot_%d.pdf&quot; % (plotNum,)
+    outFilepath = os.path.join(outputDir, outFilename)
+    
+    # Plot some random data
+    # Adapted from: http://matplotlib.org/examples/shapes_and_collections/scatter_demo.html
+    N = 500
+    # First we need to re-initialize the random number generator for each worker
+    # See: https://groups.google.com/forum/#!topic/briansupport/9ErDidIBBFM
+    np.random.seed( int( time() ) + plotNum )
+    x = np.random.rand(N)
+    y = np.random.rand(N)
+    area = np.pi * (15 * np.random.rand(N))**2 # 0 to 15 point radiuses
+
+    print(&quot;\tMaking plot %d&quot; % (plotNum,) )
+    plt.scatter(x, y, s=area, alpha=0.5)
+    plt.savefig(outFilepath)
+    # Clear figure so that the next plot this worker makes will not contain
+    # data from previous plots
+    plt.clf() 
+    
+    return (plotNum, outFilepath)</code></pre>
+<p>This function takes as input the path of the output directory to which plots should be saved, and the unique identifier of the plot we are creating; the function returns the path of the PDF file to which the plotted data were written, as well as the plot identifier. The reason for returning the plot identifier will be described below.</p>
+<p>Don’t worry if you are not familiar with NumPy or matplotlib. All we’re doing here is making a scatter plot of random data. As is, this is not a very useful task, however it could easily be extended to plot actual data.</p>
+<p><strong>The key thing to note about this function is that when executing code in parallel environments, weird behavior can result unless special care is taken in your code</strong> (even when doing multi-processing programming where each process has its own memory space). In this case, there are two special things we must do.</p>
+<p>First, we must force NumPy’s random number generator to re-initialize for each call of the parallel function, this is accomplished by:</p>
+<pre><code>np.random.seed( int( time() ) + plotNum )</code></pre>
+<p>Where we use the current system time and the plot identifier as a <em>seed</em> for the random number generator. If we don’t do this, each worker process will use the same random number generator as it makes the plots it is responsible for. Thus, all plots made by Worker 1 would contain the same sequence of “random” data.</p>
+<p>Second, we need to tell matplotlib to clear the current figure context after each plot is generated:</p>
+<pre><code>plt.clf()</code></pre>
+<p>Otherwise, each plot made by Worker 1 would contain the data from all previous plots created by Worker 1.</p>
+<h3 id="creating-a-pool-of-workers">Creating a pool of workers</h3>
+<p>Now that we have defined the work to be done, we can write the code to execute in tasks in parallel. There are several ways to use Python’s multiprocessing library to execute tasks in parallel. In this lesson we’ll use a <a
+href="https://docs.python.org/2.7/library/multiprocessing.html#using-a-pool-of-workers"
+target="_blank">pool of worker processes</a>.</p>
+<p>Assuming we import the multiprocessing library as follows:</p>
+<pre><code>import multiprocessing</code></pre>
+<p>we can create a pool by:</p>
+<pre><code>pool = multiprocessing.Pool( args.numProcessors )</code></pre>
+<p>In our example, we’re passing in the number of processors to use via an optional command line argument called <code>numProcessors</code>. If the user doesn’t specify the number of processors on the command line, the default value is determined using the cpu_count() method of multiprocessing:</p>
+<pre><code>multiprocessing.cpu_count()</code></pre>
+<blockquote>
+<p>We’re using the <a
+href="https://docs.python.org/2.7/library/argparse.html"
+target="_blank">argparse</a> library, a standard part of Python 2.7 and later, to manage command line arguments.</p>
+</blockquote>
+<h3 id="build-a-list-of-tasks">Build a list of tasks</h3>
+<p>Okay. We have a pool of workers, and a we have a description of how workers should perform a task in the abstract. Before we can run any tasks we need to make a list of specific tasks to be performed (i.e. plots to be created). We do this as follows:</p>
+<pre><code>tasks = []
+plotNum = 0
+while plotNum &lt; args.numPlots:
+    plotNum += 1
+    tasks.append( (args.outputDir, plotNum, ) )</code></pre>
+<p>Each task is simply a tuple of the path where plot PDF files should be saved and as well as the current plot identifier. We store these tuples in a list called <code>tasks</code>, thus our tasks are described as a list of tuples.</p>
+<h3 id="run-tasks-in-parallel">Run tasks in parallel</h3>
+<p>To run our tasks in parallel across all workers, we use the <a href="https://docs.python.org/2.7/library/multiprocessing.html#multiprocessing.pool.multiprocessing.Pool.apply_async"><code>apply_async</code></a> method of the worker pool class:</p>
+<pre><code>results = [pool.apply_async( plotData, t ) for t in tasks]</code></pre>
+<p>here we call <code>apply_async</code> from a list comprehension for convenience, but you could also iterate over the tasks:</p>
+<pre><code>results = []
+for t in tasks:
+    results.append( pool.apply_async( plotData, t) )</code></pre>
+<p>In either case, we pass our <code>plotData</code> function as well as the individual task tuple to <code>plot_async</code>. The multiprocessing library will take care of dispatching our tasks to each worker so that the tasks can be performed in parallel.</p>
+<h3 id="getting-results">Getting results</h3>
+<p>Once we’ve dispatched all tasks we’ll want to get the results returned by each task and do something with those results:</p>
+<pre><code>for result in results:
+    (plotNum, plotFilename) = result.get()
+    print(&quot;Result: plot %d written to %s&quot; % (plotNum, plotFilename) )</code></pre>
+<p>We get the results for each task by calling the <code>get</code> method on that task’s result object. Calls to <code>get</code> will wait until there are results available (this is called “blocking”). You can optionally set a timeout after which an exception will be raised if a result is not returned (this is useful if your task involves network activity).</p>
+<p>Remember that our task function <code>plotData</code> returns a tuple of the plot identifier as well as the filename of the plot generated. You might be asking yourself why would we need to return the plot identifier when the plot identifier was passed into the worker function, and did not change in the worker function. This is necessary because the worker pool makes no guarantee that workers will complete their tasks in any particular order. Indeed, in a more realistic application, each tasks’ workload may vary, so there is no way to know how long each task will take to complete.</p>
+<p>In our example we simply print out the plot identifier and the name of file produced. If the worker function were performing a numerical computation, we could instead do something with that result, such as adding the result to the results obtained from other tasks.</p>
+<h2 id="typical-output">Typical output</h2>
+<p>Here is the output that our example program should produce:</p>
+<pre><code>$ ./plot_rand_mp.py -o temp -n 4
+Making 4 plots of random data using 8 processors...
+       Making plot 1
+       Making plot 2
+       Making plot 3
+       Making plot 4
+Result: plot 1 written to temp/plot_1.pdf
+Result: plot 2 written to temp/plot_2.pdf
+Result: plot 3 written to temp/plot_3.pdf
+Result: plot 4 written to temp/plot_4.pdf</code></pre>
+<h2 id="speedup">Speedup</h2>
+<p>Whenever we decide to parallelize a task, it is important to evaluate the runtime savings and efficiency of our parallel program. <a
+href="http://en.wikipedia.org/wiki/Speedup" target="_blank">Speedup and efficiency</a> are common ways of doing this.</p>
+<blockquote>
+<p>Before decided parallelize or otherwise optimize a program, you should first use a <a
+href="http://en.wikipedia.org/wiki/Profiling_(computer_programming)"
+target="_blank">profiler</a> to identify what proportion of runtime your program is spending in each function or component. This will help you to prioritize optimization or parallelization to maximize runtime reductions.</p>
+</blockquote>
+<p>Speedup (Sp) is defined as the ratio of runtime for a sequential algorithm (T1) to runtime for a parallel algorithm with <em>p</em> processors (Tp). That is, Sp = T1 / Tp. Ideal speedup results when Sp = p. Speedup is formally derived from <a
+href="http://en.wikipedia.org/wiki/Amdahl's_law"
+target="_blank">Amdahl’s law</a>, which considers the portion of a program that is serial vs. the portion that is parallel when calculating speedup.</p>
+<p>Efficiency (Ep) is defined as the ratio of speedup for p processors (Sp) to the number of processors p, or Ep = Sp / p.</p>
+<p>Below is a graph comparing the speedup and efficiency that resulted when running the example program to create 64 plots using a range of processors on computer with a 4-core processor (each data point represents the average of three runs). <img src="speedup.png" title="Plot of speedup and efficiency of example parallel program" alt="Speedup plot" /></p>
+<blockquote>
+<p>Note that the comparison here is not quite fair because a sequential version of the program was not written. The runtime for the sequential version were approximated by running the parallel version using a single processor. The single processor runtime was likely longer than that of a sequential version of the same program due to the overhead needed to create the worker pool and dispatch a single task to a worker. Thus these results slightly overstate the parallel speedup and efficiency.</p>
+</blockquote>
+<p>First note that the slope of the speedup curve is low, and grows farther away from the ideal speedup line as the number of processors increases. Some divergence between actual and ideal speedup is typical. However our example program isn’t strictly computational and involves input/output (I/O) to the filesystem (i.e. writing the plot). I/O-bound tasks do not typically parallelize well because I/O resources (e.g. disks, network, memory) are shared across processors, and because I/O operations, especially to disk, usually take orders of magnitude more time to complete than computational operations. However, even I/O-bound tasks can see moderate speedup due to the effects of “pipelining” (see <a
+href="http://en.wikipedia.org/wiki/Pipeline_(computing)"
+target="_blank">here</a>).</p>
+<p>Efficiency, which ranges from 0 to 1, is a bit easier to interpret than speedup. With two processors, efficiency was over 90% (i.e. our two workers were 90% utilized, doing useful work far more than they were waiting for I/O). As processors were added to the worker pool, the efficiency dropped, which is expected for a task dependent on I/O. However, the speedup continued increasing up to and including eight processors; that is, runtimes continued to drop until we added more than eight workers. Thus, even though efficiency was decreasing, we were still able to save time by adding more workers, up to a point. Efficiency is especially important in enterprise computing environments, where concerns like providing equitable access shared resources and reducing energy consumption may dictate the use of fewer processors to maintain higher processor utilization.</p>
+<blockquote>
+<p>Despite our computer having only 4-cores, why did runtime continue to decrease between four and eight processors? This was in part because the computer we ran the tests on had a feature call “HyperThreading.” HyperThreading is the marketing name of a technology that enables each physical core of a CPU to appear as two virtual cores to your operating system. These virtual cores can improve performance, but are rarely as effective as additional physical cores.</p>
+</blockquote>
+<h2 id="communication-between-the-processes">Communication between the processes</h2>
+<p>Running a computation in multiple processes requires some communication between these processes. One of the nice aspects of multiprocessing in Python is that most of the time you do not need to know <em>how</em> this communication is handled: it just works. However, it is useful to understand the basics of this mechanism in order to figure out how to solve two kinds of problems: unexpected errors, and bad performance.</p>
+<p>Communication between processes takes the form of streams of bytes that travel through specific communication channels. To send an object from one process to another, Python has to convert it to a stream of bytes, and assemble the object back at the receiving end. Python’s mechanism for doing these conversions was originally designed for storing objects in files and is implemented in the <a
+href="https://docs.python.org/2.7/library/pickle.html"
+target="_blank">pickle</a> module. Every argument that is passed to a Python function running in another process is pickled and then unpickled. The result of the function undergoes the same process on its way back.</p>
+<p>There are two things you need to know about pickle in the context of multiprocessing. First, most objects can be pickled but some cannot. Second, pickling and unpickling take time and can sometimes add considerable overhead to your multiprocessing.</p>
+<p>The objects that cannot be pickled come in two varieties: those for which pickling does not make sense, and those for which it has simply not been implemented. A good example for the first category is file objects. The second category contains mainly object types defined in extension modules whose authors didn’t implement pickling. If you use an old release of NumPy, you may discover that its array-aware functions are not picklable, making it impossible to use such a function directly as a task in multiprocessing. For Python’s built-in objects, there is one important restriction that is due to the implementation details of pickle: functions and classes can only be pickled if they are defined at the top level of a module. This means, for example, that if you define a function inside another function, you cannot pickle it and thus not pass it to a multiprocessing task.</p>
+<p>The performance implications of pickling are rather obvious: you should try to pass as few arguments as possible to your tasks, and make sure you pass no more data than you really need to. For example, rather than passing a huge list and the index of the item that your taks is supposed to process, you should pass only that item.</p>
+<h2 id="challenge">Challenge</h2>
+<p>Run the <a href="plot_rand_mp.py" target="_blank">example application</a> on your computer several times. Each time, vary the number of processors to use and note how the computation efficiency varies. You can use the Unix <code>time</code> program to measure execution times.</p>
+<h2 id="key-points">Key Points</h2>
+<ul>
+<li><p>CPU multi-processing is a parallel programming technique that can harness the power of modern computers to help you perform more analyses more quickly.</p></li>
+<li><p>The Python multiprocessing library allows you to create a pool of workers to carry out tasks in parallel</p></li>
+<li><p>Tasks are easy to describe using Python functions</p></li>
+<li><p>Care needs to be taken when executing code in parallel environments to avoid strange program behavior and wrong computations</p></li>
+<li><p>You can combine results from individual tasks allowing each worker to share in the computational load</p></li>
+<li><p>It is important to use profiling before optimizing computer programs</p></li>
+<li><p>Metrics such as speedup and efficiency aid in evaluating the performance and utility of parallel programs</p></li>
+</ul>
+<h2 id="next-steps">Next steps</h2>
+<p>Using the <a href="plot_rand_mp.py" target="_blank">example program</a> as a starting point, you should be able to create your own parallel program that will save you time and help you to get more performance out of your existing computer hardware (which you’ve already paid for!).</p>
+        </div>
+      </div>
+      </article>
+      <div class="footer">
+        <a class="label swc-blue-bg" href="http://software-carpentry.org">Software Carpentry</a>
+        <a class="label swc-blue-bg" href="http://xwmooc.net">xwMOOC</a>
+        <a class="label swc-blue-bg" href="https://github.com/statkclee/swcarpentry-version-5-3-new">한글소스</a>
+        <a class="label swc-blue-bg" href="https://github.com/swcarpentry">영문소스</a>
+        <a class="label swc-blue-bg" href="mailto:i@xwmooc.net">Contact</a>
+        <a class="label swc-blue-bg" href="http://statkclee.github.io/swcarpentry-version-5-3-new/LICENSE.html">License</a>
+      </div>
+    </div>
+    <!-- Javascript placed at the end of the document so the pages load faster -->
+    <script src="http://software-carpentry.org/v5/js/jquery-1.9.1.min.js"></script>
+    <script src="css/bootstrap/bootstrap-js/bootstrap.js"></script>
+  </body>
+</html>

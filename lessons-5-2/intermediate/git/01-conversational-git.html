@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="generator" content="pandoc">
+    <title>xwMOOC: Conversational Git</title>
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" type="text/css" href="http://statkclee.github.io/swcarpentry-version-5-3-new/css/bootstrap/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="http://statkclee.github.io/swcarpentry-version-5-3-new/css/bootstrap/bootstrap-theme.css" />
+    <link rel="stylesheet" type="text/css" href="http://statkclee.github.io/swcarpentry-version-5-3-new/css/swc.css" />
+    <link rel="alternate" type="application/rss+xml" title="Software Carpentry Blog" href="http://software-carpentry.org/feed.xml"/>
+    <meta charset="UTF-8" />
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body class="lesson">
+    <div class="container card">
+      <div class="banner">
+        <a href="http://software-carpentry.org" title="Software Carpentry">
+          <img alt="Software Carpentry banner" src="http://statkclee.github.io/swcarpentry-version-5-3-new/img/software-carpentry-banner.png" />
+      <!--     <img alt="xwMOOC banner" src="img/xwMOOC.png" />
+       -->  </a>
+      </div>
+      <article>
+      <div class="row">
+        <div class="col-md-10 col-md-offset-1">
+          <h1 class="title">Conversational Git</h1>
+          
+<div class="objectives" markdown="1">
+<h4>Objectives</h4>
+<ul>
+<li>Participate in collaborative development by copying Git repositories using the <code>git clone</code> command.</li>
+<li>View historical changes in their Git repositories using <code>git log</code>.</li>
+<li>Navigate the history of their Git repositories using <code>git reflog</code> and <code>git checkout</code>.</li>
+<li>Restore saved versions of files using <code>git checkout</code>.</li>
+</ul>
+</div>
+<p>When you travel to a country where you don’t speak the native language, frequently there is no time, to properly learn it. If you are to accomplish anything on your own, you need to know a few essential words and phrases. The same is true for Git. This lesson won’t teach you to become a Git expert. Instead, we want you to be able to understand some of the vocabulary, and communicate: your desires to Git, and your actions to others. Along the way, we’ll introduce a few Git concepts (nouns), commands (verbs), and command line arguments (adverbs). In most cases, the English meaning of the word will help you recall its meaning to Git. Please keep in mind, though, that Git uses some of its verbs and nouns very differently from other revision control systems.</p>
+<h3 id="copying-repositories-git-clone">Copying Repositories (git clone)</h3>
+<p>The first concept we introduce is the <a href="../../gloss.html#repository">repository</a>. The repository contains a directory of files and folders and their revisions going back to its creation.</p>
+<p>We will start with a small repository with only a few commits that has been created for you to practice with.</p>
+<p>We will copy the <code>bio-pipeline</code> repository from GitHub user <code>ahmadia</code> using our second Git command, the <em>clone</em> command.</p>
+<p>When we execute <code>git clone</code>, the command makes a perfect copy of another repository. By default, it creates a Git repository of the same name in the same directory you entered the command. The command (and its successful output) should look similar to this:</p>
+<pre><code>$ git clone https://github.com/ahmadia/bio-pipeline.git
+Cloning into &#39;bio-pipeline&#39;...
+remote: Counting objects: 41, done.
+remote: Compressing objects: 100% (36/36), done.
+remote: Total 41 (delta 19), reused 23 (delta 4)
+Unpacking objects: 100% (41/41), done.
+Checking connectivity... done</code></pre>
+<p>You can now enter the repository (which is also a directory on your file system) by typing:</p>
+<pre><code>$ cd bio-pipeline</code></pre>
+<p>If we now type <code>ls</code>, we see that the repository has some code and a few data files.</p>
+<pre><code>$ ls
+2013-05-24-2760-2763.txt Lumi.2761.csv            Lumi.2763.csv
+Lumi.2760.csv            Lumi.2762.csv            python_pipeline.ipy</code></pre>
+<p>If we add the <code>-a</code> flag to show everything, we can see that Git has created a hidden directory called <code>.git</code>:</p>
+<pre><code>$ ls -a
+.                        2013-05-24-2760-2763.txt Lumi.2762.csv
+..                       Lumi.2760.csv            Lumi.2763.csv
+.git                     Lumi.2761.csv            python_pipeline.ipy</code></pre>
+<p>Git stores information about the project in this special sub-directory. If we ever delete it, we will lose our local copy of the project’s history, and any changes or commits we had not published yet.</p>
+<h3 id="viewing-history-git-log">Viewing History (git log)</h3>
+<p>We are looking at the latest <em>revision</em>, also referred to in the Git documentation as a <em>commit</em>, of the <code>bio-pipeline</code> repository. If we want to see the name of this revision, we use the <code>log</code> command. By default, when we execute <code>git log</code>, it gives us information about this revision and every other revision made before it. We use the the command-line argument, <code>--max count 1</code>, to inform Git that we only want to see the current one.</p>
+<pre><code>$ git log --max-count 1
+commit 61fd2bcece2126cdd8ee24f40a04c18d39403022
+Author: Aron Ahmadia &lt;aron@ahmadia.net&gt;
+Date:   Tue Jun 4 10:59:21 2013 -0400
+
+    Made fixes to Python pipeline</code></pre>
+<p>Our fingers are starting to get sore from all of this typing. Luckily, <code>-n</code> is a common shortcut for <em>number of things</em> in programming and at the command line. To save a few keystrokes, we will instead type:</p>
+<pre><code>$ git log -n 1</code></pre>
+<p>which is equivalent to the previous command.</p>
+<p>The output of the command provides a summary of the revision Aron Ahmadia committed to the repository on June 4, 2013. The line: <code>Made fixes to Python pipeline</code> is Aron’s <em>commit message</em>.</p>
+<p>The alphabet soup of digits and letters starting with <code>61fd2</code> is called a <em>hash</em>. The hash uniquely identifies this revision, and was automatically generated by Git as the final step of the commit process. We can think of the hash as an identifier permanently affixed to this exact version of the code and data.</p>
+<h3 id="revision-ancestry">Revision Ancestry</h3>
+<p>Each revision’s <em>parent</em> is the previous version of the code and data, and immediately precedes it in history. We can see each revision’s parents as output from <code>git log</code> by adding the <code>--parents</code> flag.</p>
+<pre><code>$❯ git log --parents -n 1
+commit 61fd2bcece2126cdd8ee24f40a04c18d39403022 8595b710e3be4b2bf01d51a1c55842510b82ff87
+Author: Aron Ahmadia &lt;aron@ahmadia.net&gt;
+Date:   Tue Jun 4 10:59:21 2013 -0400
+
+    Made fixes to Python pipeline</code></pre>
+<p>Notice that the parent revision is referred to only by its hash. Since the hash uniquely identifies this revision, this is the only information we need to look up the state of the repository when the parent revision was created.</p>
+<p>Usually, we are interested in how a revision differs from its <em>parent</em>. We can also see this output by adding the <code>-p</code> flag (or <code>--patch</code>), to the <code>git log</code> command.</p>
+<p>After you enter this command, you will see the changes in this revision presented in <em>diff</em> format. Since the output does not fit in the screen, Git will pipe the output into a pager (by default, less). You can scroll up and down through the log by using the up and down arrow keys. When you are done, just press <code>q</code>.</p>
+<pre><code>$ git log -n 1 -p
+commit 61fd2bcece2126cdd8ee24f40a04c18d39403022
+Author: Aron Ahmadia &lt;aron@ahmadia.net&gt;
+Date:   Tue Jun 4 10:59:21 2013 -0400
+
+    Made fixes to Python pipeline
+
+diff --git a/python_pipeline.ipy b/python_pipeline.ipy
+new file mode 100644
+index 0000000..ab9e62b
+--- /dev/null
++++ b/python_pipeline.ipy
+@@ -0,0 +1,44 @@
++%pylab
++import numpy as np
++
++f = open(&#39;Lumi.2760.csv&#39;)
++g = f.readlines()
++f.close()
+...</code></pre>
+<p>The output is slightly cryptic because it is intended to be read by machines in addition to humans. The differences, also known as the <em>diff</em>, tells you how each file was changed from its previous version to this one.</p>
+<p>In general, lines starting with a single ‘+’ were added, and lines starting with a single ‘-’ were removed.”. Lines without the initial ‘+’ or ‘-’ are present in both versions, and are provided as helpful context so you can understand the changes.</p>
+<p>The diff headers in the output:</p>
+<pre><code>diff --git a/python_pipeline.ipy b/python_pipeline.ipy
+new file mode 100644
+index 0000000..ab9e62b
+--- /dev/null
++++ b/python_pipeline.ipy</code></pre>
+<p>summarize the differences between the previous version of the file and its new version.</p>
+<p>Since <code>python_pipeline.ipy</code> was a file new to the repository, we see this special line:</p>
+<pre><code>--- /dev/null</code></pre>
+<p>This indicates that there was no previous file, and this file is new. The following line:</p>
+<pre><code>+++ b/python_pipeline.ipy</code></pre>
+<p>Tells you that the new file was named <code>python_pipeline.ipy</code>.</p>
+<p>The numbers between the <code>@@</code> markers informs you which lines were changed,</p>
+<pre><code>@@ -0,0 +1,44 @@</code></pre>
+<p>In this case, Aron created a new file and added lines 1-44.</p>
+<p>The lines following, preceded by a <code>+</code>, are the contents of the new file he added, <code>python_pipeline.ipy</code>.</p>
+<p>Here are two more useful arguments to <code>git log</code>:</p>
+<ul>
+<li><code>--oneline</code> - Prints only the first few characters of the hash and the first line of the commit message in each revision.</li>
+<li><code>--stat</code> - Prints out a summary of files changed in each revision.</li>
+</ul>
+<p>If we use them together, we see a nice text summary of how the repository has changed since it was created.</p>
+<pre><code>$ git log --stat --oneline
+61fd2bc Made fixes to Python pipeline
+ python_pipeline.ipy | 44 ++++++++++++++++++++++++++++++++++++++++++++
+ python_pipeline.py  | 49 -------------------------------------------------
+ 2 files changed, 44 insertions(+), 49 deletions(-)
+8595b71 first pass at making a pipeline
+ python_pipeline.py | 49 +++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 49 insertions(+)
+d7c2a9d Merge branch &#39;add_2763&#39;
+a396b40 added Lumi 2763
+ Lumi.2763.csv | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
+ef023fe added Lumi 2762
+ Lumi.2762.csv | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
+779f888 Added Lumi 2761
+ Lumi.2761.csv | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
+cbd6ff5 Added data file
+ 2013-05-24-2760-2763.txt | 50 ++++++++++++++++++++++++++++++++++++++++++++++++++
+ Lumi.2760.csv            | 10 ++++++++++
+ 2 files changed, 60 insertions(+)</code></pre>
+<h3 id="time-travel-git-checkout">Time travel (git checkout)</h3>
+<p>Git can’t really travel through time, but it does allow us to inspect its repositories as they looked in the past. Imagine that Git automatically prints out all of your code, prose, and data, (the contents of your repository), and binds them into a complete book, any time you want it to. Imagine also that instead of a friendly librarian, you have to ask Git to retrieve revisions of your book for you. Git happily does this when you tell it to <code>checkout</code> your revisions.</p>
+<p>Let’s see what the repository looked like when it was first created, by giving <code>git checkout</code> the first four digits of the oldest commit in our history:</p>
+<pre><code>$ git checkout cbd6
+Note: checking out &#39;cbd6&#39;.
+
+You are in &#39;detached HEAD&#39; state. You can look around, make experimental
+changes and commit them, and you can discard any commits you make in this
+state without impacting any branches by performing another checkout.
+
+If you want to create a new branch to retain commits you create, you may
+do so (now or later) by using `-b` with the checkout command again. Example:
+
+  git checkout -b new_branch_name
+
+HEAD is now at cbd6ff5... Added data file
+$ ls
+2013-05-24-2760-2763.txt Lumi.2760.csv</code></pre>
+<p>We’ll explain the <code>detached HEAD</code> message in the next section. For now, note that the contents of the directory have changed.</p>
+<p>Let’s restore the original revision by finding the right hash in <code>git log</code>.</p>
+<pre><code>$ git log --oneline
+cbd6ff5 Added data file</code></pre>
+<p>Uh-oh. <code>git log</code>, by default, only tells us the history of our current revision.</p>
+<p>Don’t worry, we only need to add the <code>--all</code> flag, to see all of a repository’s available history:</p>
+<pre><code>$ git log --oneline --all
+61fd2bc Made fixes to Python pipeline
+8595b71 first pass at making a pipeline
+d7c2a9d Merge branch &#39;add_2763&#39;
+a396b40 added Lumi 2763
+ef023fe added Lumi 2762
+779f888 Added Lumi 2761
+cbd6ff5 Added data file</code></pre>
+<p>This is enough to go back to where we were, but let’s use this as an opportunity to introduce another Git feature.</p>
+<h3 id="reflog">Reflog</h3>
+<p>We’d like to go back to (or, <em>check out</em>) the most recent revision. We could use the output of <code>git log --all</code>, but there is a better Git command for navigating project history, the reference log, or <em>reflog</em>.</p>
+<p>Git keeps a reference log for you that includes the revisions you have checked out. The currently checked out revision is referred to as, for no particularly great reason, the HEAD. Every time you use <code>git checkout</code>, HEAD moves to the new commit, and the reflog gets another entry.</p>
+<p>We can use the <code>git reflog</code> command to access this history and see where we are, and where we’ve been in the history of our repository.</p>
+<pre><code>$ git reflog
+cbd6ff5 HEAD@{0}: checkout: moving from master to cbd6
+61fd2bc HEAD@{1}: clone: from https://github.com/ahmadia/bio-pipeline.git</code></pre>
+<p>By default, <code>git reflog</code> outputs one line of text for each time HEAD has moved. The last move was caused by our checkout command, and moved us to the revision identified by <code>cbd6ff5</code>. We are interested in the first column of output, which tells us which revision we were on before we called <code>git checkout</code>.</p>
+<p>Since <code>git reflog</code> reports our actions going backwards in time, the first row contains our current revision, and the second row is one checkout back, where we started.</p>
+<p>Lets we go back to the revision we started at.</p>
+<pre><code>$ git checkout 61fd
+Previous HEAD position was cbd6ff5... Added data file
+HEAD is now at 61fd2bc... Made fixes to Python pipeline</code></pre>
+<h3 id="checkpoint-1">Checkpoint 1</h3>
+<ul>
+<li><strong>[1A]</strong> Explain the the two lines of output from <code>git checkout</code> to your neighbor.</li>
+<li><strong>[1B]</strong> Predict the output of <code>git reflog</code> if you call it now. Try it.</li>
+<li><strong>[1C]</strong> Try calling the command <code>git checkout -</code>. Can you explain what it does to your neighbor? (You may need to call it multiple times and inspect the reflog each time).</li>
+</ul>
+<h3 id="checkpoint-2">Checkpoint 2</h3>
+<p>At some point in the project’s history, Aron replaced the file <code>python_pipeline.py</code> with <code>python_pipeline.ipy</code>.</p>
+<ul>
+<li><strong>[2A]</strong> See if you can identify the commit where Aron added <code>python_pipeline.py</code></li>
+<li><strong>[2B]</strong> Check out that commit and view <code>python_pipeline.py</code> in an editor.</li>
+</ul>
+<h2 id="undoing-mistakes-git-checkout">Undoing Mistakes (git checkout)</h2>
+<p><code>git checkout</code> is Git’s Swiss Army Knife. It does slightly different things, depending on how it’s called.</p>
+<p>We just showed you how to restore the entire directory to a previous state, but <code>git checkout</code> also allows us to just restore a specific file.</p>
+<p>Let’s practice by doing something dangerous. First, let’s make sure you’re on the most recent revision.</p>
+<pre><code>$ git checkout 61fd</code></pre>
+<p>Then, go ahead and remove Lumi.2763.csv.</p>
+<pre><code>$ rm Lumi.2763.csv
+$ ls Lumi.2763.csv                                                                            ✖
+ls: Lumi.2763.csv: No such file or directory</code></pre>
+<p>There are a number of ways to accidentally corrupt, modify, overwrite, or destroy files. Here, we use the <code>rm</code> command, to simulate a catastrophic deletion of our valuable data.</p>
+<p>Fortunately, since our copy of <code>Lumi.2763.csv</code> was committed to the repository, it is as easy as pie to restore it.</p>
+<pre><code>$ git checkout Lumi.2763.csv
+$ ls Lumi.2763.csv
+Lumi.2763.csv</code></pre>
+<p>In fact, so long as an undamaged copy of our Git repository exists <em>somewhere</em>, we will always be able to recover lost or damaged files.</p>
+<h3 id="checkpoint-3">Checkpoint 3</h3>
+<ul>
+<li><strong>[3A]</strong> Modify a file, save the changes, then use <code>git checkout</code> to recover the version stored in history.</li>
+<li><strong>[3B]</strong> Explain to your neighbor which version of <code>foo.txt</code> is recovered when the user types <code>git checkout foo.txt</code> in a Git repository.</li>
+</ul>
+        </div>
+      </div>
+      </article>
+      <div class="footer">
+        <a class="label swc-blue-bg" href="http://software-carpentry.org">Software Carpentry</a>
+        <a class="label swc-blue-bg" href="http://xwmooc.net">xwMOOC</a>
+        <a class="label swc-blue-bg" href="https://github.com/statkclee/swcarpentry-version-5-3-new">한글소스</a>
+        <a class="label swc-blue-bg" href="https://github.com/swcarpentry">영문소스</a>
+        <a class="label swc-blue-bg" href="mailto:i@xwmooc.net">Contact</a>
+        <a class="label swc-blue-bg" href="http://statkclee.github.io/swcarpentry-version-5-3-new/LICENSE.html">License</a>
+      </div>
+    </div>
+    <!-- Javascript placed at the end of the document so the pages load faster -->
+    <script src="http://software-carpentry.org/v5/js/jquery-1.9.1.min.js"></script>
+    <script src="css/bootstrap/bootstrap-js/bootstrap.js"></script>
+  </body>
+</html>

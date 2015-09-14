@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="generator" content="pandoc">
+    <title>xwMOOC: </title>
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" type="text/css" href="http://statkclee.github.io/swcarpentry-version-5-3-new/css/bootstrap/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="http://statkclee.github.io/swcarpentry-version-5-3-new/css/bootstrap/bootstrap-theme.css" />
+    <link rel="stylesheet" type="text/css" href="http://statkclee.github.io/swcarpentry-version-5-3-new/css/swc.css" />
+    <link rel="alternate" type="application/rss+xml" title="Software Carpentry Blog" href="http://software-carpentry.org/feed.xml"/>
+    <meta charset="UTF-8" />
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body class="lesson">
+    <div class="container card">
+      <div class="banner">
+        <a href="http://software-carpentry.org" title="Software Carpentry">
+          <img alt="Software Carpentry banner" src="http://statkclee.github.io/swcarpentry-version-5-3-new/img/software-carpentry-banner.png" />
+      <!--     <img alt="xwMOOC banner" src="img/xwMOOC.png" />
+       -->  </a>
+      </div>
+      <article>
+      <div class="row">
+        <div class="col-md-10 col-md-offset-1">
+          <h1 class="title"></h1>
+          
+<h1 id="exercise-02">Exercise 02</h1>
+<ol style="list-style-type: decimal">
+<li>Take the <code>iris</code> dataset. Using <code>Species</code> as the indicator variable, convert the wide dataset to long such that it appears as below:</li>
+</ol>
+<pre><code>  Species     variable value
+1  setosa Sepal.Length   5.1
+2  setosa Sepal.Length   4.9
+3  setosa Sepal.Length   4.7
+4  setosa Sepal.Length   4.6
+5  setosa Sepal.Length   5.0
+6  setosa Sepal.Length   5.4</code></pre>
+<ol start="2" style="list-style-type: decimal">
+<li>Save this dataset to disk as <code>&quot;species1.csv&quot;</code>. Duplicate the previous function call and save it again as `“species2.csv”``</li>
+</ol>
+<p>Write code that does the following:</p>
+<p>Create a list of length two containing “species1.csv” and “species2.csv”. Now write a <code>lapply</code> function to read both csv files using write.csv into a list.</p>
+<p><strong>Advanced version</strong> * Reads all file names in your working directory with a <code>.csv</code> extension.<br />* Treating that as a list, run the <code>read.csv</code> function on each item so you get a list of size 2 that contains all the data.</p>
+<p><em>Note: If this is a hard problem. Work with your neighbor</em></p>
+<ol start="3" style="list-style-type: decimal">
+<li><p>With the list from the previous result, write a <code>lappy or llply</code> function call that will retrieve row number 1 from each dataset and return that back to a list.</p></li>
+<li><p>Read the <code>gapminderDataFiveYear.txt</code> dataset in the data folder into an object. Split the data by continent and country, find the year with the highest life expectancy for each combination and return those results back into a data.frame.</p></li>
+</ol>
+<p>Hint: You will write a anonymous function (an unnamed function) that will exist only inside one of plyr’s function call.</p>
+<p>e.g.</p>
+<pre><code>ddply(iris, .(Species), function(x) {
+    x[1, ]
+})
+# This trivial function returns the first row of each species. Note that I did not name this function.</code></pre>
+<p>You will have to: split by continent and country Inside your anonymous function find the year with the highest life expectancy return that record back.</p>
+<p>Advanced version of this question: Also return the year with highest population and highest per capita gdp. So you’ll return 3 rows per country.</p>
+<ol start="5" style="list-style-type: decimal">
+<li>Read the <code>mammals.csv</code> file into a data.frame. Use <code>ddply</code> to split the dataset by limb morphology, then write each file to a separate text file named by limb.</li>
+</ol>
+<p>Hints: Use <code>unique</code> inside your anoynymous function to get a unique name. Use <code>paste</code> to create a filename. e.g. <code>paste(unique(x$Limb_morphology), &quot;.csv&quot;, sep=&quot;&quot;)</code></p>
+<p>Pass this variable to the <code>file</code> argument in <code>write.csv</code></p>
+        </div>
+      </div>
+      </article>
+      <div class="footer">
+        <a class="label swc-blue-bg" href="http://software-carpentry.org">Software Carpentry</a>
+        <a class="label swc-blue-bg" href="http://xwmooc.net">xwMOOC</a>
+        <a class="label swc-blue-bg" href="https://github.com/statkclee/swcarpentry-version-5-3-new">한글소스</a>
+        <a class="label swc-blue-bg" href="https://github.com/swcarpentry">영문소스</a>
+        <a class="label swc-blue-bg" href="mailto:i@xwmooc.net">Contact</a>
+        <a class="label swc-blue-bg" href="http://statkclee.github.io/swcarpentry-version-5-3-new/LICENSE.html">License</a>
+      </div>
+    </div>
+    <!-- Javascript placed at the end of the document so the pages load faster -->
+    <script src="http://software-carpentry.org/v5/js/jquery-1.9.1.min.js"></script>
+    <script src="css/bootstrap/bootstrap-js/bootstrap.js"></script>
+  </body>
+</html>

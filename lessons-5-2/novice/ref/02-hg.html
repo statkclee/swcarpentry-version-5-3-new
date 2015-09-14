@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="generator" content="pandoc">
+    <title>xwMOOC: Mercurial Reference</title>
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" type="text/css" href="http://statkclee.github.io/swcarpentry-version-5-3-new/css/bootstrap/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="http://statkclee.github.io/swcarpentry-version-5-3-new/css/bootstrap/bootstrap-theme.css" />
+    <link rel="stylesheet" type="text/css" href="http://statkclee.github.io/swcarpentry-version-5-3-new/css/swc.css" />
+    <link rel="alternate" type="application/rss+xml" title="Software Carpentry Blog" href="http://software-carpentry.org/feed.xml"/>
+    <meta charset="UTF-8" />
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body class="lesson">
+    <div class="container card">
+      <div class="banner">
+        <a href="http://software-carpentry.org" title="Software Carpentry">
+          <img alt="Software Carpentry banner" src="http://statkclee.github.io/swcarpentry-version-5-3-new/img/software-carpentry-banner.png" />
+      <!--     <img alt="xwMOOC banner" src="img/xwMOOC.png" />
+       -->  </a>
+      </div>
+      <article>
+      <div class="row">
+        <div class="col-md-10 col-md-offset-1">
+          <h1 class="title">Mercurial Reference</h1>
+          
+<p>Set up configuration (only needs to be done once per machine):</p>
+<p>On Windows, create a file called <code>%USERPROFILE%\Mercurial.ini</code> (that’s spelled <code>$USERPROFILE/Mercurial.ini</code> if you are in <code>gitbash</code>) containing the following lines:</p>
+<pre><code>[ui]
+username = Your Name &lt;you@some.domain&gt;
+editor = your_editor
+
+[extensions]
+color =
+
+[color]
+mode = win32</code></pre>
+<p>On OS/X or Linux, create a file called <code>~/.hgrc</code> with the contents:</p>
+<pre><code>[ui]
+username = Your Name &lt;you@some.domain&gt;
+editor = your_editor
+
+[extensions]
+color =</code></pre>
+<p>Display help text for a Mercurial command:</p>
+<pre><code>hg help command_name</code></pre>
+<p>Initialize the current working directory as a repository:</p>
+<pre><code>hg init</code></pre>
+<p>Display the status of the repository:</p>
+<pre><code>hg status</code></pre>
+<p>Mark specific files to be tracked in the repository:</p>
+<pre><code>hg add path/to/file_1 path/to/file_2</code></pre>
+<p>Mark specific directories to be tracked in the repository:</p>
+<pre><code>hg add path/to/directory_1 path/to/directory_2</code></pre>
+<p>Mark all untracked files and directories to be tracked in the repository:</p>
+<pre><code>hg add</code></pre>
+<p>Stop tracking a specific file:</p>
+<pre><code>hg forget path/to/file</code></pre>
+<p>Commit changes in all modified files to the repository’s history: (Without <code>-m</code> and a message, this command runs a text editor.)</p>
+<pre><code>hg commit -m &quot;Some message&quot;</code></pre>
+<p>Commit changes in specific modified files to the repository’s history: (Without <code>-m</code> and a message, this command runs a text editor.)</p>
+<pre><code>hg commit path/to/file_1 path/to/file_2 -m &quot;Some message&quot;</code></pre>
+<p>View the history of the repository:</p>
+<pre><code>hg log</code></pre>
+<p>Display differences between the current state of the repository and the last saved state:</p>
+<pre><code>hg diff</code></pre>
+<p>Display differences between the current state of a specific file and the last saved state:</p>
+<pre><code>hg diff path/to/file</code></pre>
+<p>Display differences between the current state of a specific file and its state in a specific earlier revision:</p>
+<pre><code>hg diff --rev 27 path/to/file</code></pre>
+<p>Display changes made to a specific file in a specific earlier revision:</p>
+<pre><code>hg diff --change 24 path/to/file</code></pre>
+<p>Erase changes to a specific file since the last commit (modified file is saved with a <code>.orig</code> suffix before reverting):</p>
+<pre><code>hg revert path/to/file</code></pre>
+<p>Erase changes to a specific file since the last commit without saving <code>.orig</code> backup:</p>
+<pre><code>hg revert --no-backup path/to/file</code></pre>
+<p>Erase all changes since the last commit:</p>
+<pre><code>hg revert --all</code></pre>
+<p>Restore file to its state in a previous revision:</p>
+<pre><code>hg revert --rev 16 path/to/file</code></pre>
+<p>To add the URL of a clone of a repository on a remote server, edit (or create) the <code>.hg/hgrc</code> in the repository to include:</p>
+<pre><code>[paths]
+default = URL</code></pre>
+<p>To add the path of a local clone of a repository, edit (or create) the <code>.hg/hgrc</code> in the repository to include:</p>
+<pre><code>[paths]
+nickname = path/to/repository</code></pre>
+<p>Display a repository’s clone URLs and/or paths:</p>
+<pre><code>hg paths</code></pre>
+<p>Push changes from a local repository to the default clone of the repository:</p>
+<pre><code>hg push</code></pre>
+<p>Pull changes from the default clone of the repository:</p>
+<pre><code>hg pull</code></pre>
+<p>Pull changes from a local clone of the repository:</p>
+<pre><code>hg pull path/to/repository</code></pre>
+<p>Pull changes from a local clone of the repository that you have added a nickname path for:</p>
+<pre><code>hg pull nickname</code></pre>
+<p>Update a repository with the changes pulled from a clone of the repository:</p>
+<pre><code>hg update</code></pre>
+<p>Merge changes pulled from another clone of the repository using the GUI <code>kdiff3</code> to view and resolve conflicts:</p>
+<pre><code>hg merge --tool=kdiff3</code></pre>
+<p>Clone a repository from a remote server:</p>
+<pre><code>hg clone URL</code></pre>
+<p>Clone a repository from a local path:</p>
+<pre><code>hg clone path/to/repository</code></pre>
+<p>Note that when you clone a repository, either by a URL or by a path, the URL/path of the source repository is automatically added to the <code>[paths]</code> section of the new repository’s <code>.hg/hgrc</code> file as the <code>default</code> path so that <code>hg push</code> and <code>hg pull</code> just work.</p>
+        </div>
+      </div>
+      </article>
+      <div class="footer">
+        <a class="label swc-blue-bg" href="http://software-carpentry.org">Software Carpentry</a>
+        <a class="label swc-blue-bg" href="http://xwmooc.net">xwMOOC</a>
+        <a class="label swc-blue-bg" href="https://github.com/statkclee/swcarpentry-version-5-3-new">한글소스</a>
+        <a class="label swc-blue-bg" href="https://github.com/swcarpentry">영문소스</a>
+        <a class="label swc-blue-bg" href="mailto:i@xwmooc.net">Contact</a>
+        <a class="label swc-blue-bg" href="http://statkclee.github.io/swcarpentry-version-5-3-new/LICENSE.html">License</a>
+      </div>
+    </div>
+    <!-- Javascript placed at the end of the document so the pages load faster -->
+    <script src="http://software-carpentry.org/v5/js/jquery-1.9.1.min.js"></script>
+    <script src="css/bootstrap/bootstrap-js/bootstrap.js"></script>
+  </body>
+</html>

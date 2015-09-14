@@ -9,12 +9,6 @@ title: 라이선스
 
 ![CC-BY-SA](img/cc-by-sa.png)
 
-
-## 소프트웨어 카펜트리(Software Carpentry)
-
-[Software Carpentry](http://software-carpentry)에서 제작한 교재 및 제작 템플릿을 저작도구로 사용합니다.
-그리고, [소프트웨어 카펜트리 라이스선스](http://software-carpentry.org/license.html)를 준수합니다.
-
 ### 한국어 이용자는 다음의 권리를 갖습니다:
 
 * **공유**---복제, 배포, 전시, 공연 및 공중송신 (포맷 변경도 포함)
@@ -40,6 +34,10 @@ title: 라이선스
 이 라이선스는 아무런 보증을 하지 않습니다. 또한 저작물의 이용에 필요한 모든 허락이 포함되어 있지 않을 수도 있습니다. 
 예를 들어 퍼블리시티권, 프라이버시, 인격권 등 다른 권리에 따른 제한이 있을 수 있습니다.
 
+## 소프트웨어 카펜트리(Software Carpentry)
+
+[Software Carpentry](http://software-carpentry)에서 제작한 교재 및 제작 템플릿을 저작도구로 사용합니다.
+그리고, [소프트웨어 카펜트리 라이스선스](http://software-carpentry.org/license.html)를 준수합니다.
 
 ## 상표권(Trademark)
 

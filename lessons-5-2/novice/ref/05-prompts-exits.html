@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="generator" content="pandoc">
+    <title>xwMOOC: Recognising prompts and how to exit</title>
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" type="text/css" href="http://statkclee.github.io/swcarpentry-version-5-3-new/css/bootstrap/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="http://statkclee.github.io/swcarpentry-version-5-3-new/css/bootstrap/bootstrap-theme.css" />
+    <link rel="stylesheet" type="text/css" href="http://statkclee.github.io/swcarpentry-version-5-3-new/css/swc.css" />
+    <link rel="alternate" type="application/rss+xml" title="Software Carpentry Blog" href="http://software-carpentry.org/feed.xml"/>
+    <meta charset="UTF-8" />
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body class="lesson">
+    <div class="container card">
+      <div class="banner">
+        <a href="http://software-carpentry.org" title="Software Carpentry">
+          <img alt="Software Carpentry banner" src="http://statkclee.github.io/swcarpentry-version-5-3-new/img/software-carpentry-banner.png" />
+      <!--     <img alt="xwMOOC banner" src="img/xwMOOC.png" />
+       -->  </a>
+      </div>
+      <article>
+      <div class="row">
+        <div class="col-md-10 col-md-offset-1">
+          <h1 class="title">Recognising prompts and how to exit</h1>
+          
+<p>When working at the command line, you might not recognise your prompt. On this page you will find tips to discover where you are and how to exit if you are not where you want to be.</p>
+<h3 id="shell">Shell</h3>
+<ul>
+<li>If your shell prompt is <code>$</code> you are at <code>bash</code>.</li>
+</ul>
+<p><img src="img/bash.png" /></p>
+<p>To exit from <code>bash</code> type <code>exit</code> and press <code>ENTER</code>.</p>
+<ul>
+<li>If your shell prompt is <code>&gt;</code> you may have typed <code>'</code> or <code>&quot;</code>, to specify a string, as part of a shell command but have not typed another <code>'</code> or <code>&quot;</code> to close the string.</li>
+</ul>
+<p><img src="img/bash-unclosed.png" /></p>
+<p>To interrupt the current command press <code>CTRL-C</code>.</p>
+<ul>
+<li>If the bottom-left of your shell window shows <code>--More--</code> you are viewing a file using <code>more</code>.</li>
+</ul>
+<p><img src="img/more.png" /></p>
+<p>To exit from <code>more</code> press <code>q</code>.</p>
+<ul>
+<li>If the bottom-left of your shell window shows <code>filename</code>, <code>:</code> or <code>(END)</code> you are viewing a file using <code>less</code>.</li>
+</ul>
+<p><img src="img/less.png" /></p>
+<p>To exit from <code>less</code> press <code>q</code>.</p>
+<ul>
+<li>If the bottom-left of your shell window shows <code>Manual page</code> you are viewing a <code>man</code> page.</li>
+</ul>
+<p><img src="img/man.png" /></p>
+<p>To exit from <code>man</code> press <code>q</code>.</p>
+<ul>
+<li>If the top of your shell window shows “GNU nano” you are in the <code>nano</code> text editor.</li>
+</ul>
+<p><img src="img/nano.png" /></p>
+<p>To exit from <code>nano</code> press <code>CTRL-X</code>. If you have unsaved changes, you will be asked to save these - press <code>y</code> to save, or <code>n</code> to quit without saving.</p>
+<ul>
+<li>If your shell window shows <code>~</code> at the beginning of each lines you are in the <code>vi</code> text editor.</li>
+</ul>
+<p><img src="img/vim.png" /></p>
+<p>To exit from <code>vi</code> type <code>:q!</code> to exit without saving. If this text just appears on screen then press <code>ESC</code> then type <code>:q!</code>.</p>
+<ul>
+<li>If the bottom of your shell window shows <code>(Fundamental) ----</code> you are in the <code>emacs</code> or <code>xemacs</code> text editor.</li>
+</ul>
+<p><img src="img/emacs.png" /></p>
+<p>To exit from <code>emacs</code> or <code>xemacs</code> press <code>CTRL-X CTRL-C</code>. If you have unsaved changes, you will be asked to save these - press <code>y</code> to save, or <code>n</code> then type <code>yes</code> to quit without saving.</p>
+<blockquote>
+<h4>Calling GUI from console</h4>
+<p>Emacs has a graphical user interface mode. When you call it from the prompt, the prompt will stop responding to your commands until you close Emacs.</p>
+<p><img src="img/emacs-gui.png" /></p>
+</blockquote>
+<h3 id="python">Python</h3>
+<ul>
+<li>If your shell prompt is <code>&gt;&gt;&gt;</code> you are in <code>python</code>.</li>
+</ul>
+<p><img src="img/python.png" /></p>
+<p>To exit from <code>python</code> type <code>exit()</code> or <code>CTRL-D</code>.</p>
+<ul>
+<li>If your shell prompt is <code>...</code> you have an unclosed environment inside <code>python</code>.</li>
+</ul>
+<p><img src="img/python-unclosed.png" /></p>
+<p>To interrupt the environment type <code>CTRL-C</code>.</p>
+<ul>
+<li>If your shell prompt is <code>In [123]:</code> you are in <code>ipython</code>.</li>
+</ul>
+<p><img src="img/ipython.png" /></p>
+<p>To exit from <code>ipython</code> type <code>exit()</code>, or <code>CTRL-D</code> then press <code>y</code>.</p>
+<ul>
+<li>If your shell prompt is <code>...:</code> you have an unclosed environment inside <code>ipython</code>.</li>
+</ul>
+<p><img src="img/ipython-unclosed.png" /></p>
+<p>To interrupt the environment type <code>CTRL-C</code>.</p>
+<h3 id="r">R</h3>
+<ul>
+<li>If your shell prompt is <code>&gt;</code> you are in <code>R</code>.</li>
+</ul>
+<p><img src="img/r.png" /></p>
+<p>To exit from <code>R</code> type <code>q()</code>. It will ask if you want to save the workspace and you should type <code>y</code> for yes and <code>n</code> for no.</p>
+<ul>
+<li>If your shell prompt is <code>+</code> you have a unclosed environment inside <code>R</code>.</li>
+</ul>
+<p><img src="img/r-unclosed.png" /></p>
+<p>To interrupt the environment type <code>CTRL-C</code>.</p>
+        </div>
+      </div>
+      </article>
+      <div class="footer">
+        <a class="label swc-blue-bg" href="http://software-carpentry.org">Software Carpentry</a>
+        <a class="label swc-blue-bg" href="http://xwmooc.net">xwMOOC</a>
+        <a class="label swc-blue-bg" href="https://github.com/statkclee/swcarpentry-version-5-3-new">한글소스</a>
+        <a class="label swc-blue-bg" href="https://github.com/swcarpentry">영문소스</a>
+        <a class="label swc-blue-bg" href="mailto:i@xwmooc.net">Contact</a>
+        <a class="label swc-blue-bg" href="http://statkclee.github.io/swcarpentry-version-5-3-new/LICENSE.html">License</a>
+      </div>
+    </div>
+    <!-- Javascript placed at the end of the document so the pages load faster -->
+    <script src="http://software-carpentry.org/v5/js/jquery-1.9.1.min.js"></script>
+    <script src="css/bootstrap/bootstrap-js/bootstrap.js"></script>
+  </body>
+</html>

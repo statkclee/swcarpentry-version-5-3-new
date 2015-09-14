@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="generator" content="pandoc">
+    <title>xwMOOC: 공개 과학(Open Science)</title>
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" type="text/css" href="http://statkclee.github.io/swcarpentry-version-5-3-new/css/bootstrap/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="http://statkclee.github.io/swcarpentry-version-5-3-new/css/bootstrap/bootstrap-theme.css" />
+    <link rel="stylesheet" type="text/css" href="http://statkclee.github.io/swcarpentry-version-5-3-new/css/swc.css" />
+    <link rel="alternate" type="application/rss+xml" title="Software Carpentry Blog" href="http://software-carpentry.org/feed.xml"/>
+    <meta charset="UTF-8" />
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body class="lesson">
+    <div class="container card">
+      <div class="banner">
+        <a href="http://software-carpentry.org" title="Software Carpentry">
+          <img alt="Software Carpentry banner" src="http://statkclee.github.io/swcarpentry-version-5-3-new/img/software-carpentry-banner.png" />
+      <!--     <img alt="xwMOOC banner" src="img/xwMOOC.png" />
+       -->  </a>
+      </div>
+      <article>
+      <div class="row">
+        <div class="col-md-10 col-md-offset-1">
+          <h1 class="title">공개 과학(Open Science)</h1>
+          
+<div class="objectives" markdown="1">
+<h4>목표</h4>
+<ul>
+<li>GNU 일반 공중 라이선스(GNU General Public License, GPL)과 대부분의 다른 공개 라이선스와 차이점을 설명한다.</li>
+<li>크리에이티브 커먼즈 라이선스(Creative Commons Licence)와 조합될 수 있는 4개의 제약 조건을 설명한다.</li>
+<li>프로젝트 저장소에 라이선스와 인용 정보를 올바르게 추가한다.</li>
+<li>호스킹 코드와 데이터에 대한 선택사항과 각각의 장단점의 윤곽을 그린다.</li>
+</ul>
+</div>
+<blockquote>
+“공개(open)”의 반대는 “폐쇄(closed)”가 아니다. “공개(open)”의 반대는 “망한(broken)” 것이다. <br/> — John Wilbanks
+</blockquote>
+<p>공개 정보를 공유하는 것은 과학에서 이상적일지 모르지만, 현실은 좀더 복잡하다. 현재, 보통 실무는 다음과 같다.</p>
+<ul>
+<li>과학자가 데이터를 수집하고 학과에 가끔 백업되는 컴퓨터에 저장한다.</li>
+<li>데이터를 분석하기 위해서 작은 프로그램을 작성하고 수정한다. (프로그램도 연구원의 로컬 노트북에 저장된다.)</li>
+<li>분석 결과가 생성되자 마자, 작성해서 논문을 제출한다. 데이터를 논문에 포함할 수도 있다. (점점 많은 저널이 데이터를 요구한다.) 하지만, 아마도 프로그램 코드는 포함하지 않는다.</li>
+<li>시간이 흐른다.</li>
+<li>저널에서 검토(review)결과를 연구원의 분야의 익명으로 소수의 사람들에게서 받아 보낸다. 검토 결과를 충족하도록 논문을 수정한다. 수정하는 동안에 앞서 작성한 프로그램, 스크립트를 변경해서 다시 제출한다.<br /></li>
+<li>좀더 많은 시간이 흐른다.</li>
+<li>종국에 논문이 출판된다. 논문이 데이터 온라인 사본에 링크를 포함할 수도 있다. 하지만, 논문은 유료로 돈을 내야만 접근 가능한 장벽에 막혀있다. 개인 혹은 기관 접근 권한을 가진 사람만이 논문을 읽을 수 있다.</li>
+</ul>
+<p>하지만, 점점 더 많은 과학자들에게는 프로세스가 다음과 같다.</p>
+<ul>
+<li>과학자가 수집한 데이터가 수집되는 즉시, <a href="http://figshare.com/">figshare</a> 혹은 <a href="http://datadryad.org/">Dryad</a>같은 공개 접근 저장소에 저장된다. 그리고 DOI가 부여된다.</li>
+<li>과학자가 작업물을 보관할 저장소를 GitHub에 생성한다.</li>
+<li>분석작업을 수행함에 따라, 스크립트의 변경사항을 (아마도 몇몇 산출 결과도 포함해서) 저장소에 푸쉬한다. 논문을 위해서 저장소를 다목적으로 사용한다. 이 저장소가 다른 동료 과학자와 협업하는 허브가 된다.</li>
+<li>논문 상태에 만족할 정도로 진행되면, <a href="http://arxiv.org/">arXiv</a>와 다른 사전 프린트 서비스에 등록해서 다른 동료 과학자를 초대해서 피드백을 받는다.</li>
+<li>피드백에 기초하여 저널에 논문을 마지막으로 제출하기 전에 몇번의 수정사항을 게시할 수도 있다.</li>
+<li>출판된 논문은 사전출판, 코드, 그리고 데이터 저장소의 링크를 포함한다. 그렇게 함으로써 다른 과학자가 자신의 연구의 시작점으로 삼아서 연구를 쉽게 연결해서 할 수 있게 한다.</li>
+</ul>
+<p>이러한 공개 연구 모델은 발견을 가속화한다. 연구 작업이 더 많이 공개될수록, 더 많이 인용되고 재사용된다. 하지만, 이런 방식으로 작업하고 연구하고자 하는 사람들은 실무에서 “공개(open)”이 정확하게 의미하는 것에 대해서 결정을 내릴 필요가 있다.</p>
+<h3 id="라이선싱licensing">라이선싱(Licensing)</h3>
+<p>첫 질문이 라이선싱(licensing)이다. 광범위하게 말해서, 소프트웨어에 두 종류, 데이터와 출판에 6 종류의 공개 라이선스가 있다. 소프트웨어에 대해서, 한편으로는 <a href="http://opensource.org/licenses/GPL-3.0">GNU 일반 공중 라이선스(GNU General Public License, GPL)</a> 계열과 다른 한편으로는 <a href="http://opensource.org/licenses/MIT">MIT</a> , <a href="http://opensource.org/licenses/BSD-2-Clause">BSD</a> 같은 계열을 선택할 수 있다. 라이선스 모두 프로그램을 제한없이 공유 및 변경가능하다. 하지만, GPL은 <a href="../../gloss.html#infective-license">전염성이 있는(infective)</a> 특징이 있다. 코드의 수정된 버젼을 배포하는 누구나 혹은 GPL 코드를 포함한 어느 것이든지 <em>자신의</em> 코드도 동일하게 자유로이 공개가능하게 만들어야 한다.</p>
+<p>GPL 지지자는 자유로이 이용가능한 코드에서 혜택을 받은 사람이 또한 공동체에 다시 기여를 하도록 하는 것이 요건으로 필요하다고 주장한다. 반대론자는 이에 맞서 이러한 조건없이도 많은 공개 소프트웨어 프로젝트가 오랜동안 성공적으로 진행되어 왔고, GPL이 오히려 다른 것과 코드를 조합하기 힘들게 한다고 반대 주장을 한다. 결국 논란의 종국에 가장 중요한 것은 다음이다.</p>
+<ol style="list-style-type: decimal">
+<li>모든 프로젝트는 라이선스가 무엇인지 명확하게 말하는 <code>LICENSE</code> 혹은 <code>LICENSE.txt</code> 같은 파일을 홈 디렉토리에 포함한다.</li>
+<li>새로운 라이선스를 작성하기 보다 기존에 존재하는 라이선스를 사용한다.</li>
+</ol>
+<p>두번째 점이 처음 것 만큼 중요하다. 대부분의 과학자는 법률가가 아니다. 일반인에게 분별가능한 표현이 의도하지 않은 차이와 결과를 가져올 수도 있다. <a href="http://opensource.org/">OSI, Open Source Initiative</a>가 공개 소프트웨어 라이선스 목록을 관리하고, <a href="http://www.tldrlegal.com/">tl;drLegal</a>에서 대부분의 라이선스를 일반적인 영어 표현으로 설명하는 정보를 얻는다.</p>
+<p>데이터, 출판, 및 이와 동일한 것들, 통상 콘텐츠 라이선스라고 하는 것에 대해서 과학자들은 선택할 수 있는 좀더 많은 선택지가 있다. 좋은 소식은 <a href="http://creativecommons.org/">크리에이티브 커먼즈(Creative Commons)</a>라는 기관이 4개의 기본적인 제약사항을 조합해서 한 벌의 라이선스를 준비했다.</p>
+<ul>
+<li>저작자 표시(Attribution): 파생 저작물에 대해서 최초 저작자의 이름, 출처 등의 정보를 반드시 표시해야 한다.</li>
+<li>변경 금지(No Derivative): 저작물을 복사할 수도 있으나 저작물을 변경 혹은 저작물을 이용하여 2차적 저작물로 제작을 금한다.</li>
+<li>동일조건변경허락(Share Alike): 2차적 저작물을 제작할 수 있으나, 2차적 저작물은 원래 저작물과 동일한 라이선스를 적용한다.</li>
+<li>비영리(Noncommercial): 저작물을 영리 목적으로 사용할 수 없음. 영리 목적을 위해서는 별도의 계약이 필요하다.</li>
+</ul>
+<p>상기 4개의 제약조건은 각각 “BY”, “ND”, “SA”, “NC” 으로 축약해서 표현되어서, 예를 들어, “CC-BY-ND”는 저작자표시-변경금지 저작자를 밝히면 상업적 이용 포함하여 자유로이 이용이 가능하지만, 변경 없이 그대로 이용해야 합니다. 쉬운 영어로 6개의 CC 라이선스를 요약하고 전체 법조문에 대한 링크를 포함하는 <a href="http://creativecommons.org/licenses/">간략 정보</a>이 있고, 한국어로는 <a href="http://www.cckorea.org/xe/?mid=ccl">CCKorea</a>에 정보가 있다.</p>
+<p>이러한 범주에 맞지 않는 하나 더 중요한 라이선스가 있다. 과학자 그리고 다른 사람들이 간략하게 “PD”로 표기되는 사회적 공유재산(public domain) 형식을 선택할 수도 있다. 이러한 경우, 원 출처를 인용하지 않고 혹은 향후 재사용에 대한 제한없이 누구나 원하는 것을 할 수 있다. 다음 표는 6개의 크리에이티브 커먼즈 라이선스와 PD가 서로 어떻게 연결되는지를 보여준다.</p>
+<!--- Replace the caption with colspan when it was supported by pandoc:
+https://github.com/jgm/pandoc/issues/1340 -->
+<table border="1">
+<caption>
+Licenses that can be used for derivative work or adaptation
+</caption>
+<tr>
+<pre><code>&lt;td&gt;Original work&lt;/td&gt; &lt;td&gt;by&lt;/td&gt; &lt;td&gt;by-nc&lt;/td&gt; &lt;td&gt;by-nc-nd&lt;/td&gt; &lt;td&gt;by-nc-sa&lt;/td&gt; &lt;td&gt;by-nd&lt;/td&gt; &lt;td&gt;by-sa&lt;/td&gt; &lt;td&gt;pd&lt;/td&gt;</code></pre>
+</tr>
+<tr>
+<pre><code>&lt;td&gt;by&lt;/td&gt;       &lt;td&gt;X&lt;/td&gt; &lt;td&gt;X&lt;/td&gt; &lt;td&gt;X&lt;/td&gt; &lt;td&gt;X&lt;/td&gt; &lt;td&gt;X&lt;/td&gt; &lt;td&gt;X&lt;/td&gt; &lt;td&gt; &lt;/td&gt;</code></pre>
+</tr>
+<tr>
+<pre><code>&lt;td&gt;by-nc&lt;/td&gt;    &lt;td&gt; &lt;/td&gt; &lt;td&gt;X&lt;/td&gt; &lt;td&gt;X&lt;/td&gt; &lt;td&gt;X&lt;/td&gt; &lt;td&gt; &lt;/td&gt; &lt;td&gt; &lt;/td&gt; &lt;td&gt; &lt;/td&gt;</code></pre>
+</tr>
+<tr>
+<pre><code>&lt;td&gt;by-nc-nd&lt;/td&gt; &lt;td&gt; &lt;/td&gt; &lt;td&gt; &lt;/td&gt; &lt;td&gt; &lt;/td&gt; &lt;td&gt; &lt;/td&gt; &lt;td&gt; &lt;/td&gt; &lt;td&gt; &lt;/td&gt; &lt;td&gt; &lt;/td&gt;</code></pre>
+</tr>
+<tr>
+<pre><code>&lt;td&gt;by-nc-sa&lt;/td&gt; &lt;td&gt; &lt;/td&gt; &lt;td&gt; &lt;/td&gt; &lt;td&gt; &lt;/td&gt; &lt;td&gt;X&lt;/td&gt; &lt;td&gt; &lt;/td&gt; &lt;td&gt; &lt;/td&gt; &lt;td&gt; &lt;/td&gt;</code></pre>
+</tr>
+<tr>
+<pre><code>&lt;td&gt;by-nd&lt;/td&gt;    &lt;td&gt; &lt;/td&gt; &lt;td&gt; &lt;/td&gt; &lt;td&gt; &lt;/td&gt; &lt;td&gt; &lt;/td&gt; &lt;td&gt; &lt;/td&gt; &lt;td&gt; &lt;/td&gt; &lt;td&gt; &lt;/td&gt;</code></pre>
+</tr>
+<tr>
+<pre><code>&lt;td&gt;by-sa&lt;/td&gt;    &lt;td&gt; &lt;/td&gt; &lt;td&gt; &lt;/td&gt; &lt;td&gt; &lt;/td&gt; &lt;td&gt; &lt;/td&gt; &lt;td&gt; &lt;/td&gt; &lt;td&gt;X&lt;/td&gt; &lt;td&gt; &lt;/td&gt;</code></pre>
+</tr>
+<tr>
+<pre><code>&lt;td&gt;pd&lt;/td&gt;       &lt;td&gt;X&lt;/td&gt; &lt;td&gt;X&lt;/td&gt; &lt;td&gt;X&lt;/td&gt; &lt;td&gt;X&lt;/td&gt; &lt;td&gt;X&lt;/td&gt; &lt;td&gt;X&lt;/td&gt; &lt;td&gt;X&lt;/td&gt;</code></pre>
+</tr>
+</table>
+<p><a href="http://software-carpentry.org/license.html">Software Carpentry</a>는 가능하면 폭넓게 재사용될 수 있도록 수업자료에 대해서는 CC-BY, 코드에는 MIT 라이선스를 사용한다. 다시 한번, 가장 중요한 것은 프로젝트 루트 디렉토리에 <code>LICENSE</code> 파일로 명확하게 라이선스가 무엇인지 분명하게 말하는 것이다. 어떻게 프로젝트를 참조하는지 기술하는 <code>CITATION</code> 혹은 <code>CITATION.txt</code> 필요하면 파일을 포함할 수도 있다. Software Carpentry 사례는 다음과 같다.</p>
+<div class="file" markdown="1">
+<pre><code>To reference Software Carpentry in publications, please cite both of the following:
+
+Greg Wilson: &quot;Software Carpentry: Lessons Learned&quot;. arXiv:1307.5448, July 2013.
+
+@online{wilson-software-carpentry-2013,
+  author      = {Greg Wilson},
+  title       = {Software Carpentry: Lessons Learned},
+  version     = {1},
+  date        = {2013-07-20},
+  eprinttype  = {arxiv},
+  eprint      = {1307.5448}
+}</code></pre>
+</div>
+<h3 id="호스팅hosting">호스팅(Hosting)</h3>
+<p>저작물이나 작업을 공개하고자 하는 그룹에서 가지는 두번째 큰 질문은 코드와 데이터를 어디에 호스팅할지 정하는 것이다. 방법중의 하나는 연구실, 학과, 혹은 대학에 서버를 제공하여 계정관리와 백업 등등을 관리하는 것이다. 주된 장점은 누가 무엇을 소유하는지 명확하다. 특히 민감한 정보(사람에 대한 실험정보 혹은 특허 출원에 사용될 수도 있는 정보)가 있다면 중요하다. 큰 단점은 서비스 제공 비용과 수명이다. 데이터를 수집하는데 10년을 보낸 과학자가 지금부터 10년 후에도 여전히 이용가능하기를 원하지만, 학교 인프라를 지원하는 대부분의 연구기금의 수명이 턱없이 짧다.</p>
+<p>또다른 선택지는 도메인을 구입하고 ISP(Internet service provider)에 비용을 지불한다. 이 접근법은 개인이나 그룹에게 좀더 많은 제어권을 주고 학교나 기관을 바꿀 때 생기는 문제도 비켜갈 수 있다. 하지만, 위나 아래 선택지보다 초기 설정하는데 더 많은 시간과 노력이 요구된다.</p>
+<p>세번째 선택지는 <a href="http://github.com">GitHub</a>, <a href="http://bitbucket.org">BitBucket</a>, <a href="http://code.google.com">Google Code</a>, 혹은 <a href="http://sourceforge.net">SourceForge</a> 같은 공개 호스팅 서비스를 채용하는 것이다. 웹 인터페이스로 저장소를 생성하고, 메일링 리스트와 누가 무엇을 하는지 추적하는 방법 등등 제공한다. 규모의 경제와 네트워크 효과로 모두 이익을 볼 수 있다. 즉, 동일한 표준에 작은 많은 서비스를 실행하는 것보다 하나의 큰 서비스를 실행하는 것이 더 쉽고, 동일한 서비스를 사용한다면, 사람들이 협업하기도 더 쉽지만, 더 적은 비밀번호를 기억해야 되기 때문만은 아니다.</p>
+<p>하지만, 이러한 모든 서비스는 사람들의 저작과 작업에 제한을 둔다. 특히, 대부분의 서비스는 사용자에게 선택권을 준다. 즉, 다른 사람과 작업을 공유한다면, 무료로 사용가능하지만, 만약 사적이용을 한다면, 비용을 지불할지도 모른다. 공유는 과학에서 유일하게 타당성 있는 선택사항처럼 보이지만, 많은 학교나 기관이 연구자가 이렇게 하도록 허가하지는 않는다. 왜냐하면 미래 특허 출원을 보호하거나, 단순히 새로운 것이 종종 무섭기 때문이다.</p>
+<div class="keypoints" markdown="1">
+<h4>주요점</h4>
+<ul>
+<li>공개 과학 저작물은 패쇄된 것보다 더 유용하고, 더 많이 인용된다.</li>
+<li>GPL 소프트웨어를 채용하는 사람은 자신의 것도 공개해야한다. 다른 공개 소프트웨어 라이선스는 이런 제한을 두고 있지 않다.</li>
+<li>크리에이티브 커먼즈 라이선스를 사용해서 저작자 표시, 2차 저작물의 생성, 공유 및 상업적 이용의 요구사항과 제한을 조합하고 매칭할 수 있다.</li>
+<li>법률가 아닌 사람은 처음부터 라이선스를 작성하지 말아야 한다.</li>
+<li>프로젝트를 대학 서버, 개인 도메인, 혹은 공개 저장소에 둘 수 있다.</li>
+<li>지적 재산권과 민감 정보의 저장에 대한 규정은 코드와 데이터가 어디에 저장되든지 관계없이 적용된다.</li>
+</ul>
+</div>
+<div class="challenge" markdown="1">
+여러분이 작성하고 있는 소프트웨어에 공개 소프트웨어 라이선스를 적용할 수 있는지 알아보세요. 여러분이 일방적으로 할 수 있나요? 혹은 여러분의 기관이나 조직의 다른 사람에게서 허락이 필요한가요? 만약 그렇다면 누굴까요?
+</div>
+<div class="challenge" markdown="1">
+공개 저장소에 여러분의 저작물을 호스팅할 수 있는지 알아보세요. 여러분이 일방적으로 할 수 있나요? 혹은 여러분의 기관이나 조직의 다른 사람에게서 허락이 필요한가요? 만약 그렇다면 누굴까요?
+</div>
+        </div>
+      </div>
+      </article>
+      <div class="footer">
+        <a class="label swc-blue-bg" href="http://software-carpentry.org">Software Carpentry</a>
+        <a class="label swc-blue-bg" href="http://xwmooc.net">xwMOOC</a>
+        <a class="label swc-blue-bg" href="https://github.com/statkclee/swcarpentry-version-5-3-new">한글소스</a>
+        <a class="label swc-blue-bg" href="https://github.com/swcarpentry">영문소스</a>
+        <a class="label swc-blue-bg" href="mailto:i@xwmooc.net">Contact</a>
+        <a class="label swc-blue-bg" href="http://statkclee.github.io/swcarpentry-version-5-3-new/LICENSE.html">License</a>
+      </div>
+    </div>
+    <!-- Javascript placed at the end of the document so the pages load faster -->
+    <script src="http://software-carpentry.org/v5/js/jquery-1.9.1.min.js"></script>
+    <script src="css/bootstrap/bootstrap-js/bootstrap.js"></script>
+  </body>
+</html>

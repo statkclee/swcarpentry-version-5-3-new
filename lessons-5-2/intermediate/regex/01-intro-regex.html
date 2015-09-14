@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="generator" content="pandoc">
+    <title>xwMOOC: Introduction to Regular Expressions</title>
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" type="text/css" href="http://statkclee.github.io/swcarpentry-version-5-3-new/css/bootstrap/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="http://statkclee.github.io/swcarpentry-version-5-3-new/css/bootstrap/bootstrap-theme.css" />
+    <link rel="stylesheet" type="text/css" href="http://statkclee.github.io/swcarpentry-version-5-3-new/css/swc.css" />
+    <link rel="alternate" type="application/rss+xml" title="Software Carpentry Blog" href="http://software-carpentry.org/feed.xml"/>
+    <meta charset="UTF-8" />
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body class="lesson">
+    <div class="container card">
+      <div class="banner">
+        <a href="http://software-carpentry.org" title="Software Carpentry">
+          <img alt="Software Carpentry banner" src="http://statkclee.github.io/swcarpentry-version-5-3-new/img/software-carpentry-banner.png" />
+      <!--     <img alt="xwMOOC banner" src="img/xwMOOC.png" />
+       -->  </a>
+      </div>
+      <article>
+      <div class="row">
+        <div class="col-md-10 col-md-offset-1">
+          <h1 class="title">Introduction to Regular Expressions</h1>
+          
+<p>A couple of years after the Death Star exploded, a hot-shot reporter at the Daily Planet heard that children in the Shire were starting to act strangely. Our supervisor sent some grad students off to find out what was going on. Every student’s notebook containing measurements of background evil levels (in milliVaders) at various locations in the Shire was later transcribed and stored as a data file.</p>
+<p>Our job is to read 20 or 30 of these data files, each of which contains several hundred measurements of background evil levels, and convert them into a uniform format for further processing. Each of the readings has the name of the site where the reading was taken, the date the reading was taken on, and of course the background evil level in milliVaders. The problem is, these files are formatted in different ways. Here is the first one:</p>
+<div class="figure">
+<img src="img/01-intro-notebook-1.png" alt="image" /><p class="caption">image</p>
+</div>
+<p>A single tab character divides the fields in each row into columns. The site names contain spaces, and the dates are in international standard format: four digits for the year, two for the month, and two for the day.</p>
+<p>Here is that same table with those characters visualised. Note how we have a not-too-helpful mix of tabs and spaces in the different lines of the file.</p>
+<div class="figure">
+<img src="img/01-intro-notebook-1-metachars.png" alt="image" /><p class="caption">image</p>
+</div>
+<h2 id="tabs-vs.spaces">Tabs vs. Spaces</h2>
+<p>Remember typewriters? Heavy mechanical devices that used physical force to ram a piece of type on the end of a stick at a page, squashing down an inky ribbon to leave a stamped image of a letter or number. Laying out tables on these machines was a time consuming task that required a lot of patient and accurate use of the space and backspace keys. Pretty soon, typewriter manufacturers invented the <code>tabulate</code> or <code>tab</code> key, a single button that moved the current printing position a specified distance and really reduced the work that was done to layout a rudimentary table. The <code>tab</code> lives on in modern computer keyboards and has pretty much the same function: it represents a gap between columns in a table and (usually) moves the cursor a much greater number of pixels than the space bar does. The tab key usually lives in the upper left of the keyboard.</p>
+<div class="figure">
+<img src="img/Keyboard-left_keys.jpg" alt="image" /><p class="caption">image</p>
+</div>
+<p>(source: <a href="http://commons.wikimedia.org/wiki/File:Keyboard-left_keys.jpg#mediaviewer/File:Keyboard-left_keys.jpg">Wikipedia</a>)</p>
+<p>Since <code>tab</code> and <code>space</code> are two different keys on the keyboard, the coded message the keyboard sends through to the computer when each key is pressed is completely different, the code for the <code>tab</code> key is represented <code>\t</code> while the code for the space character is usually represented <code>\s</code> (the slashes differentiate them from the usual <code>t</code> and <code>s</code> characters). This means that in strings <code>tabs</code> and <code>spaces</code> are different things to the computer.</p>
+<p>A fly in this ointment is that the program that is showing the text strings through the screen is able to render the <code>\t</code> and <code>\s</code> however it likes. Sometimes the program will show the <code>\t</code> as say, 40 empty pixels and the <code>\s</code> as 10 pixels but could display them both as 10. It could even choose to show them as completely different characters, a common thing is to show <code>\t</code> as arrows. So we can’t trust what we see on screen, until we <em>really</em> know the program we are using to edit text. When we need to process the programatically we need to be very aware of the encoding differences between <code>tab</code> - <code>\t</code> and <code>space</code> - <code>\s</code> to express clearly what we want of the computer program.</p>
+<p>Let’s have a look at the second notebook:</p>
+<div class="figure">
+<img src="img/01-intro-notebook-2.png" alt="image" /><p class="caption">image</p>
+</div>
+<p>Clearly this is very different to the first. It uses slashes as separators. There don’t appear to be spaces in the site names, but the month names and day numbers vary in length. What’s worse, the months are text, and the order is month-day-year rather than year-month-day.</p>
+<p>We could parse these files using basic string operations, but it would be difficult. A better approach is to use <a href="../../gloss.html#regular-expression">regular expressions</a>. A regular expression is just a pattern that can match a string. They are actually very common: when we say <code>*.txt</code> to a computer, we mean, “Match all of the filenames that end in <code>.txt</code>.” The <code>*</code> is a regular expression: it matches any number of characters.</p>
+<p>The rest of this chapter will look at what regular expressions can do, and how we can use them to handle our data. A warning before we go any further, though: the notation for regular expressions is ugly, even by the standards of programming. Se’re writing patterns to match strings, but we’re writing those patterns <em>as</em> strings using only the symbols that are on the keyboard, instead of inventing new symbols the way mathematicians do. The good news is that regular expressions work more or less the same way in almost every programming language. We will present examples in Python, but the ideas and notation transfer directly to Perl, Java, MATLAB, C#, and Fortran.</p>
+        </div>
+      </div>
+      </article>
+      <div class="footer">
+        <a class="label swc-blue-bg" href="http://software-carpentry.org">Software Carpentry</a>
+        <a class="label swc-blue-bg" href="http://xwmooc.net">xwMOOC</a>
+        <a class="label swc-blue-bg" href="https://github.com/statkclee/swcarpentry-version-5-3-new">한글소스</a>
+        <a class="label swc-blue-bg" href="https://github.com/swcarpentry">영문소스</a>
+        <a class="label swc-blue-bg" href="mailto:i@xwmooc.net">Contact</a>
+        <a class="label swc-blue-bg" href="http://statkclee.github.io/swcarpentry-version-5-3-new/LICENSE.html">License</a>
+      </div>
+    </div>
+    <!-- Javascript placed at the end of the document so the pages load faster -->
+    <script src="http://software-carpentry.org/v5/js/jquery-1.9.1.min.js"></script>
+    <script src="css/bootstrap/bootstrap-js/bootstrap.js"></script>
+  </body>
+</html>
