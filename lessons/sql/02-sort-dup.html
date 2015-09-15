@@ -42,7 +42,7 @@
           <h2 class="subtitle">Sorting and Removing Duplicates</h2>
 <div id="learning-objectives" class="objectives panel panel-warning">
 <div class="panel-heading">
-<h2 id="learning-objectives" class="objectives panel panel-warning"><span class="glyphicon glyphicon-certificate"></span>Learning Objectives</h2>
+<h2><span class="glyphicon glyphicon-certificate"></span>Learning Objectives</h2>
 </div>
 <div class="panel-body">
 <ul>
@@ -58,7 +58,7 @@
 <li>the sites where each scientist took measurements</li>
 </ul>
 <p>To determine which measurements were taken at each site, we can examine the <code>Survey</code> table. Data is often redundant, so queries often return redundant information. For example, if we select the quantitites that have been measured from the <code>Survey</code> table, we get this:</p>
-<div class="sourceCode"><pre class="sourceCode sql"><code class="sourceCode sql"><span class="kw">SELECT</span> quant <span class="kw">FROM</span> Survey;</code></pre></div>
+<pre class="sourceCode sql"><code class="sourceCode sql"><span class="kw">SELECT</span> quant <span class="kw">FROM</span> Survey;</code></pre>
 <table>
 <tr>
 <th>
@@ -172,7 +172,7 @@ rad
 </tr>
 </table>
 <p>This result makes it difficult to see all of the different types of <code>quant</code> in the Survey table. We can eliminate the redundant output to make the result more readable by adding the <code>DISTINCT</code> keyword to our query:</p>
-<div class="sourceCode"><pre class="sourceCode sql"><code class="sourceCode sql"><span class="kw">SELECT</span> <span class="kw">DISTINCT</span> quant <span class="kw">FROM</span> Survey;</code></pre></div>
+<pre class="sourceCode sql"><code class="sourceCode sql"><span class="kw">SELECT</span> <span class="kw">DISTINCT</span> quant <span class="kw">FROM</span> Survey;</code></pre>
 <table>
 <tr>
 <th>
@@ -196,7 +196,7 @@ temp
 </tr>
 </table>
 <p>If we want to determine which sites have which quant measurement, we can use the <code>DISTINCT</code> keyword on multiple columns. If we select more than one column, the distinct <em>pairs</em> of values are returned:</p>
-<div class="sourceCode"><pre class="sourceCode sql"><code class="sourceCode sql"><span class="kw">SELECT</span> <span class="kw">DISTINCT</span> taken, quant <span class="kw">FROM</span> Survey;</code></pre></div>
+<pre class="sourceCode sql"><code class="sourceCode sql"><span class="kw">SELECT</span> <span class="kw">DISTINCT</span> taken, quant <span class="kw">FROM</span> Survey;</code></pre>
 <table>
 <thead>
 <tr class="header">
@@ -285,7 +285,7 @@ temp
 </table>
 <p>Notice in both cases that duplicates are removed even if the rows they come from didn’t appear to be adjacent in the database table.</p>
 <p>Our next task is to identify the scientists on the expedition by looking at the <code>Person</code> table. As we mentioned earlier, database records are not stored in any particular order. This means that query results aren’t necessarily sorted, and even if they are, we often want to sort them in a different way, e.g., by their identifier instead of by their personal name. We can do this in SQL by adding an <code>ORDER BY</code> clause to our query:</p>
-<div class="sourceCode"><pre class="sourceCode sql"><code class="sourceCode sql"><span class="kw">SELECT</span> * <span class="kw">FROM</span> Person <span class="kw">ORDER</span> <span class="kw">BY</span> ident;</code></pre></div>
+<pre class="sourceCode sql"><code class="sourceCode sql"><span class="kw">SELECT</span> * <span class="kw">FROM</span> Person <span class="kw">ORDER</span> <span class="kw">BY</span> ident;</code></pre>
 <table>
 <thead>
 <tr class="header">
@@ -323,7 +323,7 @@ temp
 </tbody>
 </table>
 <p>By default, results are sorted in ascending order (i.e., from least to greatest). We can sort in the opposite order using <code>DESC</code> (for “descending”):</p>
-<div class="sourceCode"><pre class="sourceCode sql"><code class="sourceCode sql"><span class="kw">SELECT</span> * <span class="kw">FROM</span> Person <span class="kw">ORDER</span> <span class="kw">BY</span> ident <span class="kw">DESC</span>;</code></pre></div>
+<pre class="sourceCode sql"><code class="sourceCode sql"><span class="kw">SELECT</span> * <span class="kw">FROM</span> Person <span class="kw">ORDER</span> <span class="kw">BY</span> ident <span class="kw">DESC</span>;</code></pre>
 <table>
 <thead>
 <tr class="header">
@@ -362,7 +362,7 @@ temp
 </table>
 <p>(And if we want to make it clear that we’re sorting in ascending order, we can use <code>ASC</code> instead of <code>DESC</code>.)</p>
 <p>In order to look at which scientist measured quantities at each site, we can look again at the <code>Survey</code> table. We can also sort on several fields at once. For example, this query sorts results first in ascending order by <code>taken</code>, and then in descending order by <code>person</code> within each group of equal <code>taken</code> values:</p>
-<div class="sourceCode"><pre class="sourceCode sql"><code class="sourceCode sql"><span class="kw">SELECT</span> taken, person, quant <span class="kw">FROM</span> Survey <span class="kw">ORDER</span> <span class="kw">BY</span> taken <span class="kw">ASC</span>, person <span class="kw">DESC</span>;</code></pre></div>
+<pre class="sourceCode sql"><code class="sourceCode sql"><span class="kw">SELECT</span> taken, person, quant <span class="kw">FROM</span> Survey <span class="kw">ORDER</span> <span class="kw">BY</span> taken <span class="kw">ASC</span>, person <span class="kw">DESC</span>;</code></pre>
 <table>
 <thead>
 <tr class="header">
@@ -481,7 +481,7 @@ temp
 </table>
 <p>This query gives us a good idea of which scientist was at which site, and what measurements they performed while they were there.</p>
 <p>Looking at the table, it seems like some scientists specialized in certain kinds of measurements. We can examine which scientists performed which measurements by selecting the appropriate columns and removing duplicates.</p>
-<div class="sourceCode"><pre class="sourceCode sql"><code class="sourceCode sql"><span class="kw">SELECT</span> <span class="kw">DISTINCT</span> quant, person <span class="kw">FROM</span> Survey <span class="kw">ORDER</span> <span class="kw">BY</span> quant <span class="kw">ASC</span>;</code></pre></div>
+<pre class="sourceCode sql"><code class="sourceCode sql"><span class="kw">SELECT</span> <span class="kw">DISTINCT</span> quant, person <span class="kw">FROM</span> Survey <span class="kw">ORDER</span> <span class="kw">BY</span> quant <span class="kw">ASC</span>;</code></pre>
 <table>
 <thead>
 <tr class="header">
@@ -538,7 +538,7 @@ temp
 </table>
 <div id="finding-distinct-dates" class="challenge panel panel-success">
 <div class="panel-heading">
-<h2 id="finding-distinct-dates" class="challenge panel panel-success"><span class="glyphicon glyphicon-pencil"></span>Finding Distinct Dates</h2>
+<h2><span class="glyphicon glyphicon-pencil"></span>Finding Distinct Dates</h2>
 </div>
 <div class="panel-body">
 <p>Write a query that selects distinct dates from the <code>Visited</code> table.</p>
@@ -546,7 +546,7 @@ temp
 </div>
 <div id="displaying-full-names" class="challenge panel panel-success">
 <div class="panel-heading">
-<h2 id="displaying-full-names" class="challenge panel panel-success"><span class="glyphicon glyphicon-pencil"></span>Displaying Full Names</h2>
+<h2><span class="glyphicon glyphicon-pencil"></span>Displaying Full Names</h2>
 </div>
 <div class="panel-body">
 <p>Write a query that displays the full names of the scientists in the <code>Person</code> table, ordered by family name.</p>

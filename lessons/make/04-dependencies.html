@@ -42,7 +42,7 @@
           <h2 class="subtitle">Dependencies on data and code</h2>
 <div id="learning-objectives" class="objectives panel panel-warning">
 <div class="panel-heading">
-<h2 id="learning-objectives" class="objectives panel panel-warning"><span class="glyphicon glyphicon-certificate"></span>Learning Objectives</h2>
+<h2><span class="glyphicon glyphicon-certificate"></span>Learning Objectives</h2>
 </div>
 <div class="panel-body">
 <ul>
@@ -83,15 +83,15 @@ abyss.dat : books/abyss.txt wordcount.py
 last.dat : books/last.txt wordcount.py
     python wordcount.py $&lt; $@</code></pre>
 <p>If we pretend to edit <code>wordcount.py</code> and re-run Make,</p>
-<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">touch</span> wordcount.py
-$ <span class="kw">make</span> dats</code></pre></div>
+<pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">touch</span> wordcount.py
+$ <span class="kw">make</span> dats</code></pre>
 <p>then we get:</p>
 <pre class="output"><code>python wordcount.py books/isles.txt isles.dat
 python wordcount.py books/abyss.txt abyss.dat
 python wordcount.py books/last.txt last.dat</code></pre>
 <div id="why-dont-the-.txt-files-depend-on-wordcount.py" class="callout panel panel-info">
 <div class="panel-heading">
-<h2 id="why-dont-the-.txt-files-depend-on-wordcount.py" class="callout panel panel-info"><span class="glyphicon glyphicon-pushpin"></span>Why don’t the <code>.txt</code> files depend on <code>wordcount.py</code>?</h2>
+<h2><span class="glyphicon glyphicon-pushpin"></span>Why don’t the <code>.txt</code> files depend on <code>wordcount.py</code>?</h2>
 </div>
 <div class="panel-body">
 <p><code>.txt</code> files are input files and have no dependencies. To make these depend on <code>wordcount.py</code> would introduce a <a href="reference.html#false-dependency">false dependency</a>.</p>
@@ -101,7 +101,7 @@ python wordcount.py books/last.txt last.dat</code></pre>
 <pre class="make"><code>analysis.tar.gz : *.dat wordcount.py
         tar -czf $@ $^</code></pre>
 <p>If we re-run Make,</p>
-<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">make</span> analysis.tar.gz</code></pre></div>
+<pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">make</span> analysis.tar.gz</code></pre>
 <p>then we get:</p>
 <pre class="output"><code>tar -czf analysis.tar.gz abyss.dat isles.dat last.dat wordcount.py</code></pre>
         </div>

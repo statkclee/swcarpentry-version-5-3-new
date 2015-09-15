@@ -42,7 +42,7 @@
           <h2 class="subtitle">Running Tests with Nose</h2>
 <div id="learning-objectives" class="objectives panel panel-warning">
 <div class="panel-heading">
-<h2 id="learning-objectives" class="objectives panel panel-warning"><span class="glyphicon glyphicon-certificate"></span>Learning Objectives</h2>
+<h2><span class="glyphicon glyphicon-certificate"></span>Learning Objectives</h2>
 </div>
 <div class="panel-body">
 <ul>
@@ -53,42 +53,42 @@
 </div>
 <p>We created a suite of tests for our mean function, but it was annoying to run them one at a time. It would be a lot better if there were some way to run them all at once, just reporting which tests fail and which succeed.</p>
 <p>Thankfully, that exists. Recall our tests:</p>
-<div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python"><span class="im">from</span> mean <span class="im">import</span> <span class="op">*</span>
+<pre class="sourceCode python"><code class="sourceCode python"><span class="ch">from</span> mean <span class="ch">import</span> *
 
 <span class="kw">def</span> test_ints():
-    num_list <span class="op">=</span> [<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="dv">5</span>]
-    obs <span class="op">=</span> mean(num_list)
-    exp <span class="op">=</span> <span class="dv">3</span>
-    <span class="cf">assert</span> obs <span class="op">==</span> exp
+    num_list = [<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="dv">5</span>]
+    obs = mean(num_list)
+    exp = <span class="dv">3</span>
+    <span class="kw">assert</span> obs == exp
 
 <span class="kw">def</span> test_zero():
-    num_list<span class="op">=</span>[<span class="dv">0</span>,<span class="dv">2</span>,<span class="dv">4</span>,<span class="dv">6</span>]
-    obs <span class="op">=</span> mean(num_list)
-    exp <span class="op">=</span> <span class="dv">3</span>
-    <span class="cf">assert</span> obs <span class="op">==</span> exp
+    num_list=[<span class="dv">0</span>,<span class="dv">2</span>,<span class="dv">4</span>,<span class="dv">6</span>]
+    obs = mean(num_list)
+    exp = <span class="dv">3</span>
+    <span class="kw">assert</span> obs == exp
 
 <span class="kw">def</span> test_double():
     <span class="co"># This one will fail in Python 2</span>
-    num_list<span class="op">=</span>[<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>]
-    obs <span class="op">=</span> mean(num_list)
-    exp <span class="op">=</span> <span class="fl">2.5</span>
-    <span class="cf">assert</span> obs <span class="op">==</span> exp
+    num_list=[<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>]
+    obs = mean(num_list)
+    exp = <span class="fl">2.5</span>
+    <span class="kw">assert</span> obs == exp
 
 <span class="kw">def</span> test_long():
-    big <span class="op">=</span> <span class="dv">100000000</span>
-    obs <span class="op">=</span> mean(<span class="bu">range</span>(<span class="dv">1</span>,big))
-    exp <span class="op">=</span> big<span class="op">/</span><span class="fl">2.0</span>
-    <span class="cf">assert</span> obs <span class="op">==</span> exp
+    big = <span class="dv">100000000</span>
+    obs = mean(<span class="dt">range</span>(<span class="dv">1</span>,big))
+    exp = big/<span class="fl">2.0</span>
+    <span class="kw">assert</span> obs == exp
 
 <span class="kw">def</span> test_complex():
     <span class="co"># given that complex numbers are an unordered field</span>
     <span class="co"># the arithmetic mean of complex numbers is meaningless</span>
-    num_list <span class="op">=</span> [<span class="dv">2</span> <span class="op">+</span> 3j, <span class="dv">3</span> <span class="op">+</span> 4j, <span class="op">-</span><span class="dv">32</span> <span class="op">-</span> 2j]
-    obs <span class="op">=</span> mean(num_list)
-    exp <span class="op">=</span> <span class="va">NotImplemented</span>
-    <span class="cf">assert</span> obs <span class="op">==</span> exp</code></pre></div>
+    num_list = [<span class="dv">2</span> + 3j, <span class="dv">3</span> + 4j, -<span class="dv">32</span> - 2j]
+    obs = mean(num_list)
+    exp = <span class="ot">NotImplemented</span>
+    <span class="kw">assert</span> obs == exp</code></pre>
 <p>Once these tests are written in a file called <code>test_mean.py</code>, the command “nosetests” can be called from the directory containing the tests:</p>
-<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">nosetests</span></code></pre></div>
+<pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">nosetests</span></code></pre>
 <pre class="output"><code>....F
 ======================================================================
 FAIL: test_mean.test_complex
@@ -109,11 +109,11 @@ FAILED (failures=1)</code></pre>
 <p>When you run <em>nosetests</em>, it will print a dot (<code>.</code>) on the screen for every test that passes, an <code>F</code> for every test that fails, and an <code>E</code> for every test were there was an unexpected error. In rarer situations you may also see an <code>S</code> indicating a skipped tests (because the test is not applicable on your system) or a <code>K</code> for a known failure (because the developers could not fix it promptly). After the dots, <em>nosetests</em> will print summary information.</p>
 <div id="fix-the-failing-code" class="challenge panel panel-success">
 <div class="panel-heading">
-<h2 id="fix-the-failing-code" class="challenge panel panel-success"><span class="glyphicon glyphicon-pencil"></span>Fix The Failing Code</h2>
+<h2><span class="glyphicon glyphicon-pencil"></span>Fix The Failing Code</h2>
 </div>
 <div class="panel-body">
 <p>Without changing the tests, alter the mean.py file from the previous section until it passes. When it passes, <em>nosetests</em> will produce results like the following:</p>
-<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">nosetests</span></code></pre></div>
+<pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">nosetests</span></code></pre>
 <pre class="output"><code>.....
 
 Ran 5 tests in 3.746s
@@ -123,7 +123,7 @@ OK</code></pre>
 </div>
 <p>As we write more code, we would write more tests, and <em>nosetests</em> would produce more dots. Each passing test is a small, satisfying reward for having written quality scientific software. Now that you know how to write tests, let’s go into what can go wrong.</p>
 <blockquote>
-<h2 id="key-points" class="keypoints">Key Points</h2>
+<h2>Key Points</h2>
 <ul>
 <li>The <code>nosetests</code> command collects and runs tests starting with <code>Test-</code>, <code>test_</code>, and similar names.</li>
 <li><code>.</code> means the test passed</li>

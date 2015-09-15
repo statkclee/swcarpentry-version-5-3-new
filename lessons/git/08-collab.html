@@ -42,7 +42,7 @@
           <h2 class="subtitle">Collaborating</h2>
 <div id="learning-objectives" class="objectives panel panel-warning">
 <div class="panel-heading">
-<h2 id="learning-objectives" class="objectives panel panel-warning"><span class="glyphicon glyphicon-certificate"></span>Learning Objectives</h2>
+<h2><span class="glyphicon glyphicon-certificate"></span>Learning Objectives</h2>
 </div>
 <div class="panel-body">
 <ul>
@@ -53,7 +53,7 @@
 <p>For the next step, get into pairs. One person will be the “Owner” (this is the person whose Github repository will be used to start the exercise) and the other person will be the “Collaborator” (this is the person who will be cloning the Owner’s repository and making changes to it).</p>
 <div id="practicing-by-yourself" class="callout panel panel-info">
 <div class="panel-heading">
-<h2 id="practicing-by-yourself" class="callout panel panel-info"><span class="glyphicon glyphicon-pushpin"></span>Practicing by yourself</h2>
+<h2><span class="glyphicon glyphicon-pushpin"></span>Practicing by yourself</h2>
 </div>
 <div class="panel-body">
 <p>If you’re working through this lesson on your own, you can carry on by opening a second terminal window, and switching to another directory (e.g. <code>/tmp</code>). This window will represent your partner, working on another computer. You won’t need to give anyone access on GitHub, because both ‘partners’ are you.</p>
@@ -61,28 +61,26 @@
 </div>
 <p>The Owner needs to give the Collaborator access. On GitHub, click the settings button on the right, then select Collaborators, and enter your partner’s username.</p>
 <div class="figure">
-<img src="fig/github-add-collaborators.png" alt="Adding collaborators on GitHub" />
-<p class="caption">Adding collaborators on GitHub</p>
+<img src="fig/github-add-collaborators.png" alt="Adding collaborators on GitHub" /><p class="caption">Adding collaborators on GitHub</p>
 </div>
 <p>The Collaborator needs to work on this project locally. He or she should <code>cd</code> to another directory (so <code>ls</code> doesn’t show a <code>planets</code> folder), and then make a copy of the Owner’s repository:</p>
-<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">git</span> clone https://github.com/vlad/planets.git</code></pre></div>
+<pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">git</span> clone https://github.com/vlad/planets.git</code></pre>
 <p>Replace ‘vlad’ with the Owner’s username.</p>
 <p><code>git clone</code> creates a fresh local copy of a remote repository.</p>
 <div class="figure">
-<img src="fig/github-collaboration.svg" alt="After Creating Clone of Repository" />
-<p class="caption">After Creating Clone of Repository</p>
+<img src="fig/github-collaboration.svg" alt="After Creating Clone of Repository" /><p class="caption">After Creating Clone of Repository</p>
 </div>
 <p>The Collaborator can now make a change in his or her copy of the repository:</p>
-<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">cd</span> planets
+<pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">cd</span> planets
 $ <span class="kw">nano</span> pluto.txt
-$ <span class="kw">cat</span> pluto.txt</code></pre></div>
+$ <span class="kw">cat</span> pluto.txt</code></pre>
 <pre class="output"><code>It is so a planet!</code></pre>
-<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">git</span> add pluto.txt
-$ <span class="kw">git</span> commit -m <span class="st">&quot;Some notes about Pluto&quot;</span></code></pre></div>
+<pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">git</span> add pluto.txt
+$ <span class="kw">git</span> commit -m <span class="st">&quot;Some notes about Pluto&quot;</span></code></pre>
 <pre class="output"><code> 1 file changed, 1 insertion(+)
  create mode 100644 pluto.txt</code></pre>
 <p>Then push the change to GitHub:</p>
-<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">git</span> push origin master</code></pre></div>
+<pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">git</span> push origin master</code></pre>
 <pre class="output"><code>Counting objects: 4, done.
 Delta compression using up to 4 threads.
 Compressing objects: 100% (2/2), done.
@@ -92,7 +90,7 @@ To https://github.com/vlad/planets.git
    9272da5..29aba7c  master -&gt; master</code></pre>
 <p>Note that we didn’t have to create a remote called <code>origin</code>: Git does this automatically, using that name, when we clone a repository. (This is why <code>origin</code> was a sensible choice earlier when we were setting up remotes by hand.)</p>
 <p>We can now download changes into the original repository on our machine:</p>
-<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">git</span> pull origin master</code></pre></div>
+<pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">git</span> pull origin master</code></pre>
 <pre class="output"><code>remote: Counting objects: 4, done.
 remote: Compressing objects: 100% (2/2), done.
 remote: Total 3 (delta 0), reused 3 (delta 0)

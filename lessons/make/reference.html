@@ -42,16 +42,16 @@
           <h2 class="subtitle">Reference</h2>
 <h2 id="running-make">Running Make</h2>
 <p>To run Make:</p>
-<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">make</span></code></pre></div>
+<pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">make</span></code></pre>
 <p>Make will look for a Makefile called <code>Makefile</code> and will build the default target, the first target in the Makefile.</p>
 <p>To use a Makefile with a different name, use the <code>-f</code> flag e.g.</p>
-<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">make</span> -f build-files/analyse.mk</code></pre></div>
+<pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">make</span> -f build-files/analyse.mk</code></pre>
 <p>To build a specific target, provide it as an argument e.g.</p>
-<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">make</span> isles.dat</code></pre></div>
+<pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">make</span> isles.dat</code></pre>
 <p>If the target is up-to-date, Make will print a message like:</p>
 <pre class="output"><code>make: `isles.dat&#39; is up to date.</code></pre>
 <p>To see the actions Make will run when building a target, without running the actions, use the <code>-n</code> flag e.g.</p>
-<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">make</span> -n isles.dat</code></pre></div>
+<pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">make</span> -n isles.dat</code></pre>
 <h2 id="make-trouble-shooting">Make trouble-shooting</h2>
 <p>If Make prints a message like,</p>
 <pre class="error"><code>Makefile:3: *** missing separator.  Stop.</code></pre>
