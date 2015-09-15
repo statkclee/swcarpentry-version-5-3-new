@@ -15,6 +15,17 @@
     <!--[if lt IE 9]>
       <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
+    
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+    
+      ga('create', 'UA-59802572-6', 'auto');
+      ga('send', 'pageview');
+    
+    </script>
   </head>
   <body class="lesson">
     <div class="container card">
@@ -31,7 +42,7 @@
           <h2 class="subtitle">Discussion</h2>
 <h2 id="parallel-execution">Parallel execution</h2>
 <p>Make can build dependencies in parallel sub-processes, via its <code>-j</code> flag which specifies the number of sub-processes to use e.g.</p>
-<pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">make</span> -j 4 analysis.tar.gz</code></pre>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">make</span> -j 4 analysis.tar.gz</code></pre></div>
 <p>For more information see the GNU Make manual chapter on <a href="https://www.gnu.org/software/make/manual/html_node/Parallel.html">Parallel Execution</a>.</p>
 <h2 id="make-and-reproducible-research">Make and reproducible research</h2>
 <p>Blog articles and tutorials on automating data analysis using Make:</p>

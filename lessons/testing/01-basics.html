@@ -15,6 +15,17 @@
     <!--[if lt IE 9]>
       <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
+    
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+    
+      ga('create', 'UA-59802572-6', 'auto');
+      ga('send', 'pageview');
+    
+    </script>
   </head>
   <body class="lesson">
     <div class="container card">
@@ -31,7 +42,7 @@
           <h2 class="subtitle">Basics of testing</h2>
 <div id="learning-objectives" class="objectives panel panel-warning">
 <div class="panel-heading">
-<h2><span class="glyphicon glyphicon-certificate"></span>Learning Objectives</h2>
+<h2 id="learning-objectives" class="objectives panel panel-warning"><span class="glyphicon glyphicon-certificate"></span>Learning Objectives</h2>
 </div>
 <div class="panel-body">
 <ul>
@@ -48,7 +59,7 @@
 <li>In fact, starting to write the tests <em>before</em> you even write the software might be advisable. (Such a practice is called <em>test-driven development</em>, which we will discuss in greater detail <a href="09-tdd.html">later in the lesson</a>.)</li>
 </ul>
 <blockquote>
-<h3>What Kinds of Tests Exist</h3>
+<h3 id="what-kinds-of-tests-exist">What Kinds of Tests Exist</h3>
 <p>There are many ways to test software, such as:</p>
 <ul>
 <li>Assertions</li>
@@ -63,7 +74,7 @@
 <p><em>Regression Tests</em>: Regression tests defend against new bugs, or regressions, which might appear due to new software and updates.</p>
 <p><em>Integration Tests</em>: Integration tests check that various pieces of the software work together as expected.</p>
 <blockquote>
-<h2>Key Points</h2>
+<h2 id="key-points" class="keypoints">Key Points</h2>
 <ul>
 <li>Tests compare that the result observed from running code is the same as what was expected ahead of time.</li>
 <li>Tests should be written at the same time as the code they are testing is written.</li>

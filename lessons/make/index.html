@@ -15,6 +15,17 @@
     <!--[if lt IE 9]>
       <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
+    
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+    
+      ga('create', 'UA-59802572-6', 'auto');
+      ga('send', 'pageview');
+    
+    </script>
   </head>
   <body class="lesson">
     <div class="container card">
@@ -40,14 +51,14 @@
 <p>There are now many build tools available, all of which are based on the same concepts as Make.</p>
 <div id="prerequisites" class="prereq panel panel-warning">
 <div class="panel-heading">
-<h2><span class="glyphicon glyphicon-education"></span>Prerequisites</h2>
+<h2 id="prerequisites" class="prereq panel panel-warning"><span class="glyphicon glyphicon-education"></span>Prerequisites</h2>
 </div>
 <div class="panel-body">
 <p>In this lesson we use <code>make</code> from the Unix Shell. Some previous experience with using the shell to list directories, create, copy, remove and list files and directories, and run simple scripts is necessary.</p>
 </div>
 </div>
 <blockquote>
-<h2>Getting ready</h2>
+<h2 id="getting-ready" class="getready">Getting ready</h2>
 <p>You need to download some files to follow this lesson:</p>
 <ol style="list-style-type: decimal">
 <li>Download <a href="./make-lesson.tar.gz">make-lesson.tar.gz</a>.</li>
@@ -56,11 +67,11 @@
 <li>Navigate to the directory where you downloaded the file.</li>
 <li>Unpack <code>make-lesson.tar.gz</code>:</li>
 </ol>
-<pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">tar</span> -xvf make-lesson.tar.gz</code></pre>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">tar</span> -xvf make-lesson.tar.gz</code></pre></div>
 <ol start="6" style="list-style-type: decimal">
 <li>Change into the <code>make-lesson</code> directory:</li>
 </ol>
-<pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">cd</span> make-lesson</code></pre>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">cd</span> make-lesson</code></pre></div>
 </blockquote>
 <h2 id="topics">Topics</h2>
 <ol style="list-style-type: decimal">

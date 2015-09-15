@@ -15,6 +15,17 @@
     <!--[if lt IE 9]>
       <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
+    
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+    
+      ga('create', 'UA-59802572-6', 'auto');
+      ga('send', 'pageview');
+    
+    </script>
   </head>
   <body class="lesson">
     <div class="container card">
@@ -31,7 +42,7 @@
           <h2 class="subtitle">Automatic variables</h2>
 <div id="learning-objectives" class="objectives panel panel-warning">
 <div class="panel-heading">
-<h2><span class="glyphicon glyphicon-certificate"></span>Learning Objectives</h2>
+<h2 id="learning-objectives" class="objectives panel panel-warning"><span class="glyphicon glyphicon-certificate"></span>Learning Objectives</h2>
 </div>
 <div class="panel-body">
 <ul>
@@ -78,8 +89,8 @@ clean :
         tar -czf $@ $^</code></pre>
 <p><code>$^</code> is another automatic variable which means ‘all the dependencies of the current rule’. Again, when Make is run it will replace this variable with the dependencies.</p>
 <p>Let’s update our text files and re-run our rule:</p>
-<pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">touch</span> books/*.txt
-$ <span class="kw">make</span> analysis.tar.gz</code></pre>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">touch</span> books/*.txt
+$ <span class="kw">make</span> analysis.tar.gz</code></pre></div>
 <p>We get:</p>
 <pre class="output"><code>python wordcount.py books/isles.txt isles.dat
 python wordcount.py books/abyss.txt abyss.dat
@@ -89,25 +100,25 @@ tar -czf analysis.tar.gz isles.dat abyss.dat last.dat</code></pre>
 <pre class="make"><code>analysis.tar.gz : *.dat
         tar -czf $@ $^</code></pre>
 <p>Let’s update our text files and re-run our rule:</p>
-<pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">touch</span> books/*.txt
-$ <span class="kw">make</span> analysis.tar.gz</code></pre>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">touch</span> books/*.txt
+$ <span class="kw">make</span> analysis.tar.gz</code></pre></div>
 <p>We get the same as above.</p>
 <p>Now let’s delete the data files and re-run our rule:</p>
-<pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">make</span> clean
-$ <span class="kw">make</span> analysis.tar.gz</code></pre>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">make</span> clean
+$ <span class="kw">make</span> analysis.tar.gz</code></pre></div>
 <p>We get:</p>
 <pre class="error"><code>make: *** No rule to make target `*.dat&#39;, needed by `analysis.tar.gz&#39;.  Stop.</code></pre>
 <p>As there are no files that match the pattern <code>*.dat</code> the name <code>*.dat</code> is used as a file name itself, and there is no file matching that, nor any rule so we get an error. We need to explicitly rebuild the <code>.dat</code> files first:</p>
-<pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">make</span> dats
-$ <span class="kw">make</span> analysis.tar.gz</code></pre>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">make</span> dats
+$ <span class="kw">make</span> analysis.tar.gz</code></pre></div>
 <div id="update-dependencies" class="challenge panel panel-success">
 <div class="panel-heading">
-<h2><span class="glyphicon glyphicon-pencil"></span>Update dependencies</h2>
+<h2 id="update-dependencies" class="challenge panel panel-success"><span class="glyphicon glyphicon-pencil"></span>Update dependencies</h2>
 </div>
 <div class="panel-body">
 <p>What will happen if you now execute:</p>
-<pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">touch</span> *.dat
-$ <span class="kw">make</span> analysis.tar.gz</code></pre>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">touch</span> *.dat
+$ <span class="kw">make</span> analysis.tar.gz</code></pre></div>
 <ol style="list-style-type: decimal">
 <li>nothing</li>
 <li>all files recreated</li>
@@ -121,7 +132,7 @@ $ <span class="kw">make</span> analysis.tar.gz</code></pre>
 <p>Make provides an automatic variable for this, <code>$&lt;</code> which means ‘the first dependency of the current rule’.</p>
 <div id="rewrite-.dat-rules-to-use-automatic-variables" class="challenge panel panel-success">
 <div class="panel-heading">
-<h2><span class="glyphicon glyphicon-pencil"></span>Rewrite <code>.dat</code> rules to use automatic variables</h2>
+<h2 id="rewrite-.dat-rules-to-use-automatic-variables" class="challenge panel panel-success"><span class="glyphicon glyphicon-pencil"></span>Rewrite <code>.dat</code> rules to use automatic variables</h2>
 </div>
 <div class="panel-body">
 <p>Rewrite each <code>.dat</code> rule to use the automatic variables <code>$@</code> (‘the target of the current rule’) and <code>$&lt;</code> (‘the first dependency of the current rule’).</p>

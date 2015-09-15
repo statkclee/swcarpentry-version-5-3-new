@@ -15,6 +15,17 @@
     <!--[if lt IE 9]>
       <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
+    
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+    
+      ga('create', 'UA-59802572-6', 'auto');
+      ga('send', 'pageview');
+    
+    </script>
   </head>
   <body class="lesson">
     <div class="container card">
@@ -31,7 +42,7 @@
           <h2 class="subtitle">Selecting Data</h2>
 <div id="learning-objectives" class="objectives panel panel-warning">
 <div class="panel-heading">
-<h2><span class="glyphicon glyphicon-certificate"></span>Learning Objectives</h2>
+<h2 id="learning-objectives" class="objectives panel panel-warning"><span class="glyphicon glyphicon-certificate"></span>Learning Objectives</h2>
 </div>
 <div class="panel-body">
 <ul>
@@ -45,7 +56,7 @@
 <p>When we are using a spreadsheet, we put formulas into cells to calculate new values based on old ones. When we are using a database, we send commands (usually called <a href="reference.html#query">queries</a>) to a <a href="reference.html#database-manager">database manager</a>: a program that manipulates the database for us. The database manager does whatever lookups and calculations the query specifies, returning the results in a tabular form that we can then use as a starting point for further queries.</p>
 <div id="changing-database-managers" class="callout panel panel-info">
 <div class="panel-heading">
-<h2><span class="glyphicon glyphicon-pushpin"></span>Changing database managers</h2>
+<h2 id="changing-database-managers" class="callout panel panel-info"><span class="glyphicon glyphicon-pushpin"></span>Changing database managers</h2>
 </div>
 <div class="panel-body">
 <p>Every database manager — Oracle, IBM DB2, PostgreSQL, MySQL, Microsoft Access, and SQLite — stores data in a different way, so a database created with one cannot be used directly by another. However, every database manager can import and export data in a variety of formats, like .csv, so it <em>is</em> possible to move information from one to another.</p>
@@ -317,7 +328,7 @@
 </table>
 </blockquote>
 <p>Notice that three entries — one in the <code>Visited</code> table, and two in the <code>Survey</code> table — don’t contain any actual data, but instead have a special <code>-null-</code> entry: we’ll return to these missing values <a href="05-null.html">later</a>. For now, let’s write an SQL query that displays scientists’ names. We do this using the SQL command <code>SELECT</code>, giving it the names of the columns we want and the table we want them from. Our query and its output look like this:</p>
-<pre class="sourceCode sql"><code class="sourceCode sql"><span class="kw">SELECT</span> family, personal <span class="kw">FROM</span> Person;</code></pre>
+<div class="sourceCode"><pre class="sourceCode sql"><code class="sourceCode sql"><span class="kw">SELECT</span> family, personal <span class="kw">FROM</span> Person;</code></pre></div>
 <table>
 <thead>
 <tr class="header">
@@ -349,7 +360,7 @@
 </tbody>
 </table>
 <p>The semicolon at the end of the query tells the database manager that the query is complete and ready to run. We have written our commands and column names in lower case, and the table name in Title Case, but we don’t have to: as the example below shows, SQL is <a href="reference.html#case-insensitive">case insensitive</a>.</p>
-<pre class="sourceCode sql"><code class="sourceCode sql"><span class="kw">SeLeCt</span> FaMiLy, PeRsOnAl <span class="kw">FrOm</span> PeRsOn;</code></pre>
+<div class="sourceCode"><pre class="sourceCode sql"><code class="sourceCode sql"><span class="kw">SeLeCt</span> FaMiLy, PeRsOnAl <span class="kw">FrOm</span> PeRsOn;</code></pre></div>
 <table>
 <thead>
 <tr class="header">
@@ -382,7 +393,7 @@
 </table>
 <p>You can use SQL’s case insensitivity to your advantage. For instance, some people choose to write SQL keywords (such as <code>SELECT</code> and <code>FROM</code>) in capital letters and <strong>field</strong> and <strong>table</strong> names in lower case. This can make it easier to locate parts of an SQL statement. For instance, you can scan the statement, quickly locate the prominent <code>FROM</code> keyword and know the table name follows. Whatever casing convention you choose, please be consistent: complex queries are hard enough to read without the extra cognitive load of random capitalization. One convention is to use UPPER CASE for SQL statements, to distinguish them from tables and column names. This is the convention that we will use for this lesson.</p>
 <p>Going back to our query, it’s important to understand that the rows and columns in a database table aren’t actually stored in any particular order. They will always be <em>displayed</em> in some order, but we can control that in various ways. For example, we could swap the columns in the output by writing our query as:</p>
-<pre class="sourceCode sql"><code class="sourceCode sql"><span class="kw">SELECT</span> personal, family <span class="kw">FROM</span> Person;</code></pre>
+<div class="sourceCode"><pre class="sourceCode sql"><code class="sourceCode sql"><span class="kw">SELECT</span> personal, family <span class="kw">FROM</span> Person;</code></pre></div>
 <table>
 <thead>
 <tr class="header">
@@ -414,7 +425,7 @@
 </tbody>
 </table>
 <p>or even repeat columns:</p>
-<pre class="sourceCode sql"><code class="sourceCode sql"><span class="kw">SELECT</span> ident, ident, ident <span class="kw">FROM</span> Person;</code></pre>
+<div class="sourceCode"><pre class="sourceCode sql"><code class="sourceCode sql"><span class="kw">SELECT</span> ident, ident, ident <span class="kw">FROM</span> Person;</code></pre></div>
 <table>
 <thead>
 <tr class="header">
@@ -452,7 +463,7 @@
 </tbody>
 </table>
 <p>As a shortcut, we can select all of the columns in a table using <code>*</code>:</p>
-<pre class="sourceCode sql"><code class="sourceCode sql"><span class="kw">SELECT</span> * <span class="kw">FROM</span> Person;</code></pre>
+<div class="sourceCode"><pre class="sourceCode sql"><code class="sourceCode sql"><span class="kw">SELECT</span> * <span class="kw">FROM</span> Person;</code></pre></div>
 <table>
 <thead>
 <tr class="header">
@@ -491,7 +502,7 @@
 </table>
 <div id="selecting-site-names" class="challenge panel panel-success">
 <div class="panel-heading">
-<h2><span class="glyphicon glyphicon-pencil"></span>Selecting Site Names</h2>
+<h2 id="selecting-site-names" class="challenge panel panel-success"><span class="glyphicon glyphicon-pencil"></span>Selecting Site Names</h2>
 </div>
 <div class="panel-body">
 <p>Write a query that selects only site names from the <code>Site</code> table.</p>
@@ -499,7 +510,7 @@
 </div>
 <div id="query-style" class="challenge panel panel-success">
 <div class="panel-heading">
-<h2><span class="glyphicon glyphicon-pencil"></span>Query Style</h2>
+<h2 id="query-style" class="challenge panel panel-success"><span class="glyphicon glyphicon-pencil"></span>Query Style</h2>
 </div>
 <div class="panel-body">
 <p>Many people format queries as:</p>

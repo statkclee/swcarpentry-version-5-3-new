@@ -15,6 +15,17 @@
     <!--[if lt IE 9]>
       <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
+    
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+    
+      ga('create', 'UA-59802572-6', 'auto');
+      ga('send', 'pageview');
+    
+    </script>
   </head>
   <body class="lesson">
     <div class="container card">
@@ -31,7 +42,7 @@
           <h2 class="subtitle">Variables</h2>
 <div id="learning-objectives" class="objectives panel panel-warning">
 <div class="panel-heading">
-<h2><span class="glyphicon glyphicon-certificate"></span>Learning Objectives</h2>
+<h2 id="learning-objectives" class="objectives panel panel-warning"><span class="glyphicon glyphicon-certificate"></span>Learning Objectives</h2>
 </div>
 <div class="panel-body">
 <ul>
@@ -53,7 +64,7 @@
 <p>Defining the variable <code>COUNT_EXE</code> in this way allows us to easily change how our script is run (if, for example, we changed the language used to implement our script from Python to R).</p>
 <div id="use-variables" class="challenge panel panel-success">
 <div class="panel-heading">
-<h2><span class="glyphicon glyphicon-pencil"></span>Use variables</h2>
+<h2 id="use-variables" class="challenge panel panel-success"><span class="glyphicon glyphicon-pencil"></span>Use variables</h2>
 </div>
 <div class="panel-body">
 <p>Update <code>Makefile</code> so that the <code>%.dat</code> and <code>analysis.tar.gz</code> rules reference the variables <code>COUNT_SRC</code> and <code>COUNT_EXE</code>.</p>
@@ -66,9 +77,9 @@ COUNT_EXE=python $(COUNT_SRC)</code></pre>
 <p>We can then import this Makefile into <code>Makefile</code> using:</p>
 <pre class="make"><code>include config.mk</code></pre>
 <p>We can re-run Make to see that everything still works:</p>
-<pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">make</span> clean
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">make</span> clean
 $ <span class="kw">make</span> dats
-$ <span class="kw">make</span> analysis.tar.gz</code></pre>
+$ <span class="kw">make</span> analysis.tar.gz</code></pre></div>
 <p>We have separated the configuration of our Makefile from its rules, the parts that do all the work. If we want to change our script name or how it is executed we just need to edit our configuration file, not our source code in <code>Makefile</code>. Decoupling code from configuration in this way is good programming practice, as it promotes more modular, flexible and reusable code.</p>
         </div>
       </div>

@@ -15,6 +15,17 @@
     <!--[if lt IE 9]>
       <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
+    
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+    
+      ga('create', 'UA-59802572-6', 'auto');
+      ga('send', 'pageview');
+    
+    </script>
   </head>
   <body class="lesson">
     <div class="container card">
@@ -31,7 +42,7 @@
           <h2 class="subtitle">Introduction</h2>
 <div id="learning-objectives" class="objectives panel panel-warning">
 <div class="panel-heading">
-<h2><span class="glyphicon glyphicon-certificate"></span>Learning Objectives</h2>
+<h2 id="learning-objectives" class="objectives panel panel-warning"><span class="glyphicon glyphicon-certificate"></span>Learning Objectives</h2>
 </div>
 <div class="panel-body">
 <ul>
@@ -42,9 +53,9 @@
 </div>
 </div>
 <p>Suppose we have a script, <code>wordcount.py</code>, that reads in a text file, counts the words in this text file, and outputs a data file:</p>
-<pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">python</span> wordcount.py books/isles.txt isles.dat</code></pre>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">python</span> wordcount.py books/isles.txt isles.dat</code></pre></div>
 <p>If we view the first 5 rows of the data file using <code>head</code>,</p>
-<pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">head</span> -5 isles.dat</code></pre>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">head</span> -5 isles.dat</code></pre></div>
 <p>we can see that the file consists of one row per word.</p>
 <pre class="output"><code>the 3822 6.7371760973
 of 2460 4.33632998414
@@ -52,8 +63,8 @@ and 1723 3.03719372466
 to 1479 2.60708619778
 a 1308 2.30565838181</code></pre>
 <p>Each row shows the word itself, the number of occurrences of that word, and the number of occurrences as a percentage of the total number of words in the text file. As another example:</p>
-<pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">python</span> wordcount.py books/abyss.txt abyss.dat
-$ <span class="kw">head</span> -5 abyss.dat</code></pre>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">python</span> wordcount.py books/abyss.txt abyss.dat
+$ <span class="kw">head</span> -5 abyss.dat</code></pre></div>
 <pre class="output"><code>the 4044 6.35449402891
 and 2807 4.41074795726
 of 1907 2.99654305468
@@ -61,17 +72,17 @@ a 1594 2.50471401634
 to 1515 2.38057825267</code></pre>
 <div id="zipfs-law" class="callout panel panel-info">
 <div class="panel-heading">
-<h2><span class="glyphicon glyphicon-pushpin"></span>Zipf’s Law</h2>
+<h2 id="zipfs-law" class="callout panel panel-info"><span class="glyphicon glyphicon-pushpin"></span>Zipf’s Law</h2>
 </div>
 <div class="panel-body">
 <p>The most frequently-occurring word occurs approximately twice as often as the second most frequent word. This is <a href="http://en.wikipedia.org/wiki/Zipf%27s_law">Zipf’s Law</a>.</p>
 </div>
 </div>
 <p>Suppose we also have a script, <code>plotcount.py</code>, that reads in a data file and plots the 10 most frequently occurring words:</p>
-<pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">python</span> plotcount.py isles.dat show</code></pre>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">python</span> plotcount.py isles.dat show</code></pre></div>
 <p>Close the window to exit the plot.</p>
 <p><code>plotcount.py</code> can also save the plot as an image (e.g. a JPEG):</p>
-<pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">python</span> plotcount.py isles.dat isles.jpg</code></pre>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">python</span> plotcount.py isles.dat isles.jpg</code></pre></div>
 <p>Together these scripts implement a common workflow:</p>
 <ol style="list-style-type: decimal">
 <li>Read a data file.</li>
@@ -91,7 +102,7 @@ to 1515 2.38057825267</code></pre>
 <p>There are now many build tools available, for example <a href="http://ant.apache.org/">Apache ANT</a>, <a href="http://pydoit.org/">doit</a>, and <a href="https://msdn.microsoft.com/en-us/library/dd9y37ha.aspx">nmake</a> for Windows. There are also build tools that build scripts for use with these build tools and others e.g. <a href="http://www.gnu.org/software/autoconf/autoconf.html">GNU Autoconf</a> and <a href="http://www.cmake.org/">CMake</a>. Which is best for you depends on your requirements, intended usage, and operating system. However, they all share the same fundamental concepts as Make.</p>
 <div id="why-use-make-if-it-is-almost-40-years-old" class="callout panel panel-info">
 <div class="panel-heading">
-<h2><span class="glyphicon glyphicon-pushpin"></span>Why use Make if it is almost 40 years old?</h2>
+<h2 id="why-use-make-if-it-is-almost-40-years-old" class="callout panel panel-info"><span class="glyphicon glyphicon-pushpin"></span>Why use Make if it is almost 40 years old?</h2>
 </div>
 <div class="panel-body">
 <p>Today, researchers working with legacy codes in C or FORTRAN, which are very common in high-performance computing, will, very likely encounter Make.</p>
