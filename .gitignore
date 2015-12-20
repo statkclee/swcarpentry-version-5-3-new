@@ -1,3 +1,4 @@
+
 README.html
 LAYOUT.html
 FAQ.html
@@ -8,3 +9,5 @@ CONDUCT.html
 *.pyc
 _site
 .DS_Store
+fig/Thumbs.db
+s3_website.yml

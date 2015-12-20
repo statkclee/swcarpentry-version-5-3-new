@@ -6,8 +6,7 @@ SRC_RMD = $(wildcard ??-*.Rmd)
 DST_RMD = $(patsubst %.Rmd,%.md,$(SRC_RMD))
 
 # All Markdown files (hand-written and generated).
-#ALL_MD = $(wildcard *.md) $(DST_RMD)
-ALL_MD = $(shell find . -name '*.md')
+ALL_MD = $(wildcard *.md) $(DST_RMD)
 EXCLUDE_MD = README.md LAYOUT.md FAQ.md DESIGN.md CONTRIBUTING.md CONDUCT.md
 SRC_MD = $(filter-out $(EXCLUDE_MD),$(ALL_MD))
 DST_HTML = $(patsubst %.md,%.html,$(SRC_MD))
@@ -44,6 +43,13 @@ clean :
 
 ## preview  : Build website locally for checking.
 preview : $(DST_ALL)
+
+# Pattern for slides (different parameters and template).
+motivation.html : motivation.md _layouts/slides.revealjs Makefile
+	${PANDOC} -s -t revealjs --slide-level 2 \
+	    ${PANDOC_FLAGS} \
+	    --template=_layouts/slides \
+	    -o $@ $<
 
 # Pattern to build a generic page.
 %.html : %.md _layouts/page.html $(FILTERS)
