@@ -17,7 +17,7 @@ title: 소프트웨어 카펜트리 버젼 5.3.
 1. [R 프로그래밍](http://statkclee.github.io/r-novice-inflammation/index-kr.html)
 1. [파이썬 프로그래밍](http://statkclee.github.io/python-novice-inflammation/index-kr.html)
 1. [데이터베이스와 SQL 사용하기](http://statkclee.github.io/sql-novice-survey/index-kr.html)
-1. [재현가능한 과학적 분석을 위한 R (Gapminder)](https://github.com/swcarpentry/r-novice-gapminder/index-kr.html)
+1. [재현가능한 과학적 분석을 위한 R (Gapminder)](https://statkclee.github.io/r-novice-gapminder/index-kr.html)
 1. [자동화와 Make](http://statkclee.github.io/make-novice/index-kr.html)
 1. HG를 사용한 버젼 관리
 1. MATLAB 프로그래밍
