@@ -28,7 +28,7 @@ title: 소프트웨어 카펜트리 버젼 5.3.
 1. [스프레드쉬트에서 데이터베이스로](http://statkclee.github.io/capstone-novice-spreadsheet-biblio)
 1. [웹 데이터 작업](http://statkclee.github.io/web-data-python/)
 1. [D3를 사용한 웹 데이터 시작과](http://statkclee.github.io/D3-visualising-data/index-kr.html)
-1. [재현가능한 과학적 분석을 위한 중급 R ](http://statkclee.github.io/r-intermediate-gapminder/index-kr.html)
+1. [재현가능한 과학적 분석을 위한 중급 R](http://statkclee.github.io/r-intermediate-gapminder/index-kr.html)
 
 ## 대한민국 소프트웨어 카펜트리 
 
