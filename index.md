@@ -9,6 +9,22 @@ title: 소프트웨어 카펜트리 버젼 5.3.
 
 단, 2일간 실습위주(hands-on) 워크숍 교육을 통해서 프로그램 설계, 버젼 제어, 데이터 관리, 작업 자동화를 포함한 기본 개념과 도구를 실습위주로 학습한다. 모든 워크샵 참여자가 서로 돕고 학습한 것을 본인 업무에 적용하길 기대합니다.
 
+> ### 워크샵 환경 설치 동영상 [^swc-install] {.prereq}
+>
+> #### 윈도우
+> - [Git 배쉬 및 SWC 설치자](https://youtu.be/339AEqk9c-8)
+> - [파이썬](https://youtu.be/xxQ0mzZ8UvA)
+> - [R/RStudio](https://youtu.be/q0PjTAylwoU)
+>
+> #### 맥
+> - [Git 배쉬 및 SWC 설치자](https://youtu.be/9LQhwETCdwY)
+> - [파이썬](https://youtu.be/TcSAln46u9U)
+> - [R/RStudio](https://youtu.be/5-ly3kyxwEg)
+
+
+[^swc-install]: [Installation Video Tutorials](http://software-carpentry.org/blog/2016/04/install-videos.html)
+
+
 ## 학습 교재 (5.3 버젼)
 
 ### 핵심 교재       
