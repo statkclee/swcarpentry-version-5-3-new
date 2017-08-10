@@ -51,13 +51,14 @@ title: 소프트웨어 카펜트리 버젼 5.3.
 - [파이콘 2015 라이트닝 토크](http://www.pycon.kr/2015/program/77)
     * [한국에서 소프트웨어 카펜트리 1년...](http://statkclee.github.io/slideshows/korea/index.html)  
 - 소프트웨어 카펜트리 교재
-    *  [GitHub 저장소](https://github.com/statkclee/swcarpentry-version-5-3-new)
-    *  [xwMOOC 소프트웨어 카펜트리](http://swcarpentry.xwmooc.org/)
+    * [GitHub 저장소](https://github.com/statkclee/swcarpentry-version-5-3-new)
+    * [xwMOOC 소프트웨어 카펜트리](http://swcarpentry.xwmooc.org/)
 - 소프트웨어 카펜트리 워크샵
-    *  [한국전파진흥협회(RAPA)](http://statkclee.github.io/2015-02-25-seoul/)
-    *  [경기콘텐츠코리아랩](http://statkclee.github.io/2015-04-29-pangyo/)
-    *  [연세대학교](http://statkclee.github.io/2015-06-29-yonsei/)
-    *  [나노종합기술원 대전창조경제혁신센터](http://statkclee.github.io/2015-08-20-daejeon/)
+    * [한국전파진흥협회(RAPA): 2015-02-25](http://statkclee.github.io/2015-02-25-seoul/)
+    * [경기콘텐츠코리아랩: 2015-04-29](http://statkclee.github.io/2015-04-29-pangyo/)
+    * [연세대학교: 2015-06-29](http://statkclee.github.io/2015-06-29-yonsei/)
+    * [나노종합기술원 대전창조경제혁신센터: 2015-08-20](http://statkclee.github.io/2015-08-20-daejeon/)
+    * [서강대학교: 2016-11-06](https://statkclee.github.io/2016-11-06-sogang/)
 
 ## 학습 교재 (5.2 버젼)
 
